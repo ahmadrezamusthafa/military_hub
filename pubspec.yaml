@@ -1,0 +1,30 @@
+name: military_hub
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  font_awesome_flutter: ^8.5.0
+  swipedetector: ^1.2.0
+  cached_network_image: ^2.0.0
+  cupertino_icons: ^0.1.2
+  flutter_emoji: ">= 2.0.0"
+  image_picker: ^0.6.7+2
+  get_it: ^4.0.1
+  flutter_bloc: ^3.2.0
+  dio: 3.0.9
+  photo_view: ^0.9.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  json_serializable: ^3.2.2
+  retrofit_generator: ^1.0.1
+
+flutter:
+  uses-material-design: true

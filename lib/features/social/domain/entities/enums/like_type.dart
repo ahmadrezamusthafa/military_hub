@@ -1,0 +1,4 @@
+enum LikeType {
+  like,
+  love,
+}
