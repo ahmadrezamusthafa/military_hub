@@ -1,13 +1,10 @@
-import 'dart:async';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:military_hub/features/social/presentation/pages/home_page.dart';
-import 'package:military_hub/features/social/presentation/pages/menu_page.dart';
-import 'package:military_hub/features/social/presentation/pages/splash_page.dart';
-
+import 'package:military_hub/route_generator.dart';
+import 'config/app_config.dart' as config;
 import 'features/social/domain/repositories/user_repository.dart';
-import 'themes/Theme.dart';
 
 void main() {
   initDummyData();
@@ -29,78 +26,112 @@ void initDummyData() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Military Hub',
-      home: MilitaryHubWidget(),
-      theme: MyTheme(),
-    );
-  }
-}
-
-class MilitaryHubWidget extends StatefulWidget {
-  MilitaryHubWidget({Key key}) : super(key: key);
-
-  _MilitaryHubWidgetState createState() => _MilitaryHubWidgetState();
-}
-
-class _MilitaryHubWidgetState extends State<MilitaryHubWidget> {
-  int counter = 0;
-  bool isLoading = true;
-
-  void changeCounter() {
-    setState(() {
-      counter++;
-    });
-    print("increment counter $counter");
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  List<Widget> pages = [
-    HomePage(),
-    MenuPage(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    if (isLoading) {
-      Timer(Duration(seconds: 5), () {
-        print("Hub has been loaded...");
-        setState(() => this.isLoading = false);
-      });
-      return SplashPage();
-    }
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 0,
-      child: Scaffold(
-        body: TabBarView(
-          children: pages,
-        ),
-        bottomNavigationBar: Container(
-          margin: EdgeInsets.only(bottom: 20),
-          child: new TabBar(
-            tabs: <Widget>[
-              Tab(icon: Icon(Icons.home)),
-              Tab(icon: Icon(Icons.menu)),
-            ],
-            unselectedLabelColor: Colors.grey,
-            labelColor: Colors.blue,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicator: UnderlineTabIndicator(
-              insets: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 47.0),
-              borderSide: BorderSide(
-                color: Colors.blue,
-                width: 3.0,
+    return DynamicTheme(
+        defaultBrightness: Brightness.light,
+        data: (brightness) {
+          if (brightness == Brightness.light) {
+            return ThemeData(
+              fontFamily: 'Poppins',
+              primaryColor: Colors.white,
+              brightness: brightness,
+              accentColor: config.Colors().mainColor(1),
+              focusColor: config.Colors().accentColor(1),
+              hintColor: config.Colors().secondColor(1),
+              textTheme: TextTheme(
+                headline: TextStyle(
+                    fontSize: 20.0, color: config.Colors().secondColor(1)),
+                display1: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                    color: config.Colors().secondColor(1)),
+                display2: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
+                    color: config.Colors().secondColor(1)),
+                display3: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w700,
+                    color: config.Colors().mainColor(1)),
+                display4: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w300,
+                    color: config.Colors().secondColor(1)),
+                subhead: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w500,
+                    color: config.Colors().secondColor(1)),
+                title: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    color: config.Colors().mainColor(1)),
+                body1: TextStyle(
+                    fontSize: 12.0, color: config.Colors().secondColor(1)),
+                body2: TextStyle(
+                    fontSize: 14.0, color: config.Colors().secondColor(1)),
+                caption: TextStyle(
+                    fontSize: 12.0, color: config.Colors().accentColor(1)),
               ),
-            ),
-            labelPadding: EdgeInsets.only(right: 0.0, left: 0.0),
-          ),
-        ),
-      ),
-    );
+            );
+          } else {
+            return ThemeData(
+              fontFamily: 'Poppins',
+              primaryColor: Color(0xFF252525),
+              brightness: Brightness.dark,
+              scaffoldBackgroundColor: Color(0xFF2C2C2C),
+              accentColor: config.Colors().mainDarkColor(1),
+              hintColor: config.Colors().secondDarkColor(1),
+              focusColor: config.Colors().accentDarkColor(1),
+              textTheme: TextTheme(
+                headline: TextStyle(
+                    fontSize: 20.0, color: config.Colors().secondDarkColor(1)),
+                display1: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                    color: config.Colors().secondDarkColor(1)),
+                display2: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
+                    color: config.Colors().secondDarkColor(1)),
+                display3: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w700,
+                    color: config.Colors().mainDarkColor(1)),
+                display4: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w300,
+                    color: config.Colors().secondDarkColor(1)),
+                subhead: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w500,
+                    color: config.Colors().secondDarkColor(1)),
+                title: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    color: config.Colors().mainDarkColor(1)),
+                body1: TextStyle(
+                    fontSize: 12.0, color: config.Colors().secondDarkColor(1)),
+                body2: TextStyle(
+                    fontSize: 14.0, color: config.Colors().secondDarkColor(1)),
+                caption: TextStyle(
+                    fontSize: 12.0,
+                    color: config.Colors().secondDarkColor(0.6)),
+              ),
+            );
+          }
+        },
+        themedWidgetBuilder: (context, theme) {
+          return MaterialApp(
+            title: "Military Hub",
+            initialRoute: '/Home',
+            onGenerateRoute: RouteGenerator.generateRoute,
+            debugShowCheckedModeBanner: false,
+            theme: theme,
+          );
+        });
+//    return MaterialApp(
+//      title: 'Military Hub',
+//      home: HomeTabPage(),
+//      theme: MyTheme(),
+//    );
   }
 }

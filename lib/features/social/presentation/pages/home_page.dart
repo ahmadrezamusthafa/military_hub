@@ -38,14 +38,16 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            title: Text(
-              'Military Hub',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 26,
-                color: Color(0xff1777F0),
-              ),
+            leading: new Icon(
+              Icons.sort,
+              color: Theme.of(context).hintColor,
             ),
+            title: Text("Military Hub",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .merge(TextStyle(letterSpacing: 1.3))
+                    .merge(TextStyle(fontSize: 13))),
             backgroundColor: Colors.white,
             floating: true,
             snap: true,
@@ -68,15 +70,25 @@ class _HomePageState extends State<HomePage> {
       Container(
         child: IconButton(
           icon: Icon(Icons.search),
-          color: Colors.black,
-          disabledColor: Colors.black,
-          splashColor: Theme.of(context).accentColor,
+          color: Theme.of(context).accentColor,
           onPressed: () {},
         ),
         decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+      ),
+      Padding(
+        padding: EdgeInsets.only(right: 5),
+      ),
+      Container(
+        child: IconButton(
+          icon: Icon(Icons.notifications),
           color: Theme.of(context).accentColor,
-          shape: BoxShape.circle,
+          onPressed: () {},
         ),
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
       ),
       Padding(
         padding: EdgeInsets.only(right: 5),
