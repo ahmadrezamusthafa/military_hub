@@ -51,7 +51,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
           children: pages,
         ),
         bottomNavigationBar: Container(
-          margin: EdgeInsets.only(bottom: 20),
+          margin: EdgeInsets.only(bottom: 0),
           child: new TabBar(
             tabs: <Widget>[
               Tab(icon: Icon(Icons.home)),
