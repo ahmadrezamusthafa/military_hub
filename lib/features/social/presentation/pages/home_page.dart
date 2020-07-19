@@ -38,9 +38,14 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            leading: new Icon(
-              Icons.sort,
-              color: Theme.of(context).hintColor,
+            leading: Container(
+              margin: EdgeInsets.all(14),
+              child: Image(
+                image: AssetImage('assets/img/logo_military_hub_s.png'),
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
             ),
             title: Text("Military Hub",
                 style: Theme.of(context)

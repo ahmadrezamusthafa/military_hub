@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({Key key}) : super(key: key);
@@ -10,10 +9,9 @@ class SplashPage extends StatelessWidget {
       body: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(color: Theme.of(context).primaryColorDark),
-        child: Icon(
-          FontAwesomeIcons.solidFlag,
-          color: Colors.white,
-          size: 80,
+        child: Image(
+          image: AssetImage('assets/img/logo_military_hub_l.png'),
+          height: 100,
         ),
       ),
       backgroundColor: Theme.of(context).primaryColorDark,

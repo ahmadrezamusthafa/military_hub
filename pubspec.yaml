@@ -29,3 +29,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/img/logo_military_hub.png
+    - assets/img/logo_military_hub_l.png
+    - assets/img/logo_military_hub_s.png
