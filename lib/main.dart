@@ -128,10 +128,5 @@ class MyApp extends StatelessWidget {
             theme: theme,
           );
         });
-//    return MaterialApp(
-//      title: 'Military Hub',
-//      home: HomeTabPage(),
-//      theme: MyTheme(),
-//    );
   }
 }

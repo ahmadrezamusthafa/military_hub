@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
+import 'package:uuid/uuid.dart';
 
 class UserAvatarWidget extends StatelessWidget {
   @override
@@ -62,6 +63,7 @@ class UserAvatarWidget extends StatelessWidget {
             width: 40,
             height: 40),
         FloatingActionButton(
+          heroTag: Uuid(),
           backgroundColor: Colors.transparent,
           highlightElevation: 0,
           elevation: 0,

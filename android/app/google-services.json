@@ -1,0 +1,539 @@
+{
+  "project_info": {
+    "project_number": "881934144628",
+    "firebase_url": "https://msengine-notifier.firebaseio.com",
+    "project_id": "msengine-notifier",
+    "storage_bucket": "msengine-notifier.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:41006b3006ac3731b22d21",
+        "android_client_info": {
+          "package_name": "com.elsa.thumbstalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-q97scgeo5rq9aloslee36tm3tdfkum84.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.elsa.thumbstalk",
+            "certificate_hash": "1f2cc1c784143432c7010ffb3663d1bccfc6c8c3"
+          }
+        },
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:9b5ee166b06c2b71b22d21",
+        "android_client_info": {
+          "package_name": "com.gbs.KartikaSari"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:cf1d0c6be4c4dea6b22d21",
+        "android_client_info": {
+          "package_name": "com.gbs.KartikaSariTest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-bk7glmjgiahcb1on1psrt957rje0eho5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gbs.KartikaSariTest",
+            "certificate_hash": "1f2cc1c784143432c7010ffb3663d1bccfc6c8c3"
+          }
+        },
+        {
+          "client_id": "881934144628-0qsods75ei5ku99qtuq187a07skq0ulu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gbs.KartikaSariTest",
+            "certificate_hash": "e2efcecc657650ab5ae39c832677042ffdde1bdd"
+          }
+        },
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:0050f286b9a5facdb22d21",
+        "android_client_info": {
+          "package_name": "com.marisinau.military_hub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:94822fa1e4eccec2b22d21",
+        "android_client_info": {
+          "package_name": "com.oak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:d844a1653b0cd06ab22d21",
+        "android_client_info": {
+          "package_name": "elsa.idekuliner.andostore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:b77c71f054d260c7b22d21",
+        "android_client_info": {
+          "package_name": "elsa.idekuliner.bppholcim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:0d1ab5b9e347b192b22d21",
+        "android_client_info": {
+          "package_name": "elsa.idekuliner.cvcrystal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:c2882cb3c6fc265bb22d21",
+        "android_client_info": {
+          "package_name": "elsa.idekuliner.d2autocare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:76ec824224017eddb22d21",
+        "android_client_info": {
+          "package_name": "elsa.idekuliner.dragonking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:fbac5bce14683a9fb22d21",
+        "android_client_info": {
+          "package_name": "elsa.idekuliner.gadingmurni"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:1104d24db0c254c4b22d21",
+        "android_client_info": {
+          "package_name": "gbs.chat.altius"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:7ca1c8125f325eb2b22d21",
+        "android_client_info": {
+          "package_name": "gbs.omegabiz.cloud"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881934144628:android:e12be67fafec61dfb22d21",
+        "android_client_info": {
+          "package_name": "msengine.elsa.thumbstalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPBksTZ9QSa0zeuqAUrmDzPWN5DY_Zc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881934144628-pvqjoiit1lj18colslccbo4rdha2te3q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "881934144628-k1v422s9h2p2qol6ea5mf4us9fn8rph6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "elsa.idekuliner.bppholcim"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int likes = 136;
   bool isLiked = false;
+  LocationResult _pickedLocation;
 
   void reactToPost() {
     setState(() {
@@ -192,7 +195,17 @@ class _HomePageState extends State<HomePage> {
                 icon: Icon(Icons.location_on, color: Colors.pink),
                 label: Text('Check In'),
                 textColor: Colors.grey,
-                onPressed: () {}),
+                onPressed: () async {
+                  LocationResult result = await showLocationPicker(
+                    context,
+                    "AIzaSyA45S8Vcq7_RzUQoMvKfHTv1nfBhy2BHdA",
+                    initialCenter: LatLng(-7.545449647437256,112.46844716370106),
+                    myLocationButtonEnabled: true,
+                    layersButtonEnabled: true,
+                  );
+                  print("result = $result");
+                  setState(() => _pickedLocation = result);
+                }),
             flex: 1,
           ),
         ],
