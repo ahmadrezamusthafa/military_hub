@@ -51,6 +51,17 @@ class _HomeTabPageState extends State<HomeTabPage> {
           children: pages,
         ),
         bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(0),
+//                    gradient: LinearGradient(colors: [Colors.yellow, Colors.redAccent]),
+            boxShadow: [
+              BoxShadow(
+                  color: Theme.of(context).hintColor.withOpacity(0.2),
+                  offset: Offset(0, 3),
+                  blurRadius: 10)
+            ],
+          ),
           margin: EdgeInsets.only(bottom: 0),
           child: new TabBar(
             tabs: <Widget>[
@@ -64,7 +75,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
               insets: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 47.0),
               borderSide: BorderSide(
                 color: Colors.blue,
-                width: 3.0,
+                width: 2.0,
               ),
             ),
             labelPadding: EdgeInsets.only(right: 0.0, left: 0.0),
