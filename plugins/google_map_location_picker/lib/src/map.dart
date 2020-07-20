@@ -200,17 +200,17 @@ class MapPickerState extends State<MapPicker> {
     return Align(
       alignment: widget.resultCardAlignment ?? Alignment.bottomCenter,
       child: Stack(
-        alignment:widget.resultCardAlignment ?? Alignment.bottomCenter ,
+        alignment: widget.resultCardAlignment ?? Alignment.bottomCenter,
         children: <Widget>[
           Container(
-            height: 250,
+            height: 200,
             decoration: new BoxDecoration(
                 gradient: new LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: [
-                Color.fromARGB(255, 25, 178, 238),
-                Color.fromARGB(0, 21, 236, 229)
+                Color.fromARGB(155, 17, 91, 145),
+                Color.fromARGB(0, 17, 91, 145)
               ],
             )),
           ),
@@ -226,76 +226,76 @@ class MapPickerState extends State<MapPicker> {
                           builder: (context, locationProvider, _) {
                         return Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Flexible(
-                                flex: 20,
-                                child: FutureLoadingBuilder<String>(
-                                    future: getAddress(
-                                        locationProvider.lastIdleLocation),
-                                    mutable: true,
-                                    loadingIndicator: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        CircularProgressIndicator(),
-                                      ],
-                                    ),
-                                    builder: (context, address) {
-                                      _address = address;
-                                      return Text(
-                                        address ?? 'Unnamed place',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1,
-                                      );
-                                    }),
-                              ),
-                              Spacer(),
-                              FloatingActionButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop({
-                                    'location': LocationResult(
-                                      latLng: locationProvider.lastIdleLocation,
-                                      address: _address,
-                                    )
-                                  });
-                                },
-                                child: widget.resultCardConfirmIcon ??
-                                    Icon(Icons.check),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
-                    Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Container(
-                          padding: EdgeInsets.all(16),
-                          child: Form(
-                            child: Column(
+                          child: Column(children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                new TextFormField(
-                                  style: TextStyle(
-                                      color: Theme.of(context).hintColor),
-                                  keyboardType: TextInputType.text,
-                                  decoration: getInputDecoration(
-                                    hintText: "Describe about the situations",
-                                    labelText: "What's on your Mind?",
-                                  ),
-                                  initialValue: "",
-                                  validator: (input) => input.trim().length < 3
-                                      ? "Invalid full name"
-                                      : null,
-                                  onSaved: (input) => {},
+                                Flexible(
+                                  flex: 20,
+                                  child: FutureLoadingBuilder<String>(
+                                      future: getAddress(
+                                          locationProvider.lastIdleLocation),
+                                      mutable: true,
+                                      loadingIndicator: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          CircularProgressIndicator(),
+                                        ],
+                                      ),
+                                      builder: (context, address) {
+                                        _address = address;
+                                        return Text(
+                                          address ?? 'Unnamed place',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
+                                        );
+                                      }),
+                                ),
+                                Spacer(),
+                                FloatingActionButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop({
+                                      'location': LocationResult(
+                                        latLng:
+                                            locationProvider.lastIdleLocation,
+                                        address: _address,
+                                      )
+                                    });
+                                  },
+                                  child: widget.resultCardConfirmIcon ??
+                                      Icon(Icons.check),
                                 ),
                               ],
                             ),
-                          ),
-                        )),
+                            SizedBox(height: 14,),
+                            Divider(),
+                            SizedBox(height: 8,),
+                            Form(
+                              child: Column(
+                                children: <Widget>[
+                                  new TextFormField(
+                                    style: TextStyle(
+                                        color: Theme.of(context).hintColor),
+                                    keyboardType: TextInputType.text,
+                                    decoration: getInputDecoration(
+                                      hintText: "Describe about the situations",
+                                      labelText: "What's on your Mind?",
+                                    ),
+                                    initialValue: "",
+                                    validator: (input) => input.trim().length < 3
+                                        ? "Invalid full name"
+                                        : null,
+                                    onSaved: (input) => {},
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ]),
+                        );
+                      }),
+                    ),
                   ],
                 ),
               )),
