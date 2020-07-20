@@ -199,88 +199,108 @@ class MapPickerState extends State<MapPicker> {
   Widget locationCard() {
     return Align(
       alignment: widget.resultCardAlignment ?? Alignment.bottomCenter,
-      child: Padding(
-          padding: widget.resultCardPadding ?? EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Consumer<LocationProvider>(
-                      builder: (context, locationProvider, _) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            flex: 20,
-                            child: FutureLoadingBuilder<String>(
-                                future: getAddress(
-                                    locationProvider.lastIdleLocation),
-                                mutable: true,
-                                loadingIndicator: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    CircularProgressIndicator(),
-                                  ],
-                                ),
-                                builder: (context, address) {
-                                  _address = address;
-                                  return Text(
-                                    address ?? 'Unnamed place',
-                                    style: Theme.of(context).textTheme.body1,
-                                  );
-                                }),
-                          ),
-                          Spacer(),
-                          FloatingActionButton(
-                            onPressed: () {
-                              Navigator.of(context).pop({
-                                'location': LocationResult(
-                                  latLng: locationProvider.lastIdleLocation,
-                                  address: _address,
-                                )
-                              });
-                            },
-                            child: widget.resultCardConfirmIcon ??
-                                Icon(Icons.check),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                ),
-                Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Container(
-                      padding: EdgeInsets.all(16),
-                      child: Form(
-                        child: Column(
-                          children: <Widget>[
-                            new TextFormField(
-                              style:
-                                  TextStyle(color: Theme.of(context).hintColor),
-                              keyboardType: TextInputType.text,
-                              decoration: getInputDecoration(
-                                  hintText: "Describe about the situations",
-                                  labelText: "What's on your Mind?",
-                              ),
-                              initialValue: "",
-                              validator: (input) => input.trim().length < 3
-                                  ? "Invalid full name"
-                                  : null,
-                              onSaved: (input) => {},
-                            ),
-                          ],
-                        ),
-                      ),
-                    )),
+      child: Stack(
+        alignment:widget.resultCardAlignment ?? Alignment.bottomCenter ,
+        children: <Widget>[
+          Container(
+            height: 250,
+            decoration: new BoxDecoration(
+                gradient: new LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Color.fromARGB(255, 25, 178, 238),
+                Color.fromARGB(0, 21, 236, 229)
               ],
-            ),
-          )),
+            )),
+          ),
+          Padding(
+              padding: widget.resultCardPadding ?? EdgeInsets.all(10.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Consumer<LocationProvider>(
+                          builder: (context, locationProvider, _) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                flex: 20,
+                                child: FutureLoadingBuilder<String>(
+                                    future: getAddress(
+                                        locationProvider.lastIdleLocation),
+                                    mutable: true,
+                                    loadingIndicator: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        CircularProgressIndicator(),
+                                      ],
+                                    ),
+                                    builder: (context, address) {
+                                      _address = address;
+                                      return Text(
+                                        address ?? 'Unnamed place',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                      );
+                                    }),
+                              ),
+                              Spacer(),
+                              FloatingActionButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop({
+                                    'location': LocationResult(
+                                      latLng: locationProvider.lastIdleLocation,
+                                      address: _address,
+                                    )
+                                  });
+                                },
+                                child: widget.resultCardConfirmIcon ??
+                                    Icon(Icons.check),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                    Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          child: Form(
+                            child: Column(
+                              children: <Widget>[
+                                new TextFormField(
+                                  style: TextStyle(
+                                      color: Theme.of(context).hintColor),
+                                  keyboardType: TextInputType.text,
+                                  decoration: getInputDecoration(
+                                    hintText: "Describe about the situations",
+                                    labelText: "What's on your Mind?",
+                                  ),
+                                  initialValue: "",
+                                  validator: (input) => input.trim().length < 3
+                                      ? "Invalid full name"
+                                      : null,
+                                  onSaved: (input) => {},
+                                ),
+                              ],
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+              )),
+        ],
+      ),
     );
   }
 
@@ -295,7 +315,8 @@ class MapPickerState extends State<MapPicker> {
           borderSide:
               BorderSide(color: Theme.of(context).hintColor.withOpacity(0.0))),
       focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).hintColor.withOpacity(0.0))),
+          borderSide:
+              BorderSide(color: Theme.of(context).hintColor.withOpacity(0.0))),
       hasFloatingPlaceholder: true,
       labelStyle: Theme.of(context).textTheme.body1.merge(
             TextStyle(color: Theme.of(context).hintColor),
