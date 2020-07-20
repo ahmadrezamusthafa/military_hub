@@ -14,12 +14,10 @@ class StreamPage extends StatefulWidget {
 }
 
 class _StreamPageState extends State<StreamPage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  PreferredSize(
+      appBar: PreferredSize(
         preferredSize: Size.fromHeight(0),
         child: AppBar(backgroundColor: Colors.white, elevation: 0),
       ),
@@ -54,9 +52,8 @@ class _StreamPageState extends State<StreamPage> {
             snap: true,
           ),
           SliverList(
-              delegate: new SliverChildListDelegate([
-            Column(children: _getPosts())
-          ]))
+              delegate:
+                  new SliverChildListDelegate([Column(children: _getPosts())]))
         ],
       ),
     );
@@ -64,7 +61,7 @@ class _StreamPageState extends State<StreamPage> {
 
   Widget _getSeparator(double height) {
     return Container(
-      decoration: BoxDecoration(color: Theme.of(context).dividerColor),
+      decoration: BoxDecoration(color: Theme.of(context).canvasColor),
       constraints: BoxConstraints(maxHeight: height),
     );
   }
@@ -100,25 +97,15 @@ class _StreamPageState extends State<StreamPage> {
             ],
           ),
           Row(
-            children: <Widget>[Icon(Icons.more_horiz, color: Colors.grey)],
+            children: <Widget>[
+              Icon(Icons.play_circle_outline, size: 34, color: Colors.green)
+            ],
             mainAxisAlignment: MainAxisAlignment.start,
           ),
         ],
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-    );
-  }
-
-  Widget _postBody() {
-    return Container(
-      constraints: BoxConstraints(maxHeight: 350),
-      decoration: BoxDecoration(
-          color: Colors.yellow,
-          image: DecorationImage(
-              image: CachedNetworkImageProvider(
-                  'https://rajaampatbiodiversity.com/wp-content/uploads/2019/06/visitar-raja-ampat.jpg'),
-              fit: BoxFit.fill)),
     );
   }
 
@@ -180,7 +167,6 @@ class _StreamPageState extends State<StreamPage> {
         children: <Widget>[
           _getSeparator(10),
           _postHeader(),
-          _postBody(),
         ],
       ),
       decoration: BoxDecoration(color: Colors.white),
@@ -194,5 +180,4 @@ class _StreamPageState extends State<StreamPage> {
     }
     return _posts;
   }
-
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:military_hub/features/social/presentation/pages/home_page.dart';
 import 'package:military_hub/features/social/presentation/pages/profile_page.dart';
 import 'package:military_hub/features/social/presentation/pages/stream_page.dart';
@@ -55,9 +56,9 @@ class _HomeTabPageState extends State<HomeTabPage> {
           margin: EdgeInsets.only(bottom: 0),
           child: new TabBar(
             tabs: <Widget>[
-              Tab(icon: Icon(Icons.home)),
-              Tab(icon: Icon(Icons.view_stream)),
-              Tab(icon: Icon(Icons.person)),
+              Tab(icon: Icon(FontAwesomeIcons.home, size: 16,)),
+              Tab(icon: Icon(FontAwesomeIcons.stream,size: 16)),
+              Tab(icon: Icon(FontAwesomeIcons.user,size: 16)),
             ],
             unselectedLabelColor: Colors.grey,
             labelColor: Colors.blue,
