@@ -47,8 +47,8 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  height: 23,
-                  margin: EdgeInsets.all(14),
+                  height: 20,
+                  margin: EdgeInsets.all(0),
                   child: Image(
                     image: AssetImage('assets/img/logo_military_hub_s.png'),
                   ),
@@ -56,12 +56,16 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
-                Text("Military Hub",
+                Padding(
+                  padding: EdgeInsets.all(3),
+                ),
+                Text("Hub",
                     style: Theme.of(context)
                         .textTheme
                         .headline2
+                        .merge(TextStyle(fontFamily: "Staatliches"))
                         .merge(TextStyle(letterSpacing: 1.3))
-                        .merge(TextStyle(fontSize: 13))),
+                        .merge(TextStyle(fontSize: 16))),
               ],
             ),
             backgroundColor: Colors.white,
@@ -349,22 +353,31 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Expanded(
               child: FlatButton.icon(
-                  icon: Icon(Icons.thumb_up),
-                  label: Text('Like'),
+                  icon: Icon(
+                    Icons.thumb_up,
+                    size: 16,
+                  ),
+                  label: Text('Like', style: TextStyle(fontSize: 12)),
                   textColor: isLiked == true ? Colors.blue : Colors.grey,
                   onPressed: reactToPost),
               flex: 1),
           Expanded(
               child: FlatButton.icon(
-                  icon: Icon(Icons.comment),
-                  label: Text('Comment'),
+                  icon: Icon(
+                    Icons.comment,
+                    size: 16,
+                  ),
+                  label: Text('Comment', style: TextStyle(fontSize: 12)),
                   textColor: Colors.grey,
                   onPressed: () {}),
               flex: 1),
           Expanded(
               child: FlatButton.icon(
-                  icon: Icon(Icons.share),
-                  label: Text('Share'),
+                  icon: Icon(
+                    Icons.share,
+                    size: 16,
+                  ),
+                  label: Text('Share', style: TextStyle(fontSize: 12)),
                   textColor: Colors.grey,
                   onPressed: () {}),
               flex: 1),

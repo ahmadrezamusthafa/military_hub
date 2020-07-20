@@ -284,7 +284,7 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 110),
+                  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 110),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(6),
@@ -304,7 +304,8 @@ class ProfilePageState extends State<ProfilePage> {
                         dense: true,
                         title: Text(
                           "Name",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, color: Colors.black),
                         ),
                         trailing: Text(
                           currentUser.value.name,
@@ -316,7 +317,8 @@ class ProfilePageState extends State<ProfilePage> {
                         dense: true,
                         title: Text(
                           "Email",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, color: Colors.black),
                         ),
                         trailing: Text(
                           currentUser.value.email,
@@ -328,7 +330,8 @@ class ProfilePageState extends State<ProfilePage> {
                         dense: true,
                         title: Text(
                           "Phone",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, color: Colors.black),
                         ),
                         trailing: Text(
                           currentUser.value.phoneNumber,
@@ -340,7 +343,8 @@ class ProfilePageState extends State<ProfilePage> {
                         dense: true,
                         title: Text(
                           "Address",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, color: Colors.black),
                         ),
                         trailing: Text(
                           Helper.limitString(currentUser.value.address),
@@ -354,7 +358,8 @@ class ProfilePageState extends State<ProfilePage> {
                         dense: true,
                         title: Text(
                           "Status",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, color: Colors.black),
                         ),
                         trailing: Text(
                           Helper.limitString(currentUser.value.profileStatus),

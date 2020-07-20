@@ -30,8 +30,8 @@ class _StreamPageState extends State<StreamPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  height: 23,
-                  margin: EdgeInsets.all(14),
+                  height: 20,
+                  margin: EdgeInsets.all(0),
                   child: Image(
                     image: AssetImage('assets/img/logo_military_hub_s.png'),
                   ),
@@ -39,17 +39,22 @@ class _StreamPageState extends State<StreamPage> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
-                Text("Stream",
+                Padding(
+                  padding: EdgeInsets.all(3),
+                ),
+                Text("STREAM",
                     style: Theme.of(context)
                         .textTheme
                         .headline2
+                        .merge(TextStyle(fontFamily: "Staatliches"))
                         .merge(TextStyle(letterSpacing: 1.3))
-                        .merge(TextStyle(fontSize: 13))),
+                        .merge(TextStyle(fontSize: 16))),
               ],
             ),
             backgroundColor: Colors.white,
             floating: true,
             snap: true,
+            actions: _getAppBarActions(),
           ),
           SliverList(
               delegate:
@@ -57,6 +62,37 @@ class _StreamPageState extends State<StreamPage> {
         ],
       ),
     );
+  }
+
+  List<Widget> _getAppBarActions() {
+    return [
+      Container(
+        child: IconButton(
+          icon: Icon(Icons.filter_list),
+          color: Theme.of(context).accentColor,
+          onPressed: () {},
+        ),
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+      ),
+      Padding(
+        padding: EdgeInsets.only(right: 5),
+      ),
+      Container(
+        child: IconButton(
+          icon: Icon(Icons.sort_by_alpha),
+          color: Theme.of(context).accentColor,
+          onPressed: () {},
+        ),
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+      ),
+      Padding(
+        padding: EdgeInsets.only(right: 5),
+      ),
+    ];
   }
 
   Widget _getSeparator(double height) {
@@ -98,7 +134,14 @@ class _StreamPageState extends State<StreamPage> {
           ),
           Row(
             children: <Widget>[
-              Icon(Icons.play_circle_outline, size: 34, color: Colors.green)
+              FlatButton.icon(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3.0)),
+                  icon: Icon(Icons.play_circle_outline,
+                      size: 34, color: Colors.green),
+                  label: Text('Play', style: TextStyle(fontSize: 12)),
+                  textColor: Colors.grey,
+                  onPressed: () {}),
             ],
             mainAxisAlignment: MainAxisAlignment.start,
           ),
