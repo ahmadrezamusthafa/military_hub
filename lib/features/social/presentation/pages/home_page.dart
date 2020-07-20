@@ -41,21 +41,29 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            leading: Container(
-              margin: EdgeInsets.all(14),
-              child: Image(
-                image: AssetImage('assets/img/logo_military_hub_s.png'),
-              ),
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+            centerTitle: false,
+            title: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  height: 23,
+                  margin: EdgeInsets.all(14),
+                  child: Image(
+                    image: AssetImage('assets/img/logo_military_hub_s.png'),
+                  ),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+                Text("Military Hub",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2
+                        .merge(TextStyle(letterSpacing: 1.3))
+                        .merge(TextStyle(fontSize: 13))),
+              ],
             ),
-            title: Text("Military Hub",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2
-                    .merge(TextStyle(letterSpacing: 1.3))
-                    .merge(TextStyle(fontSize: 13))),
             backgroundColor: Colors.white,
             floating: true,
             snap: true,
@@ -199,7 +207,8 @@ class _HomePageState extends State<HomePage> {
                   LocationResult result = await showLocationPicker(
                     context,
                     "AIzaSyA45S8Vcq7_RzUQoMvKfHTv1nfBhy2BHdA",
-                    initialCenter: LatLng(-7.545449647437256,112.46844716370106),
+                    initialCenter:
+                        LatLng(-7.545449647437256, 112.46844716370106),
                     myLocationButtonEnabled: true,
                     layersButtonEnabled: true,
                   );

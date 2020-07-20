@@ -122,7 +122,7 @@ class MyApp extends StatelessWidget {
         themedWidgetBuilder: (context, theme) {
           return MaterialApp(
             title: "Military Hub",
-            initialRoute: '/Home',
+            initialRoute: '/Splash',
             onGenerateRoute: RouteGenerator.generateRoute,
             debugShowCheckedModeBanner: false,
             theme: theme,

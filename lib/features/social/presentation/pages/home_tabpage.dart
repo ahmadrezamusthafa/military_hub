@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:military_hub/features/social/presentation/pages/home_page.dart';
-import 'package:military_hub/features/social/presentation/pages/menu_page.dart';
 import 'package:military_hub/features/social/presentation/pages/profile_page.dart';
-import 'package:military_hub/features/social/presentation/pages/splash_page.dart';
+import 'package:military_hub/features/social/presentation/pages/stream_page.dart';
 
 class HomeTabPage extends StatefulWidget {
   HomeTabPage({Key key}) : super(key: key);
@@ -15,7 +12,6 @@ class HomeTabPage extends StatefulWidget {
 
 class _HomeTabPageState extends State<HomeTabPage> {
   int counter = 0;
-  bool isLoading = true;
 
   void changeCounter() {
     setState(() {
@@ -31,20 +27,14 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   List<Widget> pages = [
     HomePage(),
+    StreamPage(),
     ProfilePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      Timer(Duration(seconds: 5), () {
-        print("Hub has been loaded...");
-        setState(() => this.isLoading = false);
-      });
-      return SplashPage();
-    }
     return DefaultTabController(
-      length: 2,
+      length: 3,
       initialIndex: 0,
       child: Scaffold(
         body: TabBarView(
@@ -66,6 +56,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
           child: new TabBar(
             tabs: <Widget>[
               Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.view_stream)),
               Tab(icon: Icon(Icons.person)),
             ],
             unselectedLabelColor: Colors.grey,
