@@ -274,6 +274,7 @@ class LivePageState extends State<LivePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
+        elevation: 0,
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -305,12 +306,33 @@ class LivePageState extends State<LivePage> {
       body: Stack(
         children: <Widget>[
           Container(
-            color: Theme.of(context).canvasColor,
-            constraints: BoxConstraints.expand(),
-            child: RTCVideoView(
-              widget._localRenderer,
+            margin: EdgeInsets.only(bottom: 20, top: 20, left: 20, right: 20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Theme.of(context).hintColor.withOpacity(0.15),
+                      offset: Offset(0, 3),
+                      blurRadius: 10)
+                ],
+                gradient: LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                    colors: [
+                      Theme.of(context).highlightColor.withOpacity(0.8),
+                      Theme.of(context).highlightColor.withOpacity(0.2),
+                    ])),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: Container(
+                color: Theme.of(context).dividerColor,
+                constraints: BoxConstraints.expand(),
+                child: RTCVideoView(
+                  widget._localRenderer,
+                ),
+                height: 10,
+              ),
             ),
-            height: 10,
           ),
           Positioned(
             child: Align(
@@ -356,7 +378,9 @@ class LivePageState extends State<LivePage> {
                   ],
                 ),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10)),
                     boxShadow: [
                       BoxShadow(
                           color: Theme.of(context).hintColor.withOpacity(0.15),
