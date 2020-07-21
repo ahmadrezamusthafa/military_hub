@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_webrtc/media_stream.dart';
 import 'package:flutter_webrtc/rtc_session_description.dart';
 import 'package:flutter_webrtc/rtc_video_view.dart';
@@ -21,9 +23,11 @@ class _LivePageState extends State<LivePage> {
   JanusClient j;
   Plugin pluginHandle;
   MediaStream myStream;
+  Timer _timer;
 
   @override
   void initState() {
+    print("live page initState");
     super.initState();
     initPermission();
     initRenderer();
@@ -31,6 +35,8 @@ class _LivePageState extends State<LivePage> {
 
   @override
   void dispose() {
+    print("live page dispose");
+    stopLive();
     super.dispose();
   }
 
@@ -51,8 +57,7 @@ class _LivePageState extends State<LivePage> {
             username: "onemandev",
             credential: "SecureIt"),
       ], server: [
-        'ws://kitaundang.com:8188',
-        'http://kitaundang.com:8001/janus'
+        'ws://kitaundang.com:8188'
       ], withCredentials: true, apiSecret: "SecureIt");
       j.connect(onSuccess: () async {
         debugPrint('voilla! connection established');
@@ -84,7 +89,8 @@ class _LivePageState extends State<LivePage> {
                 "request": "join",
                 "room": 1234,
                 "ptype": "publisher",
-                "display": 'reza'
+                "display": 'reza',
+                "id": 1
               };
               plugin.send(
                   message: register,
@@ -103,6 +109,49 @@ class _LivePageState extends State<LivePage> {
       }, onError: (e) {
         debugPrint('some error occured');
       });
+    });
+  }
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(
+        () {
+          print("timer tick");
+          if (j != null) {
+            print("janus still connected ${j.isConnected.toString()}");
+          }
+        },
+      ),
+    );
+  }
+
+  void stopTimer() {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+  }
+
+  startLive() async {
+    await this.initRenderer();
+    await this.initPlatformState();
+    startTimer();
+  }
+
+  stopLive() {
+    stopTimer();
+    if (pluginHandle != null) {
+      pluginHandle.hangup();
+    }
+    widget._localRenderer.srcObject = null;
+    try {
+      widget._localRenderer.dispose();
+    } catch (e) {
+      print("got error when call dispose: ${e.toString()}");
+    }
+    setState(() {
+      pluginHandle = null;
     });
   }
 
@@ -151,14 +200,11 @@ class _LivePageState extends State<LivePage> {
           SliverFillRemaining(
             hasScrollBody: false,
             fillOverscroll: true,
-            child: Expanded(
-              flex: 1,
-              child: Container(
-                child: RTCVideoView(
-                  widget._localRenderer,
-                ),
-                height: 10,
+            child: Container(
+              child: RTCVideoView(
+                widget._localRenderer,
               ),
+              height: 10,
             ),
           ),
         ],
@@ -176,12 +222,7 @@ class _LivePageState extends State<LivePage> {
           ),
           color: Theme.of(context).accentColor,
           onPressed: () {
-            pluginHandle.hangup();
-            widget._localRenderer.srcObject = null;
-            widget._localRenderer.dispose();
-            setState(() {
-              pluginHandle = null;
-            });
+            stopLive();
           },
         ),
         decoration: BoxDecoration(
@@ -199,8 +240,7 @@ class _LivePageState extends State<LivePage> {
           ),
           color: Theme.of(context).accentColor,
           onPressed: () async {
-            await this.initRenderer();
-            await this.initPlatformState();
+            await startLive();
           },
         ),
         decoration: BoxDecoration(
