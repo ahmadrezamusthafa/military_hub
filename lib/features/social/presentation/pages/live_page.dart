@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_webrtc/media_stream.dart';
 import 'package:flutter_webrtc/rtc_session_description.dart';
@@ -137,6 +138,9 @@ class _LivePageState extends State<LivePage> {
               RTCSessionDescription offer = await pluginHandle.createOffer();
               pluginHandle.send(
                   message: publish, jsep: offer, onSuccess: () {});
+            },
+            onError: (e) {
+              print("send pluginHandle error: ${e.toString()}");
             });
       }
     });
@@ -179,17 +183,31 @@ class _LivePageState extends State<LivePage> {
           message: list,
           onSuccess: (data) async {
             processParticipant(data);
+          },
+          onError: (e) {
+            print("send pluginChecker error: ${e.toString()}");
           });
     }
   }
 
-  void processParticipant(dynamic data) {
+  void processParticipant(dynamic data) async {
     Participant participant = Participant.fromJson(data);
     print("receive LIST data ${data.toString()}");
     int i = 0;
+    bool found = false;
     for (var value in participant.participants) {
       i++;
       print("participant $i id:${value.id} display:${value.display}");
+      if (value.id == getIdNumber()) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      print("force reload connection");
+      stopLive();
+      await Future.delayed(Duration(seconds: 1));
+      startLive();
     }
   }
 
@@ -200,7 +218,11 @@ class _LivePageState extends State<LivePage> {
       (Timer timer) => setState(
         () {
           print("timer tick");
-          syncPlatformState();
+          try {
+            syncPlatformState();
+          } catch (e) {
+            print("exception syncPlatformState: ${e.toString()}");
+          }
         },
       ),
     );
@@ -226,6 +248,11 @@ class _LivePageState extends State<LivePage> {
     stopTimer();
     if (pluginHandle != null) {
       pluginHandle.hangup();
+      pluginHandle.detach();
+    }
+    if (pluginChecker != null) {
+      pluginChecker.hangup();
+      pluginChecker.detach();
     }
     widget._localRenderer.srcObject = null;
     try {
@@ -235,6 +262,7 @@ class _LivePageState extends State<LivePage> {
     }
     setState(() {
       pluginHandle = null;
+      pluginChecker = null;
     });
   }
 
