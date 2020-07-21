@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_webrtc/media_stream.dart';
 import 'package:flutter_webrtc/rtc_session_description.dart';
@@ -11,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:military_hub/features/social/domain/entities/room_participant.dart';
+import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LivePage extends StatefulWidget {
@@ -21,7 +24,9 @@ class LivePage extends StatefulWidget {
 
 class _LivePageState extends State<LivePage> {
   JanusClient j;
+  JanusClient jChecker;
   Plugin pluginHandle;
+  Plugin pluginChecker;
   MediaStream myStream;
   Timer _timer;
 
@@ -49,6 +54,16 @@ class _LivePageState extends State<LivePage> {
     await widget._localRenderer.initialize();
   }
 
+  int getIdNumber() {
+    /*var ids = currentUser.value.userId.split("_");
+    if (ids.isNotEmpty && ids.length > 1) {
+      var id = int.parse(ids[1]);
+      return id;
+    }
+    return 0;*/
+    return 1234;
+  }
+
   Future<void> initPlatformState() async {
     setState(() {
       j = JanusClient(iceServers: [
@@ -61,9 +76,6 @@ class _LivePageState extends State<LivePage> {
       ], withCredentials: true, apiSecret: "SecureIt");
       j.connect(onSuccess: () async {
         debugPrint('voilla! connection established');
-        Map<String, dynamic> configuration = {
-          "iceServers": j.iceServers.map((e) => e.toMap()).toList()
-        };
 
         j.attach(Plugin(
             plugin: 'janus.plugin.videoroom',
@@ -87,10 +99,11 @@ class _LivePageState extends State<LivePage> {
               });
               var register = {
                 "request": "join",
-                "room": 1234,
+                "room": getIdNumber(),
                 "ptype": "publisher",
-                "display": 'reza',
-                "id": 1
+                "display":
+                    currentUser.value.name + " - " + currentUser.value.email,
+                "id": getIdNumber()
               };
               plugin.send(
                   message: register,
@@ -112,16 +125,64 @@ class _LivePageState extends State<LivePage> {
     });
   }
 
+  Future<void> syncPlatformState() async {
+    if (jChecker == null) {
+      jChecker = JanusClient(iceServers: [
+        RTCIceServer(
+            url: "stun:stun.l.google.com:19302",
+            username: "onemandev",
+            credential: "SecureIt"),
+      ], server: [
+        'ws://kitaundang.com:8188'
+      ], withCredentials: true, apiSecret: "SecureIt");
+    }
+    if (!jChecker.isConnected || pluginChecker == null) {
+      jChecker.connect(onSuccess: () async {
+        print("onSuccess connect");
+        pluginChecker = Plugin(
+            plugin: 'janus.plugin.videoroom',
+            onMessage: (msg, jsep) async {},
+            onSuccess: (plugin) async {
+              print("onSuccess attach");
+              var list = {"request": "listparticipants", "room": getIdNumber()};
+              plugin.send(
+                  message: list,
+                  onSuccess: (data) async {
+                    processParticipant(data);
+                  });
+            });
+        jChecker.attach(pluginChecker);
+      }, onError: (e) {
+        debugPrint('some error occured');
+      });
+    } else {
+      var list = {"request": "listparticipants", "room": getIdNumber()};
+      pluginChecker.send(
+          message: list,
+          onSuccess: (data) async {
+            processParticipant(data);
+          });
+    }
+  }
+
+  void processParticipant(dynamic data) {
+    Participant participant = Participant.fromJson(data);
+    print("receive LIST data ${data.toString()}");
+    int i = 0;
+    for (var value in participant.participants) {
+      i++;
+      print("participant $i id:${value.id} display:${value.display}");
+    }
+  }
+
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
+    const oneSec = const Duration(seconds: 3);
     _timer = new Timer.periodic(
       oneSec,
       (Timer timer) => setState(
         () {
           print("timer tick");
-          if (j != null) {
-            print("janus still connected ${j.isConnected.toString()}");
-          }
+          syncPlatformState();
         },
       ),
     );
