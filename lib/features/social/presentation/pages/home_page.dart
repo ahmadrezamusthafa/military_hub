@@ -283,7 +283,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       constraints: BoxConstraints(maxHeight: 350),
       decoration: BoxDecoration(
-          color: Colors.yellow,
+          color: Theme.of(context).canvasColor,
           image: DecorationImage(
               image: CachedNetworkImageProvider(
                   'https://rajaampatbiodiversity.com/wp-content/uploads/2019/06/visitar-raja-ampat.jpg'),
