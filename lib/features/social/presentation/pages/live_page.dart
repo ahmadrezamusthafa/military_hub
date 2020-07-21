@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_webrtc/enums.dart';
 import 'package:flutter_webrtc/media_stream.dart';
 import 'package:flutter_webrtc/rtc_session_description.dart';
 import 'package:flutter_webrtc/rtc_video_view.dart';
@@ -20,15 +21,15 @@ import 'package:permission_handler/permission_handler.dart';
 class LivePage extends StatefulWidget {
   final _localRenderer = new RTCVideoRenderer();
 
-  _LivePageState createState() => _LivePageState();
+  LivePageState createState() => LivePageState();
 }
 
-class _LivePageState extends State<LivePage> {
-  JanusClient j;
-  JanusClient jChecker;
-  Plugin pluginHandle;
-  Plugin pluginChecker;
-  MediaStream myStream;
+class LivePageState extends State<LivePage> {
+  JanusClient _j;
+  JanusClient _jChecker;
+  Plugin _pluginHandle;
+  Plugin _pluginChecker;
+  MediaStream _myStream;
   Timer _timer;
   bool isStopped = true;
 
@@ -68,8 +69,8 @@ class _LivePageState extends State<LivePage> {
 
   Future<void> initPlatformState() async {
     setState(() {
-      if (j == null) {
-        j = JanusClient(iceServers: [
+      if (_j == null) {
+        _j = JanusClient(iceServers: [
           RTCIceServer(
               url: "stun:stun.l.google.com:19302",
               username: "onemandev",
@@ -85,28 +86,30 @@ class _LivePageState extends State<LivePage> {
         "display": currentUser.value.name + " - " + currentUser.value.email,
         "id": getIdNumber()
       };
-      if (!j.isConnected || pluginHandle == null) {
-        j.connect(onSuccess: () async {
+      if (!_j.isConnected || _pluginHandle == null) {
+        _j.connect(onSuccess: () async {
           debugPrint('voilla! connection established');
-          j.attach(Plugin(
+          _j.attach(Plugin(
               plugin: 'janus.plugin.videoroom',
               onMessage: (msg, jsep) async {
                 print('publisheronmsg');
                 if (jsep != null) {
-                  pluginHandle.handleRemoteJsep(jsep);
+                  _pluginHandle.handleRemoteJsep(jsep);
                 }
               },
               onSuccess: (plugin) async {
                 setState(() {
-                  pluginHandle = plugin;
+                  _pluginHandle = plugin;
                 });
                 MediaStream stream = await plugin.initializeMediaDevices();
                 setState(() {
-                  myStream = stream;
+                  _myStream = stream;
                 });
                 setState(() {
-                  widget._localRenderer.srcObject = myStream;
-                  widget._localRenderer.mirror = true;
+                  widget._localRenderer.srcObject = _myStream;
+                  widget._localRenderer.mirror = false;
+                  widget._localRenderer.objectFit =
+                      RTCVideoViewObjectFit.RTCVideoViewObjectFitCover;
                 });
                 plugin.send(
                     message: register,
@@ -126,7 +129,7 @@ class _LivePageState extends State<LivePage> {
           debugPrint('some error occured');
         });
       } else {
-        pluginHandle.send(
+        _pluginHandle.send(
             message: register,
             onSuccess: () async {
               var publish = {
@@ -135,8 +138,8 @@ class _LivePageState extends State<LivePage> {
                 "video": true,
                 "bitrate": 2000000
               };
-              RTCSessionDescription offer = await pluginHandle.createOffer();
-              pluginHandle.send(
+              RTCSessionDescription offer = await _pluginHandle.createOffer();
+              _pluginHandle.send(
                   message: publish, jsep: offer, onSuccess: () {});
             },
             onError: (e) {
@@ -147,8 +150,8 @@ class _LivePageState extends State<LivePage> {
   }
 
   Future<void> syncPlatformState() async {
-    if (jChecker == null) {
-      jChecker = JanusClient(iceServers: [
+    if (_jChecker == null) {
+      _jChecker = JanusClient(iceServers: [
         RTCIceServer(
             url: "stun:stun.l.google.com:19302",
             username: "onemandev",
@@ -158,15 +161,15 @@ class _LivePageState extends State<LivePage> {
       ], withCredentials: true, apiSecret: "SecureIt");
     }
     var list = {"request": "listparticipants", "room": getIdNumber()};
-    if (!jChecker.isConnected || pluginChecker == null) {
-      jChecker.connect(onSuccess: () async {
+    if (!_jChecker.isConnected || _pluginChecker == null) {
+      _jChecker.connect(onSuccess: () async {
         print("onSuccess connect");
-        jChecker.attach(Plugin(
+        _jChecker.attach(Plugin(
             plugin: 'janus.plugin.videoroom',
             onMessage: (msg, jsep) async {},
             onSuccess: (plugin) async {
               setState(() {
-                pluginChecker = plugin;
+                _pluginChecker = plugin;
               });
               print("onSuccess attach");
               plugin.send(
@@ -179,7 +182,7 @@ class _LivePageState extends State<LivePage> {
         debugPrint('some error occured');
       });
     } else {
-      pluginChecker.send(
+      _pluginChecker.send(
           message: list,
           onSuccess: (data) async {
             processParticipant(data);
@@ -246,13 +249,13 @@ class _LivePageState extends State<LivePage> {
   stopLive() {
     isStopped = true;
     stopTimer();
-    if (pluginHandle != null) {
-      pluginHandle.hangup();
-      pluginHandle.detach();
+    if (_pluginHandle != null) {
+      _pluginHandle.hangup();
+      _pluginHandle.detach();
     }
-    if (pluginChecker != null) {
-      pluginChecker.hangup();
-      pluginChecker.detach();
+    if (_pluginChecker != null) {
+      _pluginChecker.hangup();
+      _pluginChecker.detach();
     }
     widget._localRenderer.srcObject = null;
     try {
@@ -261,127 +264,117 @@ class _LivePageState extends State<LivePage> {
       print("got error when call dispose: ${e.toString()}");
     }
     setState(() {
-      pluginHandle = null;
-      pluginChecker = null;
+      _pluginHandle = null;
+      _pluginChecker = null;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0),
-        child: AppBar(backgroundColor: Colors.white, elevation: 0),
-      ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            centerTitle: false,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 20,
-                  margin: EdgeInsets.all(0),
-                  child: Image(
-                    image: AssetImage('assets/img/logo_military_hub_s.png'),
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(3),
-                ),
-                Text("LIVE CAMERA",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .merge(TextStyle(fontFamily: "Staatliches"))
-                        .merge(TextStyle(letterSpacing: 1.3))
-                        .merge(TextStyle(fontSize: 16))),
-              ],
-            ),
-            backgroundColor: Colors.white,
-            floating: true,
-            snap: true,
-            actions: _getAppBarActions(),
-          ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            fillOverscroll: true,
-            child: Container(
-              child: RTCVideoView(
-                widget._localRenderer,
+      appBar: AppBar(
+        centerTitle: false,
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              height: 20,
+              margin: EdgeInsets.all(0),
+              child: Image(
+                image: AssetImage('assets/img/logo_military_hub_s.png'),
               ),
-              height: 10,
+              decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
             ),
+            Padding(
+              padding: EdgeInsets.all(3),
+            ),
+            Text("BROADCAST",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .merge(TextStyle(fontFamily: "Staatliches"))
+                    .merge(TextStyle(letterSpacing: 1.3))
+                    .merge(TextStyle(fontSize: 16))),
+          ],
+        ),
+        backgroundColor: Colors.white,
+      ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            color: Theme.of(context).canvasColor,
+            constraints: BoxConstraints.expand(),
+            child: RTCVideoView(
+              widget._localRenderer,
+            ),
+            height: 10,
           ),
+          Positioned(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                margin: EdgeInsets.all(20),
+                height: 100,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton(
+                      mini: true,
+                      backgroundColor: Colors.white10.withAlpha(70),
+                      child: const Icon(Icons.stop),
+                      onPressed: () {
+                        stopLive();
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                    ),
+                    FloatingActionButton(
+                      backgroundColor: Colors.redAccent,
+                      child: const Icon(Icons.play_arrow),
+                      onPressed: () async {
+                        await startLive();
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                    ),
+                    FloatingActionButton(
+                      mini: true,
+                      backgroundColor: Colors.white10.withAlpha(70),
+                      child: const Icon(Icons.autorenew),
+                      onPressed: () {
+                        if (_pluginHandle != null) {
+                          _pluginHandle.switchCamera();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Theme.of(context).hintColor.withOpacity(0.15),
+                          offset: Offset(0, 3),
+                          blurRadius: 10)
+                    ],
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          Theme.of(context).accentColor.withOpacity(0.8),
+                          Theme.of(context).primaryColorDark.withOpacity(0.2),
+                        ])),
+              ),
+            ),
+          )
         ],
       ),
     );
-  }
-
-  List<Widget> _getAppBarActions() {
-    return [
-      Container(
-        child: IconButton(
-          icon: Icon(
-            Icons.stop,
-            color: Colors.red,
-          ),
-          color: Theme.of(context).accentColor,
-          onPressed: () {
-            stopLive();
-          },
-        ),
-        decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-      ),
-      Padding(
-        padding: EdgeInsets.only(right: 5),
-      ),
-      Container(
-        child: IconButton(
-          icon: Icon(
-            Icons.play_circle_outline,
-            color: Colors.green,
-          ),
-          color: Theme.of(context).accentColor,
-          onPressed: () async {
-            await startLive();
-          },
-        ),
-        decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-      ),
-      Padding(
-        padding: EdgeInsets.only(right: 5),
-      ),
-      Container(
-        child: IconButton(
-          icon: Icon(
-            Icons.switch_video,
-            color: Colors.blueAccent,
-            size: 20,
-          ),
-          color: Theme.of(context).accentColor,
-          onPressed: () {
-            if (pluginHandle != null) {
-              pluginHandle.switchCamera();
-            }
-          },
-        ),
-        decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-      ),
-      Padding(
-        padding: EdgeInsets.only(right: 5),
-      ),
-    ];
   }
 }
