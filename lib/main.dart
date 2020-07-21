@@ -5,11 +5,14 @@ import 'package:flutter/rendering.dart';
 import 'package:military_hub/route_generator.dart';
 import 'config/app_config.dart' as config;
 import 'features/social/domain/repositories/user_repository.dart';
+import 'injection_container.dart' as di;
 
 // Generate JSON serializer g.dart
 //    $ flutter pub run build_runner build --delete-conflicting-outputs
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   initDummyData();
   runApp(MyApp());
 }
