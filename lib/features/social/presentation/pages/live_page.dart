@@ -29,6 +29,7 @@ class _LivePageState extends State<LivePage> {
   Plugin pluginChecker;
   MediaStream myStream;
   Timer _timer;
+  bool isStopped = true;
 
   @override
   void initState() {
@@ -66,62 +67,78 @@ class _LivePageState extends State<LivePage> {
 
   Future<void> initPlatformState() async {
     setState(() {
-      j = JanusClient(iceServers: [
-        RTCIceServer(
-            url: "stun:stun.l.google.com:19302",
-            username: "onemandev",
-            credential: "SecureIt"),
-      ], server: [
-        'ws://kitaundang.com:8188'
-      ], withCredentials: true, apiSecret: "SecureIt");
-      j.connect(onSuccess: () async {
-        debugPrint('voilla! connection established');
-
-        j.attach(Plugin(
-            plugin: 'janus.plugin.videoroom',
-            onMessage: (msg, jsep) async {
-              print('publisheronmsg');
-              if (jsep != null) {
-                pluginHandle.handleRemoteJsep(jsep);
-              }
-            },
-            onSuccess: (plugin) async {
-              setState(() {
-                pluginHandle = plugin;
-              });
-              MediaStream stream = await plugin.initializeMediaDevices();
-              setState(() {
-                myStream = stream;
-              });
-              setState(() {
-                widget._localRenderer.srcObject = myStream;
-                widget._localRenderer.mirror = true;
-              });
-              var register = {
-                "request": "join",
-                "room": getIdNumber(),
-                "ptype": "publisher",
-                "display":
-                    currentUser.value.name + " - " + currentUser.value.email,
-                "id": getIdNumber()
+      if (j == null) {
+        j = JanusClient(iceServers: [
+          RTCIceServer(
+              url: "stun:stun.l.google.com:19302",
+              username: "onemandev",
+              credential: "SecureIt"),
+        ], server: [
+          'ws://kitaundang.com:8188'
+        ], withCredentials: true, apiSecret: "SecureIt");
+      }
+      var register = {
+        "request": "join",
+        "room": getIdNumber(),
+        "ptype": "publisher",
+        "display": currentUser.value.name + " - " + currentUser.value.email,
+        "id": getIdNumber()
+      };
+      if (!j.isConnected || pluginHandle == null) {
+        j.connect(onSuccess: () async {
+          debugPrint('voilla! connection established');
+          j.attach(Plugin(
+              plugin: 'janus.plugin.videoroom',
+              onMessage: (msg, jsep) async {
+                print('publisheronmsg');
+                if (jsep != null) {
+                  pluginHandle.handleRemoteJsep(jsep);
+                }
+              },
+              onSuccess: (plugin) async {
+                setState(() {
+                  pluginHandle = plugin;
+                });
+                MediaStream stream = await plugin.initializeMediaDevices();
+                setState(() {
+                  myStream = stream;
+                });
+                setState(() {
+                  widget._localRenderer.srcObject = myStream;
+                  widget._localRenderer.mirror = true;
+                });
+                plugin.send(
+                    message: register,
+                    onSuccess: () async {
+                      var publish = {
+                        "request": "configure",
+                        "audio": true,
+                        "video": true,
+                        "bitrate": 2000000
+                      };
+                      RTCSessionDescription offer = await plugin.createOffer();
+                      plugin.send(
+                          message: publish, jsep: offer, onSuccess: () {});
+                    });
+              }));
+        }, onError: (e) {
+          debugPrint('some error occured');
+        });
+      } else {
+        pluginHandle.send(
+            message: register,
+            onSuccess: () async {
+              var publish = {
+                "request": "configure",
+                "audio": true,
+                "video": true,
+                "bitrate": 2000000
               };
-              plugin.send(
-                  message: register,
-                  onSuccess: () async {
-                    var publish = {
-                      "request": "configure",
-                      "audio": true,
-                      "video": true,
-                      "bitrate": 2000000
-                    };
-                    RTCSessionDescription offer = await plugin.createOffer();
-                    plugin.send(
-                        message: publish, jsep: offer, onSuccess: () {});
-                  });
-            }));
-      }, onError: (e) {
-        debugPrint('some error occured');
-      });
+              RTCSessionDescription offer = await pluginHandle.createOffer();
+              pluginHandle.send(
+                  message: publish, jsep: offer, onSuccess: () {});
+            });
+      }
     });
   }
 
@@ -136,27 +153,28 @@ class _LivePageState extends State<LivePage> {
         'ws://kitaundang.com:8188'
       ], withCredentials: true, apiSecret: "SecureIt");
     }
+    var list = {"request": "listparticipants", "room": getIdNumber()};
     if (!jChecker.isConnected || pluginChecker == null) {
       jChecker.connect(onSuccess: () async {
         print("onSuccess connect");
-        pluginChecker = Plugin(
+        jChecker.attach(Plugin(
             plugin: 'janus.plugin.videoroom',
             onMessage: (msg, jsep) async {},
             onSuccess: (plugin) async {
+              setState(() {
+                pluginChecker = plugin;
+              });
               print("onSuccess attach");
-              var list = {"request": "listparticipants", "room": getIdNumber()};
               plugin.send(
                   message: list,
                   onSuccess: (data) async {
                     processParticipant(data);
                   });
-            });
-        jChecker.attach(pluginChecker);
+            }));
       }, onError: (e) {
         debugPrint('some error occured');
       });
     } else {
-      var list = {"request": "listparticipants", "room": getIdNumber()};
       pluginChecker.send(
           message: list,
           onSuccess: (data) async {
@@ -195,12 +213,16 @@ class _LivePageState extends State<LivePage> {
   }
 
   startLive() async {
-    await this.initRenderer();
-    await this.initPlatformState();
-    startTimer();
+    if (isStopped) {
+      isStopped = false;
+      await this.initRenderer();
+      await this.initPlatformState();
+      startTimer();
+    }
   }
 
   stopLive() {
+    isStopped = true;
     stopTimer();
     if (pluginHandle != null) {
       pluginHandle.hangup();
