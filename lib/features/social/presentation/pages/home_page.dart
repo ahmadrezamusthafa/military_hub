@@ -8,9 +8,13 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
+import 'package:military_hub/main.dart';
 
 class HomePage extends StatefulWidget {
-  _HomePageState createState() => _HomePageState();
+  HomePage({Key key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -193,7 +197,10 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.videocam, color: Colors.red),
                   label: Text('Live'),
                   textColor: Colors.grey,
-                  onPressed: () {}),
+                  onPressed: () {
+                    MyApp.homeTabPageKey.currentState.tabController
+                        .animateTo(2);
+                  }),
               flex: 1),
           Expanded(
               child: FlatButton.icon(

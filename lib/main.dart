@@ -2,11 +2,18 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:military_hub/features/social/presentation/pages/home_tabpage.dart';
 import 'package:military_hub/route_generator.dart';
 import 'config/app_config.dart' as config;
 import 'features/social/domain/repositories/user_repository.dart';
+import 'injection_container.dart' as di;
 
-void main() {
+// Generate JSON serializer g.dart
+//    $ flutter pub run build_runner build --delete-conflicting-outputs
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   initDummyData();
   runApp(MyApp());
 }
@@ -24,6 +31,9 @@ void initDummyData() {
 }
 
 class MyApp extends StatelessWidget {
+  static final GlobalKey<HomeTabPageState> homeTabPageKey =
+      new GlobalKey<HomeTabPageState>();
+
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
