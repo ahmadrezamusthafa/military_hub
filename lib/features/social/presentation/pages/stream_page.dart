@@ -81,7 +81,7 @@ class _StreamPageState extends State<StreamPage> {
       ),
       Container(
         child: IconButton(
-          icon: Icon(Icons.sort_by_alpha),
+          icon: Icon(Icons.map),
           color: Theme.of(context).accentColor,
           onPressed: () {},
         ),
@@ -117,15 +117,6 @@ class _StreamPageState extends State<StreamPage> {
                   Text('Ahmad Reza Musthafa',
                       style: TextStyle(
                           fontWeight: FontWeight.w700, color: Colors.black)),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        '15 mins ',
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
-                      ),
-                      Icon(Icons.language, size: 15, color: Colors.grey)
-                    ],
-                  )
                 ],
                 crossAxisAlignment: CrossAxisAlignment.start,
               )
@@ -148,58 +139,6 @@ class _StreamPageState extends State<StreamPage> {
         ],
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ),
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-    );
-  }
-
-  Widget postLikesAndComments() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          Container(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    child: RawMaterialButton(
-                      child: Icon(
-                        Icons.thumb_up,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                      shape: new CircleBorder(
-                          side: BorderSide(
-                              color: Colors.white, style: BorderStyle.solid)),
-                      fillColor: Colors.blue,
-                      onPressed: () {},
-                      highlightElevation: 0,
-                    ),
-                    width: 30,
-                    decoration: BoxDecoration(color: Colors.white),
-                  ),
-                ],
-              ),
-              height: 30,
-              decoration: BoxDecoration(color: Colors.white)),
-          Container(
-              child: Row(
-            children: <Widget>[
-              Text(
-                '13',
-                style: TextStyle(color: Colors.grey),
-              ),
-              SizedBox(
-                width: 3,
-              ),
-              Text(
-                'Comments',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ))
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      ),
-      //  decoration: BoxDecoration(color: Colors.yellow),
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
     );
   }

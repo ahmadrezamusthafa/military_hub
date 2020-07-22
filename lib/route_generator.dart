@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:military_hub/features/social/presentation/pages/home_tabpage.dart';
 import 'package:military_hub/features/social/presentation/pages/splash_page.dart';
+import 'package:military_hub/main.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -10,7 +11,10 @@ class RouteGenerator {
       case '/Splash':
         return MaterialPageRoute(builder: (_) => SplashPage());
       case '/Home':
-        return MaterialPageRoute(builder: (_) => HomeTabPage());
+        return MaterialPageRoute(
+            builder: (_) => HomeTabPage(
+                  key: MyApp.homeTabPageKey,
+                ));
     }
   }
 }

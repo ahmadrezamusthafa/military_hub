@@ -9,30 +9,25 @@ import 'package:military_hub/features/social/presentation/pages/stream_page.dart
 class HomeTabPage extends StatefulWidget {
   HomeTabPage({Key key}) : super(key: key);
 
-  _HomeTabPageState createState() => _HomeTabPageState();
+  @override
+  State<StatefulWidget> createState() => HomeTabPageState();
 }
 
-class _HomeTabPageState extends State<HomeTabPage> {
-  int counter = 0;
-
-  void changeCounter() {
-    setState(() {
-      counter++;
-    });
-    print("increment counter $counter");
-  }
+class HomeTabPageState extends State<HomeTabPage>
+    with SingleTickerProviderStateMixin {
+  TabController tabController;
 
   @override
   void initState() {
     super.initState();
+    tabController = new TabController(vsync: this, length: 4);
   }
 
-  List<Widget> pages = [
-    HomePage(),
-    StreamPage(),
-    LivePage(),
-    ProfilePage(),
-  ];
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +36,13 @@ class _HomeTabPageState extends State<HomeTabPage> {
       initialIndex: 0,
       child: Scaffold(
         body: TabBarView(
-          children: pages,
+          controller: tabController,
+          children: [
+            HomePage(),
+            StreamPage(),
+            LivePage(),
+            ProfilePage(),
+          ],
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
@@ -57,11 +58,16 @@ class _HomeTabPageState extends State<HomeTabPage> {
           ),
           margin: EdgeInsets.only(bottom: 0),
           child: new TabBar(
+            controller: tabController,
             tabs: <Widget>[
-              Tab(icon: Icon(FontAwesomeIcons.home, size: 16,)),
-              Tab(icon: Icon(FontAwesomeIcons.stream,size: 16)),
-              Tab(icon: Icon(FontAwesomeIcons.video,size: 16)),
-              Tab(icon: Icon(FontAwesomeIcons.user,size: 16)),
+              Tab(
+                  icon: Icon(
+                FontAwesomeIcons.home,
+                size: 16,
+              )),
+              Tab(icon: Icon(FontAwesomeIcons.stream, size: 16)),
+              Tab(icon: Icon(FontAwesomeIcons.video, size: 16)),
+              Tab(icon: Icon(FontAwesomeIcons.user, size: 16)),
             ],
             unselectedLabelColor: Colors.grey,
             labelColor: Colors.blue,
