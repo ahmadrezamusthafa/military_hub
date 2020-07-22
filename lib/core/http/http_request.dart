@@ -35,7 +35,7 @@ class HttpRequest {
   void get(
     String url,
     OnData callBack, {
-    Map<String, String> params,
+    Map<String, Object> params,
     OnError errorCallBack,
     CancelToken token,
   }) async {
@@ -51,7 +51,7 @@ class HttpRequest {
 
   Future<Map> getWithoutCallBack(
     String url, {
-    Map<String, String> params,
+    Map<String, Object> params,
     CancelToken token,
   }) async {
     return this._requestWithoutCallBack(
@@ -65,7 +65,7 @@ class HttpRequest {
   void put(
     String url,
     OnData callBack, {
-    Map<String, String> params,
+    Map<String, Object> params,
     OnError errorCallBack,
     CancelToken token,
   }) async {
@@ -81,7 +81,7 @@ class HttpRequest {
 
   Future<Map> putWithoutCallBack(
     String url, {
-    Map<String, String> params,
+    Map<String, Object> params,
     CancelToken token,
   }) async {
     return this._requestWithoutCallBack(
@@ -95,7 +95,7 @@ class HttpRequest {
   void post(
     String url,
     OnData callBack, {
-    Map<String, String> params,
+    Map<String, Object> params,
     OnError errorCallBack,
     CancelToken token,
   }) async {
@@ -111,7 +111,7 @@ class HttpRequest {
 
   Future<Map> postWithoutCallBack(
     String url, {
-    Map<String, String> params,
+    Map<String, Object> params,
     CancelToken token,
   }) async {
     return this._requestWithoutCallBack(
@@ -144,7 +144,7 @@ class HttpRequest {
   Future<Map> _requestWithoutCallBack(
     String url, {
     RequestType method,
-    Map<String, String> params,
+    Map<String, Object> params,
     FormData formData,
     CancelToken token,
   }) async {
@@ -222,7 +222,7 @@ class HttpRequest {
     String url,
     OnData callBack, {
     RequestType method,
-    Map<String, String> params,
+    Map<String, Object> params,
     FormData formData,
     OnError errorCallBack,
     ProgressCallback progressCallBack,

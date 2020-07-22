@@ -7,13 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:military_hub/features/social/domain/usecase/webrtc_usecase.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
+import 'package:military_hub/injection_container.dart';
 
 class StreamPage extends StatefulWidget {
   _StreamPageState createState() => _StreamPageState();
 }
 
 class _StreamPageState extends State<StreamPage> {
+  @override
+  void initState() {
+    super.initState();
+    _createTransaction();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,5 +169,10 @@ class _StreamPageState extends State<StreamPage> {
       _posts.add(_getPost());
     }
     return _posts;
+  }
+
+  Future<int> _createTransaction() async {
+    var id = await sl<WebRTCUseCase>().createTransaction();
+    print("receive id: $id");
   }
 }
