@@ -7,13 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:military_hub/features/social/domain/usecase/webrtc_usecase.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
+import 'package:military_hub/injection_container.dart';
 
 class StreamPage extends StatefulWidget {
   _StreamPageState createState() => _StreamPageState();
 }
 
 class _StreamPageState extends State<StreamPage> {
+  @override
+  void initState() {
+    super.initState();
+    _createTransaction();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +89,7 @@ class _StreamPageState extends State<StreamPage> {
       ),
       Container(
         child: IconButton(
-          icon: Icon(Icons.sort_by_alpha),
+          icon: Icon(Icons.map),
           color: Theme.of(context).accentColor,
           onPressed: () {},
         ),
@@ -117,15 +125,6 @@ class _StreamPageState extends State<StreamPage> {
                   Text('Ahmad Reza Musthafa',
                       style: TextStyle(
                           fontWeight: FontWeight.w700, color: Colors.black)),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        '15 mins ',
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
-                      ),
-                      Icon(Icons.language, size: 15, color: Colors.grey)
-                    ],
-                  )
                 ],
                 crossAxisAlignment: CrossAxisAlignment.start,
               )
@@ -152,58 +151,6 @@ class _StreamPageState extends State<StreamPage> {
     );
   }
 
-  Widget postLikesAndComments() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          Container(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    child: RawMaterialButton(
-                      child: Icon(
-                        Icons.thumb_up,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                      shape: new CircleBorder(
-                          side: BorderSide(
-                              color: Colors.white, style: BorderStyle.solid)),
-                      fillColor: Colors.blue,
-                      onPressed: () {},
-                      highlightElevation: 0,
-                    ),
-                    width: 30,
-                    decoration: BoxDecoration(color: Colors.white),
-                  ),
-                ],
-              ),
-              height: 30,
-              decoration: BoxDecoration(color: Colors.white)),
-          Container(
-              child: Row(
-            children: <Widget>[
-              Text(
-                '13',
-                style: TextStyle(color: Colors.grey),
-              ),
-              SizedBox(
-                width: 3,
-              ),
-              Text(
-                'Comments',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ))
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      ),
-      //  decoration: BoxDecoration(color: Colors.yellow),
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-    );
-  }
-
   Widget _getPost() {
     return Container(
       child: Column(
@@ -222,5 +169,10 @@ class _StreamPageState extends State<StreamPage> {
       _posts.add(_getPost());
     }
     return _posts;
+  }
+
+  Future<int> _createTransaction() async {
+    var id = await sl<WebRTCUseCase>().createTransaction();
+    print("receive id: $id");
   }
 }

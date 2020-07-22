@@ -149,47 +149,49 @@ class MapPickerState extends State<MapPicker> {
     return Center(
       child: Stack(
         children: <Widget>[
-          GoogleMap(
-            myLocationButtonEnabled: false,
-            scrollGesturesEnabled: false,
-            zoomControlsEnabled: false,
-            zoomGesturesEnabled: false,
-            initialCameraPosition: CameraPosition(
-              target: widget.initialCenter,
-              zoom: widget.initialZoom,
-            ),
-            onMapCreated: (GoogleMapController controller) {
-              mapController.complete(controller);
-              //Implementation of mapStyle
-              if (widget.mapStylePath != null) {
-                controller.setMapStyle(_mapStyle);
-              }
+          Container(
+            margin: EdgeInsets.only(top: 250),
+            child: Stack(
+              children: <Widget>[
+                GoogleMap(
+                  myLocationButtonEnabled: false,
+                  scrollGesturesEnabled: false,
+                  zoomControlsEnabled: false,
+                  zoomGesturesEnabled: false,
+                  initialCameraPosition: CameraPosition(
+                    target: widget.initialCenter,
+                    zoom: widget.initialZoom,
+                  ),
+                  onMapCreated: (GoogleMapController controller) {
+                    mapController.complete(controller);
+                    //Implementation of mapStyle
+                    if (widget.mapStylePath != null) {
+                      controller.setMapStyle(_mapStyle);
+                    }
 
-              _lastMapPosition = widget.initialCenter;
-              LocationProvider.of(context, listen: false)
-                  .setLastIdleLocation(_lastMapPosition);
-            },
-            onCameraMove: (CameraPosition position) {
-              _lastMapPosition = position.target;
-            },
-            onCameraIdle: () async {
-              print("onCameraIdle#_lastMapPosition = $_lastMapPosition");
-              LocationProvider.of(context, listen: false)
-                  .setLastIdleLocation(_lastMapPosition);
-            },
-            onCameraMoveStarted: () {
-              print("onCameraMoveStarted#_lastMapPosition = $_lastMapPosition");
-            },
-            mapType: _currentMapType,
-            myLocationEnabled: true,
+                    _lastMapPosition = widget.initialCenter;
+                    LocationProvider.of(context, listen: false)
+                        .setLastIdleLocation(_lastMapPosition);
+                  },
+                  onCameraMove: (CameraPosition position) {
+                    _lastMapPosition = position.target;
+                  },
+                  onCameraIdle: () async {
+                    print("onCameraIdle#_lastMapPosition = $_lastMapPosition");
+                    LocationProvider.of(context, listen: false)
+                        .setLastIdleLocation(_lastMapPosition);
+                  },
+                  onCameraMoveStarted: () {
+                    print(
+                        "onCameraMoveStarted#_lastMapPosition = $_lastMapPosition");
+                  },
+                  mapType: _currentMapType,
+                  myLocationEnabled: true,
+                ),
+                pin(),
+              ],
+            ),
           ),
-          _MapFabs(
-            myLocationButtonEnabled: widget.myLocationButtonEnabled,
-            layersButtonEnabled: widget.layersButtonEnabled,
-            onToggleMapTypePressed: _onToggleMapTypePressed,
-            onMyLocationPressed: _initCurrentLocation,
-          ),
-          pin(),
           locationCard(),
         ],
       ),
@@ -198,108 +200,190 @@ class MapPickerState extends State<MapPicker> {
 
   Widget locationCard() {
     return Align(
-      alignment: widget.resultCardAlignment ?? Alignment.bottomCenter,
-      child: Stack(
-        alignment: widget.resultCardAlignment ?? Alignment.bottomCenter,
-        children: <Widget>[
-          Container(
-            height: 200,
-            decoration: new BoxDecoration(
-                gradient: new LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-                Color.fromARGB(155, 17, 91, 145),
-                Color.fromARGB(0, 17, 91, 145)
-              ],
-            )),
-          ),
-          Padding(
-              padding: widget.resultCardPadding ?? EdgeInsets.all(10.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Consumer<LocationProvider>(
-                          builder: (context, locationProvider, _) {
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Flexible(
-                                  flex: 20,
-                                  child: FutureLoadingBuilder<String>(
-                                      future: getAddress(
-                                          locationProvider.lastIdleLocation),
-                                      mutable: true,
-                                      loadingIndicator: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          CircularProgressIndicator(),
-                                        ],
-                                      ),
-                                      builder: (context, address) {
-                                        _address = address;
-                                        return Text(
-                                          address ?? 'Unnamed place',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1,
-                                        );
-                                      }),
+      alignment: widget.resultCardAlignment ?? Alignment.topCenter,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(6),
+          boxShadow: [
+            BoxShadow(
+                color: Theme.of(context).hintColor.withOpacity(0.15),
+                offset: Offset(0, 3),
+                blurRadius: 10)
+          ],
+        ),
+        child: Wrap(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topCenter,
+              margin: EdgeInsets.only(top: 100),
+              child: Consumer<LocationProvider>(
+                  builder: (context, locationProvider, _) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        FloatingActionButton(
+                          onPressed: _initCurrentLocation,
+                          materialTapTargetSize: MaterialTapTargetSize.padded,
+                          mini: true,
+                          child: const Icon(Icons.my_location),
+                          heroTag: "myLocation",
+                        ),
+                        SizedBox(width: 20),
+                        Flexible(
+                          flex: 20,
+                          child: FutureLoadingBuilder<String>(
+                              future:
+                                  getAddress(locationProvider.lastIdleLocation),
+                              mutable: true,
+                              loadingIndicator: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  CircularProgressIndicator(),
+                                ],
+                              ),
+                              builder: (context, address) {
+                                _address = address;
+                                return Text(
+                                  address ?? 'Unnamed place',
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Divider(),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Stack(
+                      children: <Widget>[
+                        Container(
+                            alignment: Alignment.centerLeft,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              child: CachedNetworkImage(
+                                height: 50,
+                                width: 50,
+                                fit: BoxFit.cover,
+                                imageUrl: "",
+                                placeholder: (context, url) => Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      gradient: LinearGradient(
+                                          begin: Alignment.bottomLeft,
+                                          end: Alignment.topRight,
+                                          colors: [
+                                            Theme.of(context)
+                                                .focusColor
+                                                .withOpacity(0.8),
+                                            Theme.of(context)
+                                                .focusColor
+                                                .withOpacity(0.2),
+                                          ])),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Theme.of(context).primaryColor,
+                                    size: 30,
+                                  ),
                                 ),
-                                Spacer(),
-                                FloatingActionButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop({
-                                      'location': LocationResult(
-                                        latLng:
-                                            locationProvider.lastIdleLocation,
-                                        address: _address,
-                                      )
-                                    });
-                                  },
-                                  child: widget.resultCardConfirmIcon ??
-                                      Icon(Icons.check),
+                                errorWidget: (context, url, error) => Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      gradient: LinearGradient(
+                                          begin: Alignment.bottomLeft,
+                                          end: Alignment.topRight,
+                                          colors: [
+                                            Theme.of(context)
+                                                .focusColor
+                                                .withOpacity(0.8),
+                                            Theme.of(context)
+                                                .focusColor
+                                                .withOpacity(0.2),
+                                          ])),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Theme.of(context).primaryColor,
+                                    size: 30,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            padding: EdgeInsets.only(right: 10)),
+                        Container(
+                          margin: EdgeInsets.only(left: 70),
+                          child: Form(
+                            child: Column(
+                              children: <Widget>[
+                                new TextFormField(
+                                  style: TextStyle(
+                                      color: Theme.of(context).hintColor),
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  decoration: getInputDecoration(
+                                    hintText: "Describe about the situations",
+                                    labelText: "What's on your Mind?",
+                                  ),
+                                  initialValue: "",
+                                  validator: (input) => input.trim().length < 3
+                                      ? "Invalid full name"
+                                      : null,
+                                  onSaved: (input) => {},
                                 ),
                               ],
                             ),
-                            SizedBox(height: 14,),
-                            Divider(),
-                            SizedBox(height: 8,),
-                            Form(
-                              child: Column(
-                                children: <Widget>[
-                                  new TextFormField(
-                                    style: TextStyle(
-                                        color: Theme.of(context).hintColor),
-                                    keyboardType: TextInputType.text,
-                                    decoration: getInputDecoration(
-                                      hintText: "Describe about the situations",
-                                      labelText: "What's on your Mind?",
-                                    ),
-                                    initialValue: "",
-                                    validator: (input) => input.trim().length < 3
-                                        ? "Invalid full name"
-                                        : null,
-                                    onSaved: (input) => {},
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ]),
-                        );
-                      }),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
-        ],
+                    Divider(),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        RaisedButton.icon(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          color: Theme.of(context).accentColor,
+                          icon:
+                              Icon(Icons.check, size: 20, color: Colors.white),
+                          label: Text('Check in',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white)),
+                          onPressed: () {
+                            Navigator.of(context).pop({
+                              'location': LocationResult(
+                                latLng: locationProvider.lastIdleLocation,
+                                address: _address,
+                              )
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ]),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -471,7 +555,7 @@ class _MapFabs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topRight,
-      margin: const EdgeInsets.only(top: kToolbarHeight + 0, right: 8),
+      margin: const EdgeInsets.only(top: kToolbarHeight + 300, right: 8),
       child: Column(
         children: <Widget>[
           // if (layersButtonEnabled)

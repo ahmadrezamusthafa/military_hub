@@ -363,11 +363,17 @@ class LocationPickerState extends State<LocationPicker> {
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
-              iconTheme: Theme.of(context).iconTheme,
-              elevation: 0,
-              backgroundColor: widget.appBarColor,
-              key: appBarKey,
-              title: Container()),
+            iconTheme: Theme.of(context).iconTheme,
+            elevation: 0,
+            //backgroundColor: widget.appBarColor,
+            key: appBarKey,
+            title: Text("New check in",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    .merge(TextStyle(letterSpacing: 1.3))
+                    .merge(TextStyle(fontSize: 13))),
+          ),
           body: MapPicker(
             widget.apiKey,
             initialCenter: widget.initialCenter,
