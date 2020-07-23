@@ -96,7 +96,10 @@ class LiveBroadcasterListItemWidget extends StatelessWidget {
                           size: 34, color: Colors.green),
                       label: Text('Play', style: TextStyle(fontSize: 12)),
                       textColor: Colors.grey,
-                      onPressed: () {}),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed('/StreamView', arguments: broadcaster);
+                      }),
                 ],
               ),
             )

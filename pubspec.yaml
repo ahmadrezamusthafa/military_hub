@@ -4,7 +4,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.5.2 <3.0.0'
 
 module:
   androidX: true
@@ -34,6 +34,7 @@ dependencies:
   dartz: ^0.8.9
   flutter_easyrefresh: ^2.1.1
   flui: ^0.9.2
+  flutter_google_maps: ^3.8.0
 
 dev_dependencies:
   flutter_test:

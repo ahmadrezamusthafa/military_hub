@@ -38,53 +38,6 @@ class _StreamPageState extends State<StreamPage> {
         child: AppBar(backgroundColor: Colors.white, elevation: 0),
       ),
       body: buildBody(context),
-      /*body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            centerTitle: false,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 20,
-                  margin: EdgeInsets.all(0),
-                  child: Image(
-                    image: AssetImage('assets/img/logo_military_hub_s.png'),
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(3),
-                ),
-                Text("STREAM",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .merge(TextStyle(fontFamily: "Staatliches"))
-                        .merge(TextStyle(letterSpacing: 1.3))
-                        .merge(TextStyle(fontSize: 16))),
-              ],
-            ),
-            backgroundColor: Colors.white,
-            floating: true,
-            snap: true,
-            actions: _getAppBarActions(),
-          ),
-          SliverList(
-              delegate: new SliverChildListDelegate([
-            Column(
-              children: <Widget>[
-                LiveBroadcasterListWidget(
-                  heroTag: "broadcaster_list",
-                )
-              ],
-            )
-          ]))
-        ],
-      ),*/
     );
   }
 
@@ -156,61 +109,11 @@ class _StreamPageState extends State<StreamPage> {
           SliverList(
               delegate: new SliverChildListDelegate([
             Column(
-              children: <Widget>[
-                LiveBroadcasterListWidget(
-                )
-              ],
+              children: <Widget>[LiveBroadcasterListWidget()],
             )
           ]))
         ],
       ),
-      /*child: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            centerTitle: false,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 20,
-                  margin: EdgeInsets.all(0),
-                  child: Image(
-                    image: AssetImage('assets/img/logo_military_hub_s.png'),
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(3),
-                ),
-                Text("STREAM",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .merge(TextStyle(fontFamily: "Staatliches"))
-                        .merge(TextStyle(letterSpacing: 1.3))
-                        .merge(TextStyle(fontSize: 16))),
-              ],
-            ),
-            backgroundColor: Colors.white,
-            floating: true,
-            snap: true,
-            actions: _getAppBarActions(),
-          ),
-          SliverList(
-              delegate: new SliverChildListDelegate([
-            Column(
-              children: <Widget>[
-                LiveBroadcasterListWidget(
-                  heroTag: "broadcaster_list",
-                )
-              ],
-            )
-          ]))
-        ],
-      ),*/
     );
   }
 
@@ -233,7 +136,9 @@ class _StreamPageState extends State<StreamPage> {
         child: IconButton(
           icon: Icon(Icons.map),
           color: Theme.of(context).accentColor,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).pushNamed('/MapView');
+          },
         ),
         decoration: BoxDecoration(
             color: Colors.transparent,
@@ -251,67 +156,6 @@ class _StreamPageState extends State<StreamPage> {
       constraints: BoxConstraints(maxHeight: height),
     );
   }
-
-  /*Widget _postHeader() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                child: UserAvatarWidget(),
-                padding: EdgeInsets.only(right: 10),
-              ),
-              Column(
-                children: <Widget>[
-                  Text('Ahmad Reza Musthafa',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700, color: Colors.black)),
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-              )
-              //Container(),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              FlatButton.icon(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(3.0)),
-                  icon: Icon(Icons.play_circle_outline,
-                      size: 34, color: Colors.green),
-                  label: Text('Play', style: TextStyle(fontSize: 12)),
-                  textColor: Colors.grey,
-                  onPressed: () {}),
-            ],
-            mainAxisAlignment: MainAxisAlignment.start,
-          ),
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      ),
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-    );
-  }
-
-  Widget _getPost() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          _getSeparator(10),
-          _postHeader(),
-        ],
-      ),
-      decoration: BoxDecoration(color: Colors.white),
-    );
-  }
-
-  List<Widget> _getPosts() {
-    List<Widget> _posts = [];
-    for (var i = 0; i < 5; i++) {
-      _posts.add(_getPost());
-    }
-    return _posts;
-  }*/
 
   void _testWebApi() async {
     var broadcasterList = await sl<WebRTCUseCase>().getLiveBroadcasterList();

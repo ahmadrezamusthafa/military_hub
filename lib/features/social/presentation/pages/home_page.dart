@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:military_hub/config/api_config.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -117,50 +118,6 @@ class _HomePageState extends State<HomePage> {
           ])),
         ],
       ),
-      /*body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            centerTitle: false,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 20,
-                  margin: EdgeInsets.all(0),
-                  child: Image(
-                    image: AssetImage('assets/img/logo_military_hub_s.png'),
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(3),
-                ),
-                Text("Hub",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .merge(TextStyle(fontFamily: "Staatliches"))
-                        .merge(TextStyle(letterSpacing: 1.3))
-                        .merge(TextStyle(fontSize: 16))),
-              ],
-            ),
-            backgroundColor: Colors.white,
-            floating: true,
-            snap: true,
-            actions: _getAppBarActions(),
-          ),
-          SliverList(
-              delegate: new SliverChildListDelegate([
-            _getSeparator(5),
-            _addPost(),
-            _getSeparator(10),
-            Column(children: _getPosts())
-          ]))
-        ],
-      ),*/
     );
   }
 
@@ -292,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   LocationResult result = await showLocationPicker(
                     context,
-                    "AIzaSyA45S8Vcq7_RzUQoMvKfHTv1nfBhy2BHdA",
+                    API.GoogleAPIKey,
                     initialCenter:
                         LatLng(-7.545449647437256, 112.46844716370106),
                     myLocationButtonEnabled: true,
