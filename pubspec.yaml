@@ -32,6 +32,7 @@ dependencies:
   permission_handler: ^5.0.1
   data_connection_checker: ^0.3.4
   dartz: ^0.8.9
+  flutter_easyrefresh: ^2.1.1
 
 dev_dependencies:
   flutter_test:
