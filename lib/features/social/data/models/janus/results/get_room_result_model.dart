@@ -7,6 +7,7 @@ part 'get_room_result_model.g.dart';
 class GetRoomResultModel {
   @JsonKey(name: "videoroom")
   String videoRoom;
+  @JsonKey(name: "list")
   List<RoomModel> rooms;
 
   GetRoomResultModel({

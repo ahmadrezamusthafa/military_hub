@@ -10,7 +10,7 @@ RoomModel _$RoomModelFromJson(Map<String, dynamic> json) {
   return RoomModel(
     room: json['room'] as int,
     description: json['description'] as String,
-    participantCount: json['num_participants'] as String,
+    participantCount: json['num_participants'] as int,
   );
 }
 

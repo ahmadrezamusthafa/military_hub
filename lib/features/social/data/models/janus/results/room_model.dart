@@ -7,7 +7,7 @@ class RoomModel {
   int room;
   String description;
   @JsonKey(name: 'num_participants')
-  String participantCount;
+  int participantCount;
 
   RoomModel({
     this.room,

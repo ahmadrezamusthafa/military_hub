@@ -19,7 +19,7 @@ class _StreamPageState extends State<StreamPage> {
   @override
   void initState() {
     super.initState();
-    _createTransaction();
+    _testWebApi();
   }
 
   @override
@@ -171,8 +171,30 @@ class _StreamPageState extends State<StreamPage> {
     return _posts;
   }
 
-  Future<int> _createTransaction() async {
-    var id = await sl<WebRTCUseCase>().createTransaction();
-    print("receive id: $id");
+  void _testWebApi() async {
+    print("masuk");
+    var sessionId = await sl<WebRTCUseCase>().createTransaction();
+    print("receive id: $sessionId");
+
+    print("===============");
+
+    var handleId = await sl<WebRTCUseCase>()
+        .attachPlugin(sessionId, "janus.plugin.videoroom");
+    print("receive id: $handleId");
+
+    print("===============");
+
+    var roomList = await sl<WebRTCUseCase>().getRoomList(sessionId, handleId);
+    print("receive room: ${roomList.length}");
+    for (var room in roomList) {
+      print("room ${room.room} ${room.description}");
+    }
+
+    var participantList = await sl<WebRTCUseCase>()
+        .getRoomParticipantList(sessionId, handleId, 1234);
+    print("receive participant: ${participantList.length}");
+    for (var participant in participantList) {
+      print("participant ${participant.id} ${participant.display}");
+    }
   }
 }
