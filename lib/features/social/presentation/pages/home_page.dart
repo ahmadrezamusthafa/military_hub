@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:military_hub/config/api_config.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,13 @@ class _HomePageState extends State<HomePage> {
   int likes = 136;
   bool isLiked = false;
   LocationResult _pickedLocation;
+  EasyRefreshController _refreshController;
+  int _itemCount = 20;
+
+  void initState() {
+    super.initState();
+    _refreshController = EasyRefreshController();
+  }
 
   void reactToPost() {
     setState(() {
@@ -42,7 +51,30 @@ class _HomePageState extends State<HomePage> {
         preferredSize: Size.fromHeight(0),
         child: AppBar(backgroundColor: Colors.white, elevation: 0),
       ),
-      body: CustomScrollView(
+      body: EasyRefresh.custom(
+        enableControlFinishRefresh: false,
+        enableControlFinishLoad: true,
+        controller: _refreshController,
+        header: ClassicalHeader(),
+        footer: ClassicalFooter(),
+        onRefresh: () async {
+          await Future.delayed(Duration(seconds: 2), () {
+            print('onRefresh');
+            setState(() {
+              _itemCount = 20;
+            });
+            _refreshController.resetLoadState();
+          });
+        },
+        onLoad: () async {
+          await Future.delayed(Duration(seconds: 2), () {
+            print('onLoad');
+            setState(() {
+              _itemCount += 10;
+            });
+            _refreshController.finishLoad(noMore: _itemCount >= 40);
+          });
+        },
         slivers: <Widget>[
           SliverAppBar(
             centerTitle: false,
@@ -83,7 +115,7 @@ class _HomePageState extends State<HomePage> {
             _addPost(),
             _getSeparator(10),
             Column(children: _getPosts())
-          ]))
+          ])),
         ],
       ),
     );
@@ -217,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   LocationResult result = await showLocationPicker(
                     context,
-                    "AIzaSyA45S8Vcq7_RzUQoMvKfHTv1nfBhy2BHdA",
+                    API.GoogleAPIKey,
                     initialCenter:
                         LatLng(-7.545449647437256, 112.46844716370106),
                     myLocationButtonEnabled: true,

@@ -1,45 +1,21 @@
+import 'package:military_hub/features/social/domain/entities/participant.dart';
+
 class RoomParticipant {
-  int id;
-  String display;
-  bool publisher;
-  bool talking;
-
-  RoomParticipant({
-    this.id,
-    this.display,
-    this.publisher,
-    this.talking,
-  });
-
-  RoomParticipant.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        display = json['display'],
-        publisher = json['publisher'],
-        talking = json['talking'];
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'display': display,
-        'publisher': publisher,
-        'talking': talking,
-      };
-}
-
-class Participant {
   String videoRoom;
   int room;
-  List<RoomParticipant> participants;
+  List<Participant> participants;
 
-  Participant({
+  RoomParticipant({
     this.videoRoom,
     this.room,
     this.participants,
   });
 
-  Participant.fromJson(Map<String, dynamic> json)
+  RoomParticipant.fromJson(Map<String, dynamic> json)
       : videoRoom = json['videoroom'],
         room = json['room'],
-        participants = (json['participants'] as List)?.map((e) => e == null ? null : RoomParticipant.fromJson(e))
+        participants = (json['participants'] as List)
+            ?.map((e) => e == null ? null : Participant.fromJson(e))
             ?.toList();
 
   Map<String, dynamic> toJson() => {
