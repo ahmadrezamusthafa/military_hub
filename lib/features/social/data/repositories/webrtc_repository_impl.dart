@@ -113,7 +113,6 @@ class WebRTCRepositoryImpl implements WebRTCRepository {
                     userId: participant.id,
                     name: participant.display,
                   ));
-                  break;
                 }
               }
             }
