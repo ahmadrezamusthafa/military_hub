@@ -194,7 +194,7 @@ class LivePageState extends State<LivePage> {
   }
 
   void processParticipant(dynamic data) async {
-    Participant participant = Participant.fromJson(data);
+    RoomParticipant participant = RoomParticipant.fromJson(data);
     print("receive LIST data ${data.toString()}");
     int i = 0;
     bool found = false;

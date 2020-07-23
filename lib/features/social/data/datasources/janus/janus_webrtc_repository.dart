@@ -25,4 +25,24 @@ class JanusWebRTCRepository {
     }
     return result;
   }
+
+  Future<IdResultModel> attachPlugin(String sessionId, String plugin) async {
+    IdResultModel result;
+    try {
+      var params = {
+        "janus": "attach",
+        "plugin": plugin,
+        "transaction": Uuid().toString(),
+      };
+      var response = await HttpRequest.getInstance().postWithoutCallBack(
+          API.MSEngineWebRTCUrl + "/" + sessionId,
+          params: params);
+      print("$response");
+      Map<String, dynamic> data = jsonDecode(jsonEncode(response));
+      result = IdResultModel.fromJson(data['data']);
+    } catch (e) {
+      print("Got error: ${e.toString()}");
+    }
+    return result;
+  }
 }
