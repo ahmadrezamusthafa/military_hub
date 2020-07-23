@@ -83,7 +83,7 @@ class LivePageState extends State<LivePage> {
         "request": "join",
         "room": getIdNumber(),
         "ptype": "publisher",
-        "display": currentUser.value.name + " - " + currentUser.value.email,
+        "display": currentUser.value.name,
         "id": getIdNumber()
       };
       if (!_j.isConnected || _pluginHandle == null) {
