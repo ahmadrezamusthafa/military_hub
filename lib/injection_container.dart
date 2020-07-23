@@ -9,6 +9,7 @@ import 'package:military_hub/features/social/domain/repositories/webrtc_reposito
 import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
 import 'package:military_hub/features/social/domain/usecase/webrtc_usecase.dart';
 import 'package:military_hub/features/social/presentation/bloc/fetch/user/user_block.dart';
+import 'package:military_hub/features/social/presentation/bloc/fetch/webrtc/bloc.dart';
 import 'package:military_hub/features/social/presentation/bloc/transaction/webrtc/bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +22,7 @@ Future<void> init() async {
   sl.registerFactory(() => GetUserInfoBloc(userUseCase: sl()));
   sl.registerFactory(() => GetUserListByEmailsBloc(userUseCase: sl()));
   sl.registerFactory(() => CreateWebRTCTransactionBloc(webRTCUseCase: sl()));
+  sl.registerFactory(() => GetLiveBroadcasterListBloc(webRTCUseCase: sl()));
 
   // Use cases
   sl.registerLazySingleton(() => UserUseCase(sl()));

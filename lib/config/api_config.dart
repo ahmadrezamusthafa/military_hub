@@ -3,4 +3,5 @@ class API {
   static const MSEngineMQTTBrokerUrl = "messaging.thumbstalk.co";
   static const MSEngineMQTTBrokerPort = 1883;
   static const MSEngineWebRTCUrl = 'http://kitaundang.com:8088/janus';
+  static const ImageUrl = 'http://idekuliner.com/images/profpic';
 }
