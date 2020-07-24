@@ -107,7 +107,7 @@ class WebRTCRepositoryImpl implements WebRTCRepository {
               var participantList =
                   await getRoomParticipantList(sessionId, handleId, room.room);
               for (var participant in participantList) {
-                if (participant.publisher) {
+                if (participant.publisher && participant.id == room.room) {
                   broadcasterList.add(LiveBroadcaster(
                     roomId: room.room,
                     userId: participant.id,

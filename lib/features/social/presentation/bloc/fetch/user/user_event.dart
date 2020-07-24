@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
+import 'package:military_hub/core/http/http_request.dart';
 
 @immutable
 abstract class UserEvent extends Equatable {
@@ -10,8 +11,9 @@ abstract class UserEvent extends Equatable {
 class GetUserInfoEvent extends UserEvent {
   final String email;
   final String password;
+  final OnError errorCallBack;
 
-  GetUserInfoEvent({this.email, this.password});
+  GetUserInfoEvent({this.email, this.password, this.errorCallBack});
 
   @override
   List<Object> get props => [email];

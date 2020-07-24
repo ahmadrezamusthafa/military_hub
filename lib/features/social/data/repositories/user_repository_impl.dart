@@ -1,4 +1,8 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:military_hub/core/http/http_request.dart';
+import 'package:military_hub/features/social/data/datasources/database/user_db_repository.dart';
 import 'package:military_hub/features/social/data/datasources/msengine/msengine_user_repository.dart';
+import 'package:military_hub/features/social/data/models/database/user_db_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/create_account_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/get_userid_by_email_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_phone_model.dart';
@@ -9,17 +13,20 @@ import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
+  final UserDbRepository userDbRepository;
   final MSEngineUserRepository msEngineUserRepository;
 
   UserRepositoryImpl({
+    this.userDbRepository,
     this.msEngineUserRepository,
   });
 
   @override
-  Future<User> getUser(String email, String password) async {
+  Future<User> getUser(String email, String password,
+      {OnError errorCallBack}) async {
     User user;
-    var response =
-        await msEngineUserRepository.getUserInformationFull(email, password);
+    var response = await msEngineUserRepository
+        .getUserInformationFull(email, password, errorCallBack: errorCallBack);
     if (response != null) {
       user = new User(
         email: response.email,
@@ -37,6 +44,68 @@ class UserRepositoryImpl implements UserRepository {
         apiToken: "generated_temporary",
         createdAt: DateTime.now().toString(),
       );
+
+      var dbUser = await userDbRepository.getUser();
+      if (dbUser != null) {
+        if (dbUser.email == email) {
+          //update
+          userDbRepository.update(UserDbModel(
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            userId: user.userId,
+            profileStatus: user.profileStatus,
+            profilePicture: user.profilePicture,
+            occupation: user.occupation,
+            education: user.education,
+            address: user.address,
+            phoneNumber: user.phoneNumber,
+            gender: user.gender,
+            apiToken: user.apiToken,
+            birthDate: user.birthDate,
+            createdAt: user.createdAt,
+            updatedAt: DateTime.now().toString(),
+          ));
+        } else {
+          //delete
+          await userDbRepository.deleteAll();
+          //insert
+          userDbRepository.insert(UserDbModel(
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            userId: user.userId,
+            profileStatus: user.profileStatus,
+            profilePicture: user.profilePicture,
+            occupation: user.occupation,
+            education: user.education,
+            address: user.address,
+            phoneNumber: user.phoneNumber,
+            gender: user.gender,
+            apiToken: user.apiToken,
+            birthDate: user.birthDate,
+            createdAt: DateTime.now().toString(),
+          ));
+        }
+      } else {
+        //insert
+        userDbRepository.insert(UserDbModel(
+          email: user.email,
+          name: user.name,
+          password: user.password,
+          userId: user.userId,
+          profileStatus: user.profileStatus,
+          profilePicture: user.profilePicture,
+          occupation: user.occupation,
+          education: user.education,
+          address: user.address,
+          phoneNumber: user.phoneNumber,
+          gender: user.gender,
+          apiToken: user.apiToken,
+          birthDate: user.birthDate,
+          createdAt: DateTime.now().toString(),
+        ));
+      }
     }
     return user;
   }
@@ -168,5 +237,64 @@ class UserRepositoryImpl implements UserRepository {
       );
     }
     return result;
+  }
+
+  @override
+  Future<bool> checkUserLocalDbExists() async {
+    var dbUser = await userDbRepository.getUser();
+    if (dbUser != null) {
+      if (dbUser.email != null &&
+          dbUser.email != "" &&
+          dbUser.userId != null &&
+          dbUser.userId != "") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> deleteUserDb() async {
+    await userDbRepository.deleteAll();
+    return true;
+  }
+
+  @override
+  Future<User> getUserLocalDb() async {
+    User user;
+    var dbUser = await userDbRepository.getUser();
+    if (dbUser != null) {
+      user = new User(
+        email: dbUser.email,
+        name: dbUser.name,
+        userId: dbUser.userId,
+        address: dbUser.address,
+        gender: dbUser.gender,
+        profileStatus: dbUser.profileStatus,
+        profilePicture: dbUser.profilePicture,
+        occupation: dbUser.occupation,
+        education: dbUser.education,
+        password: dbUser.password,
+        phoneNumber: dbUser.phoneNumber,
+        birthDate: dbUser.birthDate,
+        apiToken: dbUser.apiToken,
+        createdAt: dbUser.createdAt,
+      );
+    }
+    return user;
+  }
+
+  @override
+  setCurrentUser(User user) {
+    currentUser.value.userId = user.userId ?? "";
+    currentUser.value.name = user.name ?? "";
+    currentUser.value.email = user.email ?? "";
+    currentUser.value.password = user.password;
+    currentUser.value.phoneNumber = user.phoneNumber ?? "";
+    currentUser.value.profileStatus = user.profileStatus ?? "";
+    currentUser.value.profilePicture = user.profilePicture ?? "";
+    currentUser.value.address = user.address ?? "";
+    currentUser.value.apiToken = user.apiToken ?? "";
+    currentUser.value.birthDate = user.birthDate ?? "";
   }
 }

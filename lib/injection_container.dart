@@ -1,5 +1,6 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
+import 'package:military_hub/features/social/data/datasources/database/user_db_repository.dart';
 import 'package:military_hub/features/social/data/datasources/janus/janus_webrtc_repository.dart';
 import 'package:military_hub/features/social/data/datasources/msengine/msengine_user_repository.dart';
 import 'package:military_hub/features/social/data/repositories/user_repository_impl.dart';
@@ -29,13 +30,16 @@ Future<void> init() async {
   sl.registerLazySingleton(() => WebRTCUseCase(sl()));
 
   // Data sources
+  // Db repository
+  sl.registerLazySingleton(() => UserDbRepository());
   // MSEngine repository
   sl.registerLazySingleton(() => MSEngineUserRepository());
   sl.registerLazySingleton(() => JanusWebRTCRepository());
 
   // Repository
   sl.registerLazySingleton<UserRepository>(
-    () => UserRepositoryImpl(msEngineUserRepository: sl()),
+    () => UserRepositoryImpl(
+        userDbRepository: sl(), msEngineUserRepository: sl()),
   );
   sl.registerLazySingleton<WebRTCRepository>(
     () => WebRTCRepositoryImpl(janusWebRTCRepository: sl()),
