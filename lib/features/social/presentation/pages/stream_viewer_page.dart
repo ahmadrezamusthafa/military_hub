@@ -51,6 +51,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
   @override
   void dispose() {
     print("viewer page dispose");
+    stopLive();
     super.dispose();
   }
 
@@ -207,7 +208,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                     var publish = {
                       "request": "configure",
                       "audio": true,
-                      "video": true,
+                      "video": false,
                       "bitrate": 2000000
                     };
                     RTCSessionDescription offer = await plugin.createOffer();
