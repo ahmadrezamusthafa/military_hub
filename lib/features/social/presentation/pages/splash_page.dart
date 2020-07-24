@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
+
+import '../../../../injection_container.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key key}) : super(key: key);
@@ -27,16 +30,26 @@ class SplashPageState extends State<SplashPage> {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-      (Timer timer) => setState(
-        () {
-          if (_start < 1) {
+      (Timer timer) async {
+        if (_start < 1) {
+          var userLocalExist = await sl<UserUseCase>().checkUserLocalDbExists();
+          print("userLocalExist: $userLocalExist");
+          if (userLocalExist) {
             Navigator.of(context).pushReplacementNamed('/Home');
-            timer.cancel();
           } else {
-            _start = _start - 1;
+            Navigator.of(context).pushReplacementNamed('/Login');
           }
-        },
-      ),
+          timer.cancel();
+        }
+        setState(
+          () {
+            if (_start < 1) {
+            } else {
+              _start = _start - 1;
+            }
+          },
+        );
+      },
     );
   }
 

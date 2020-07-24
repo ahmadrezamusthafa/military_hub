@@ -15,7 +15,8 @@ class MSEngineUserRepository {
   MSEngineUserRepository();
 
   Future<GetUserInformationFullModel> getUserInformationFull(
-      String email, password) async {
+      String email, password,
+      {OnError errorCallBack}) async {
     GetUserInformationFullModel user;
     try {
       var params = Map<String, String>();
@@ -25,14 +26,21 @@ class MSEngineUserRepository {
           API.MSEngineAPIUrl + "/api/Account/GetUserInformationFull",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
-      if (apiResult.result.length > 0) {
+      if (apiResult.result != null && apiResult.result.length > 0) {
         for (var item in apiResult.result) {
           user = GetUserInformationFullModel.fromJson(item);
           break;
         }
+      } else {
+        if (apiResult.error != null && apiResult.error != "") {
+          errorCallBack(apiResult.error, 500);
+        } else {
+          errorCallBack("Unexpected error", 500);
+        }
       }
     } catch (e) {
-      print("Got error: ${e.error}");
+      print("Got error: ${e.toString()}");
+      errorCallBack("Unexpected error", 500);
     }
     return user;
   }
@@ -55,7 +63,7 @@ class MSEngineUserRepository {
         }
       }
     } catch (e) {
-      print("Got error: ${e.error}");
+      print("Got error: ${e.toString()}");
     }
     return user;
   }
@@ -69,14 +77,14 @@ class MSEngineUserRepository {
           API.MSEngineAPIUrl + "/api/Account/GetUserIdByEmailList",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
-      if (apiResult.result.length > 0) {
+      if (apiResult.result != null && apiResult.result.length > 0) {
         for (var item in apiResult.result) {
           var value = GetUserIdModel.fromJson(item);
           userIds.add(new GetUserIdModel(userId: value.userId));
         }
       }
     } catch (e) {
-      print("Got error: ${e.error}");
+      print("Got error: ${e.toString()}");
     }
     return userIds;
   }
@@ -89,14 +97,14 @@ class MSEngineUserRepository {
           API.MSEngineAPIUrl + "/api/Account/CreateAccount",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
-      if (apiResult.result.length > 0) {
+      if (apiResult.result != null && apiResult.result.length > 0) {
         for (var item in apiResult.result) {
           result = StatusResultModel.fromJson(item);
           break;
         }
       }
     } catch (e) {
-      print("Got error: ${e.error}");
+      print("Got error: ${e.toString()}");
     }
     return result;
   }
@@ -110,14 +118,14 @@ class MSEngineUserRepository {
           API.MSEngineAPIUrl + "/api/Account/UpdateUserProfile",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
-      if (apiResult.result.length > 0) {
+      if (apiResult.result != null && apiResult.result.length > 0) {
         for (var item in apiResult.result) {
           result = StatusResultModel.fromJson(item);
           break;
         }
       }
     } catch (e) {
-      print("Got error: ${e.error}");
+      print("Got error: ${e.toString()}");
     }
     return result;
   }
@@ -130,14 +138,14 @@ class MSEngineUserRepository {
           API.MSEngineAPIUrl + "/api/Account/UpdateUserPIN",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
-      if (apiResult.result.length > 0) {
+      if (apiResult.result != null && apiResult.result.length > 0) {
         for (var item in apiResult.result) {
           result = StatusResultModel.fromJson(item);
           break;
         }
       }
     } catch (e) {
-      print("Got error: ${e.error}");
+      print("Got error: ${e.toString()}");
     }
     return result;
   }
@@ -150,14 +158,14 @@ class MSEngineUserRepository {
           API.MSEngineAPIUrl + "/api/Account/UpdateUserPhone",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
-      if (apiResult.result.length > 0) {
+      if (apiResult.result != null && apiResult.result.length > 0) {
         for (var item in apiResult.result) {
           result = StatusResultModel.fromJson(item);
           break;
         }
       }
     } catch (e) {
-      print("Got error: ${e.error}");
+      print("Got error: ${e.toString()}");
     }
     return result;
   }

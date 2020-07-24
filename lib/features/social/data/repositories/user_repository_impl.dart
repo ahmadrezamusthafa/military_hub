@@ -1,3 +1,4 @@
+import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/data/datasources/database/user_db_repository.dart';
 import 'package:military_hub/features/social/data/datasources/msengine/msengine_user_repository.dart';
 import 'package:military_hub/features/social/data/models/database/user_db_model.dart';
@@ -20,10 +21,11 @@ class UserRepositoryImpl implements UserRepository {
   });
 
   @override
-  Future<User> getUser(String email, String password) async {
+  Future<User> getUser(String email, String password,
+      {OnError errorCallBack}) async {
     User user;
-    var response =
-    await msEngineUserRepository.getUserInformationFull(email, password);
+    var response = await msEngineUserRepository
+        .getUserInformationFull(email, password, errorCallBack: errorCallBack);
     if (response != null) {
       user = new User(
         email: response.email,
@@ -135,8 +137,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<List<String>> getUserIdByEmailList(String email, String password,
-      List<String> emailList) async {
+  Future<List<String>> getUserIdByEmailList(
+      String email, String password, List<String> emailList) async {
     List<String> userIdList = List<String>();
     GetUserIdByEmailModel param = new GetUserIdByEmailModel(
       email: email,
@@ -153,8 +155,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<ActionResult> updateUserPIN(String email, String password,
-      String pin) async {
+  Future<ActionResult> updateUserPIN(
+      String email, String password, String pin) async {
     ActionResult result;
     UpdateUserPINModel param = new UpdateUserPINModel(
       email: email,
@@ -177,8 +179,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<ActionResult> updateUserPhone(String email, String phone,
-      String verificationCode) async {
+  Future<ActionResult> updateUserPhone(
+      String email, String phone, String verificationCode) async {
     ActionResult result;
     UpdateUserPhoneModel param = new UpdateUserPhoneModel(
       email: email,
@@ -201,7 +203,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<ActionResult> updateUserProfile(String email,
+  Future<ActionResult> updateUserProfile(
+      String email,
       String password,
       String name,
       String address,
@@ -239,8 +242,10 @@ class UserRepositoryImpl implements UserRepository {
   Future<bool> checkUserLocalDbExists() async {
     var dbUser = await userDbRepository.getUser();
     if (dbUser != null) {
-      if (dbUser.email != null && dbUser.email != "" && dbUser.userId != null &&
-          dbUser.userId != ""){
+      if (dbUser.email != null &&
+          dbUser.email != "" &&
+          dbUser.userId != null &&
+          dbUser.userId != "") {
         return true;
       }
     }
