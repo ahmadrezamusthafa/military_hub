@@ -74,7 +74,15 @@ class UserUseCase {
     return repository.checkUserLocalDbExists();
   }
 
-  Future<bool> deleteUserDb() async{
+  Future<bool> deleteUserDb() async {
     return repository.deleteUserDb();
+  }
+
+  Future<User> getUserLocalDb() async {
+    return repository.getUserLocalDb();
+  }
+
+  setCurrentUser(User user) {
+    return repository.setCurrentUser(user);
   }
 }

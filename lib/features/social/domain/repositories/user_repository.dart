@@ -32,4 +32,8 @@ abstract class UserRepository {
   Future<bool> checkUserLocalDbExists();
 
   Future<bool> deleteUserDb();
+
+  Future<User> getUserLocalDb();
+
+  setCurrentUser(User user);
 }

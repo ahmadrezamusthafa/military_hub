@@ -35,6 +35,10 @@ class SplashPageState extends State<SplashPage> {
           var userLocalExist = await sl<UserUseCase>().checkUserLocalDbExists();
           print("userLocalExist: $userLocalExist");
           if (userLocalExist) {
+            var user = await sl<UserUseCase>().getUserLocalDb();
+            if (user != null) {
+              sl<UserUseCase>().setCurrentUser(user);
+            }
             Navigator.of(context).pushReplacementNamed('/Home');
           } else {
             Navigator.of(context).pushReplacementNamed('/Login');

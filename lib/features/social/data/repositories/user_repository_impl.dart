@@ -258,4 +258,43 @@ class UserRepositoryImpl implements UserRepository {
     await userDbRepository.deleteAll();
     return true;
   }
+
+  @override
+  Future<User> getUserLocalDb() async {
+    User user;
+    var dbUser = await userDbRepository.getUser();
+    if (dbUser != null) {
+      user = new User(
+        email: dbUser.email,
+        name: dbUser.name,
+        userId: dbUser.userId,
+        address: dbUser.address,
+        gender: dbUser.gender,
+        profileStatus: dbUser.profileStatus,
+        profilePicture: dbUser.profilePicture,
+        occupation: dbUser.occupation,
+        education: dbUser.education,
+        password: dbUser.password,
+        phoneNumber: dbUser.phoneNumber,
+        birthDate: dbUser.birthDate,
+        apiToken: dbUser.apiToken,
+        createdAt: dbUser.createdAt,
+      );
+    }
+    return user;
+  }
+
+  @override
+  setCurrentUser(User user) {
+    currentUser.value.userId = user.userId ?? "";
+    currentUser.value.name = user.name ?? "";
+    currentUser.value.email = user.email ?? "";
+    currentUser.value.password = user.password;
+    currentUser.value.phoneNumber = user.phoneNumber ?? "";
+    currentUser.value.profileStatus = user.profileStatus ?? "";
+    currentUser.value.profilePicture = user.profilePicture ?? "";
+    currentUser.value.address = user.address ?? "";
+    currentUser.value.apiToken = user.apiToken ?? "";
+    currentUser.value.birthDate = user.birthDate ?? "";
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/domain/entities/user.dart';
+import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
 import 'package:military_hub/features/social/presentation/bloc/fetch/user/bloc.dart';
 import 'package:military_hub/features/social/presentation/widgets/block_button_widget.dart';
@@ -67,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     });
     if (userInfo != null) {
+      sl<UserUseCase>().setCurrentUser(userInfo);
       Navigator.of(context).pushReplacementNamed('/Home');
     }
     setState(() {
