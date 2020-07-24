@@ -37,22 +37,76 @@ class StreamViewerPageState extends State<StreamViewerPage> {
   MediaStream remoteStream;
   Plugin pluginHandle;
   MediaStream myStream;
+  bool isStopped = true;
+  int idNumber;
 
   @override
   void initState() {
     print("viewer page initState");
     super.initState();
     initRenderer();
+    idNumber = getIdNumber();
   }
 
   @override
   void dispose() {
     print("viewer page dispose");
+    stopLive();
     super.dispose();
   }
 
   initRenderer() async {
     await widget._remoteRenderer.initialize();
+  }
+
+  startLive() async {
+    if (isStopped) {
+      isStopped = false;
+      await this.initRenderer();
+      await this.initPlatformState();
+    }
+  }
+
+  stopLive() {
+    isStopped = true;
+    if (pluginHandle != null) {
+      pluginHandle.hangup();
+      pluginHandle.detach();
+    }
+    if (subscriberHandle != null) {
+      subscriberHandle.hangup();
+      subscriberHandle.detach();
+    }
+
+    if (widget._localRenderer != null) {
+      widget._localRenderer.srcObject = null;
+    }
+    if (widget._remoteRenderer != null) {
+      widget._remoteRenderer.srcObject = null;
+    }
+    try {
+      widget._localRenderer.dispose();
+    } catch (e) {
+      print("got error when call dispose: ${e.toString()}");
+    }
+    try {
+      widget._remoteRenderer.dispose();
+    } catch (e) {
+      print("got error when call dispose: ${e.toString()}");
+    }
+    setState(() {
+      pluginHandle = null;
+      subscriberHandle = null;
+    });
+  }
+
+  int getIdNumber() {
+    var ids = currentUser.value.userId.split("_");
+    if (ids.isNotEmpty && ids.length > 1) {
+      var id = int.parse(ids[1]);
+      return id;
+    }
+    return 0;
   }
 
   _newRemoteFeed(JanusClient j, feed) async {
@@ -62,7 +116,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
         onMessage: (msg, jsep) async {
           if (jsep != null) {
             await subscriberHandle.handleRemoteJsep(jsep);
-            var body = {"request": "start", "room": 1234};
+            var body = {"request": "start", "room": widget.broadcaster.roomId};
 
             await subscriberHandle.send(
                 message: body,
@@ -76,10 +130,10 @@ class StreamViewerPageState extends State<StreamViewerPage> {
           });
           var register = {
             "request": "join",
-            "room": 1234,
+            "room": widget.broadcaster.roomId,
             "ptype": "subscriber",
             "feed": feed,
-//            "private_id": 12535
+            //"private_id": widget.broadcaster.userId,
           };
           subscriberHandle.send(message: register, onSuccess: () async {});
         },
@@ -88,7 +142,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
           setState(() {
             remoteStream = stream;
             widget._remoteRenderer.srcObject = remoteStream;
-            widget._remoteRenderer.mirror = true;
+            widget._remoteRenderer.mirror = false;
           });
         }));
   }
@@ -128,19 +182,25 @@ class StreamViewerPageState extends State<StreamViewerPage> {
               setState(() {
                 pluginHandle = plugin;
               });
-              /* MediaStream stream = await plugin.initializeMediaDevices();
+              var mediaConstraints = {
+                "audio": true,
+                "video": false,
+              };
+              MediaStream stream = await plugin.initializeMediaDevices(
+                  mediaConstraints: mediaConstraints);
               setState(() {
                 myStream = stream;
               });
               setState(() {
                 widget._localRenderer.srcObject = myStream;
                 widget._localRenderer.mirror = true;
-              });*/
+              });
               var register = {
                 "request": "join",
-                "room": 1234,
+                "room": widget.broadcaster.roomId,
                 "ptype": "publisher",
-                "display": 'shivansh'
+                "display": currentUser.value.name,
+                "id": idNumber,
               };
               plugin.send(
                   message: register,
@@ -148,7 +208,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                     var publish = {
                       "request": "configure",
                       "audio": true,
-                      "video": true,
+                      "video": false,
                       "bitrate": 2000000
                     };
                     RTCSessionDescription offer = await plugin.createOffer();
@@ -199,9 +259,9 @@ class StreamViewerPageState extends State<StreamViewerPage> {
       body: Stack(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(bottom: 20, top: 20, left: 20, right: 20),
+            margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
                 boxShadow: [
                   BoxShadow(
                       color: Theme.of(context).hintColor.withOpacity(0.15),
@@ -216,9 +276,9 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                       Theme.of(context).highlightColor.withOpacity(0.2),
                     ])),
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: BorderRadius.all(Radius.circular(5)),
               child: Container(
-                color: Theme.of(context).dividerColor,
+                color: Theme.of(context).hintColor,
                 constraints: BoxConstraints.expand(),
                 child: RTCVideoView(
                   widget._remoteRenderer,
@@ -227,11 +287,22 @@ class StreamViewerPageState extends State<StreamViewerPage> {
               ),
             ),
           ),
+          isStopped
+              ? Container(
+                  alignment: Alignment.center,
+                  child: Text("Press play button to stream",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      )),
+                )
+              : Container(),
           Positioned(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                margin: EdgeInsets.all(20),
+                margin: EdgeInsets.all(10),
                 height: 100,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -239,16 +310,10 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                   children: <Widget>[
                     FloatingActionButton(
                       heroTag: Uuid(),
-                      mini: true,
                       backgroundColor: Colors.white10.withAlpha(70),
                       child: const Icon(Icons.stop),
                       onPressed: () {
-                        subscriberHandle.hangup();
-                        widget._remoteRenderer.srcObject = null;
-                        widget._remoteRenderer.dispose();
-                        setState(() {
-                          subscriberHandle = null;
-                        });
+                        stopLive();
                       },
                     ),
                     Padding(
@@ -259,8 +324,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                       backgroundColor: Colors.redAccent,
                       child: const Icon(Icons.play_arrow),
                       onPressed: () async {
-                        await this.initRenderer();
-                        await this.initPlatformState();
+                        await startLive();
                       },
                     ),
                     Padding(
@@ -270,8 +334,8 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                 ),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
+                        bottomLeft: Radius.circular(5),
+                        bottomRight: Radius.circular(5)),
                     boxShadow: [
                       BoxShadow(
                           color: Theme.of(context).hintColor.withOpacity(0.15),

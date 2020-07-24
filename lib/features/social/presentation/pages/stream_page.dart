@@ -50,7 +50,7 @@ class _StreamPageState extends State<StreamPage> {
       ],
       child: EasyRefresh.custom(
         enableControlFinishRefresh: false,
-        enableControlFinishLoad: true,
+        enableControlFinishLoad: false,
         controller: _controller,
         header: ClassicalHeader(),
         footer: ClassicalFooter(),

@@ -1,3 +1,4 @@
+import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/domain/entities/action_result.dart';
 import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
@@ -7,8 +8,10 @@ class UserUseCase {
 
   UserUseCase(this.repository);
 
-  Future<User> getUser(String username, String password) async {
-    return await repository.getUser(username, password);
+  Future<User> getUser(String email, String password,
+      {OnError errorCallBack}) async {
+    return await repository.getUser(email, password,
+        errorCallBack: errorCallBack);
   }
 
   Future<List<String>> getUserIdByEmailList(
@@ -65,5 +68,21 @@ class UserUseCase {
       phone,
       verificationCode,
     );
+  }
+
+  Future<bool> checkUserLocalDbExists() async {
+    return repository.checkUserLocalDbExists();
+  }
+
+  Future<bool> deleteUserDb() async {
+    return repository.deleteUserDb();
+  }
+
+  Future<User> getUserLocalDb() async {
+    return repository.getUserLocalDb();
+  }
+
+  setCurrentUser(User user) {
+    return repository.setCurrentUser(user);
   }
 }

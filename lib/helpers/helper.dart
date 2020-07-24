@@ -13,4 +13,11 @@ class Helper {
   static String getImageUrlByIdNumber(int id) {
     return "${API.ImageUrl}/ACM_$id.jpg";
   }
+
+  static int getRandomInteger(int max, min) {
+    Random rand;
+    rand = new Random();
+    var result = min + rand.nextInt(max - min);
+    return result;
+  }
 }

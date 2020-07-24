@@ -44,7 +44,8 @@ class GetUserInfoBloc extends Bloc<UserEvent, FetchState> {
   Stream<FetchState> mapEventToState(UserEvent event) async* {
     if (event is GetUserInfoEvent) {
       yield Loading();
-      final userInfo = await userUseCase.getUser(event.email, event.password);
+      final userInfo = await userUseCase.getUser(event.email, event.password,
+          errorCallBack: event.errorCallBack);
       if (userInfo == null) {
         yield Empty();
       } else {
