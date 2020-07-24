@@ -66,4 +66,8 @@ class UserUseCase {
       verificationCode,
     );
   }
+
+  Future<bool> checkUserLocalDbExists() async {
+    return repository.checkUserLocalDbExists();
+  }
 }

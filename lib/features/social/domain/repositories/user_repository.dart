@@ -27,4 +27,6 @@ abstract class UserRepository {
 
   Future<ActionResult> updateUserPhone(
       String email, String phone, String verificationCode);
+
+  Future<bool> checkUserLocalDbExists();
 }

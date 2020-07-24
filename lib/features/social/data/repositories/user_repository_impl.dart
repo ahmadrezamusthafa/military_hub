@@ -1,4 +1,6 @@
+import 'package:military_hub/features/social/data/datasources/database/user_db_repository.dart';
 import 'package:military_hub/features/social/data/datasources/msengine/msengine_user_repository.dart';
+import 'package:military_hub/features/social/data/models/database/user_db_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/create_account_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/get_userid_by_email_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_phone_model.dart';
@@ -9,9 +11,11 @@ import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
+  final UserDbRepository userDbRepository;
   final MSEngineUserRepository msEngineUserRepository;
 
   UserRepositoryImpl({
+    this.userDbRepository,
     this.msEngineUserRepository,
   });
 
@@ -19,7 +23,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<User> getUser(String email, String password) async {
     User user;
     var response =
-        await msEngineUserRepository.getUserInformationFull(email, password);
+    await msEngineUserRepository.getUserInformationFull(email, password);
     if (response != null) {
       user = new User(
         email: response.email,
@@ -37,6 +41,68 @@ class UserRepositoryImpl implements UserRepository {
         apiToken: "generated_temporary",
         createdAt: DateTime.now().toString(),
       );
+
+      var dbUser = await userDbRepository.getUser();
+      if (dbUser != null) {
+        if (dbUser.email == email) {
+          //update
+          userDbRepository.update(UserDbModel(
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            userId: user.userId,
+            profileStatus: user.profileStatus,
+            profilePicture: user.profilePicture,
+            occupation: user.occupation,
+            education: user.education,
+            address: user.address,
+            phoneNumber: user.phoneNumber,
+            gender: user.gender,
+            apiToken: user.apiToken,
+            birthDate: user.birthDate,
+            createdAt: user.createdAt,
+            updatedAt: DateTime.now().toString(),
+          ));
+        } else {
+          //delete
+          await userDbRepository.deleteAll();
+          //insert
+          userDbRepository.update(UserDbModel(
+            email: user.email,
+            name: user.name,
+            password: user.password,
+            userId: user.userId,
+            profileStatus: user.profileStatus,
+            profilePicture: user.profilePicture,
+            occupation: user.occupation,
+            education: user.education,
+            address: user.address,
+            phoneNumber: user.phoneNumber,
+            gender: user.gender,
+            apiToken: user.apiToken,
+            birthDate: user.birthDate,
+            createdAt: DateTime.now().toString(),
+          ));
+        }
+      } else {
+        //insert
+        userDbRepository.update(UserDbModel(
+          email: user.email,
+          name: user.name,
+          password: user.password,
+          userId: user.userId,
+          profileStatus: user.profileStatus,
+          profilePicture: user.profilePicture,
+          occupation: user.occupation,
+          education: user.education,
+          address: user.address,
+          phoneNumber: user.phoneNumber,
+          gender: user.gender,
+          apiToken: user.apiToken,
+          birthDate: user.birthDate,
+          createdAt: DateTime.now().toString(),
+        ));
+      }
     }
     return user;
   }
@@ -69,8 +135,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<List<String>> getUserIdByEmailList(
-      String email, String password, List<String> emailList) async {
+  Future<List<String>> getUserIdByEmailList(String email, String password,
+      List<String> emailList) async {
     List<String> userIdList = List<String>();
     GetUserIdByEmailModel param = new GetUserIdByEmailModel(
       email: email,
@@ -87,8 +153,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<ActionResult> updateUserPIN(
-      String email, String password, String pin) async {
+  Future<ActionResult> updateUserPIN(String email, String password,
+      String pin) async {
     ActionResult result;
     UpdateUserPINModel param = new UpdateUserPINModel(
       email: email,
@@ -111,8 +177,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<ActionResult> updateUserPhone(
-      String email, String phone, String verificationCode) async {
+  Future<ActionResult> updateUserPhone(String email, String phone,
+      String verificationCode) async {
     ActionResult result;
     UpdateUserPhoneModel param = new UpdateUserPhoneModel(
       email: email,
@@ -135,8 +201,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<ActionResult> updateUserProfile(
-      String email,
+  Future<ActionResult> updateUserProfile(String email,
       String password,
       String name,
       String address,
@@ -168,5 +233,17 @@ class UserRepositoryImpl implements UserRepository {
       );
     }
     return result;
+  }
+
+  @override
+  Future<bool> checkUserLocalDbExists() async {
+    var dbUser = await userDbRepository.getUser();
+    if (dbUser != null) {
+      if (dbUser.email != null && dbUser.email != "" && dbUser.userId != null &&
+          dbUser.userId != ""){
+        return true;
+      }
+    }
+    return false;
   }
 }
