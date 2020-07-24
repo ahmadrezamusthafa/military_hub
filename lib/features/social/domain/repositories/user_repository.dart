@@ -30,4 +30,6 @@ abstract class UserRepository {
       String email, String phone, String verificationCode);
 
   Future<bool> checkUserLocalDbExists();
+
+  Future<bool> deleteUserDb();
 }

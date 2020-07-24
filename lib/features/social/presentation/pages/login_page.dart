@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                   horizontal: 20,
                 ),
                 padding:
-                    EdgeInsets.only(top: 30, right: 27, left: 27, bottom: 10),
+                    EdgeInsets.only(top: 30, right: 12, left: 12, bottom: 10),
                 width: config.App(context).appWidth(95),
                 child: Form(
                   key: widget.formKey,
@@ -252,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             )
                           : Container(),
-                      SizedBox(height: 30),
+                      SizedBox(height: 20),
                     ],
                   ),
                 ),

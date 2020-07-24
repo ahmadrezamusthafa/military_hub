@@ -74,9 +74,20 @@ class StreamViewerPageState extends State<StreamViewerPage> {
       subscriberHandle.hangup();
       subscriberHandle.detach();
     }
-    widget._localRenderer.srcObject = null;
+
+    if (widget._localRenderer != null) {
+      widget._localRenderer.srcObject = null;
+    }
+    if (widget._remoteRenderer != null) {
+      widget._remoteRenderer.srcObject = null;
+    }
     try {
       widget._localRenderer.dispose();
+    } catch (e) {
+      print("got error when call dispose: ${e.toString()}");
+    }
+    try {
+      widget._remoteRenderer.dispose();
     } catch (e) {
       print("got error when call dispose: ${e.toString()}");
     }

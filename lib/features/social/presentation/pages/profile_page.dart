@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:military_hub/features/social/domain/entities/menu_item.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
+import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
 import 'package:military_hub/features/social/presentation/widgets/menu_title_widget.dart';
 import 'package:military_hub/features/social/presentation/widgets/photo_viewer_widget.dart';
 import 'package:military_hub/features/social/presentation/widgets/profile_settings_dialog.dart';
 import 'package:military_hub/helpers/helper.dart';
+import 'package:military_hub/injection_container.dart';
 
 class ProfilePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> parentScaffoldKey;
@@ -427,13 +429,22 @@ class ProfilePageState extends State<ProfilePage> {
                       onTap: () {},
                     ),
                     ListTile(
-                      title: MenuTitleWidget(title: 'Log Out'),
+                      title: MenuTitleWidget(title: 'Log out'),
                       leading: Icon(
                         Icons.power_settings_new,
                         size: 24,
                         color: Colors.blueGrey[300],
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        onWillPop().then((value) {
+                          if (value == true) {
+                            Navigator.pop(context);
+                            Navigator.of(context)
+                                .pushNamed('/Login');
+                            sl<UserUseCase>().deleteUserDb();
+                          }
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -443,6 +454,27 @@ class ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  Future<bool> onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to log out'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
   }
 }
 

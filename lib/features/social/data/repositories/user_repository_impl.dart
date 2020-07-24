@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/data/datasources/database/user_db_repository.dart';
 import 'package:military_hub/features/social/data/datasources/msengine/msengine_user_repository.dart';
@@ -250,5 +251,11 @@ class UserRepositoryImpl implements UserRepository {
       }
     }
     return false;
+  }
+
+  @override
+  Future<bool> deleteUserDb() async {
+    await userDbRepository.deleteAll();
+    return true;
   }
 }

@@ -257,7 +257,9 @@ class LivePageState extends State<LivePage> {
       _pluginChecker.hangup();
       _pluginChecker.detach();
     }
-    widget._localRenderer.srcObject = null;
+    if (widget._localRenderer != null) {
+      widget._localRenderer.srcObject = null;
+    }
     try {
       widget._localRenderer.dispose();
     } catch (e) {
