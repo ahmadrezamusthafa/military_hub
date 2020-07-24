@@ -69,7 +69,7 @@ class UserRepositoryImpl implements UserRepository {
           //delete
           await userDbRepository.deleteAll();
           //insert
-          userDbRepository.update(UserDbModel(
+          userDbRepository.insert(UserDbModel(
             email: user.email,
             name: user.name,
             password: user.password,
@@ -88,7 +88,7 @@ class UserRepositoryImpl implements UserRepository {
         }
       } else {
         //insert
-        userDbRepository.update(UserDbModel(
+        userDbRepository.insert(UserDbModel(
           email: user.email,
           name: user.name,
           password: user.password,

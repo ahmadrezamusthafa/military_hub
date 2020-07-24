@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:military_hub/features/social/domain/entities/menu_item.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
+import 'package:military_hub/features/social/presentation/widgets/menu_title_widget.dart';
 import 'package:military_hub/features/social/presentation/widgets/photo_viewer_widget.dart';
 import 'package:military_hub/features/social/presentation/widgets/profile_settings_dialog.dart';
 import 'package:military_hub/helpers/helper.dart';
@@ -158,222 +159,287 @@ class ProfilePageState extends State<ProfilePage> {
                 .merge(TextStyle(fontSize: 13))),
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(0),
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(2),
-                        bottomRight: Radius.circular(2)),
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: 150,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: FlatButton(
-                                padding: EdgeInsets.all(0),
-                                onPressed: () {
-                                  _onImageButtonPressed(context: context);
-                                },
-                                child: Icon(Icons.photo_camera,
-                                    color: Theme.of(context).primaryColor),
-                                color: Theme.of(context).accentColor,
-                                shape: StadiumBorder(),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PhotoViewerWidget(
-                                      imageProvider: CachedNetworkImageProvider(
-                                          currentUser.value.profilePicture),
-                                    ),
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(0),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).accentColor,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(2),
+                            bottomRight: Radius.circular(2)),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: 150,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: FlatButton(
+                                    padding: EdgeInsets.all(0),
+                                    onPressed: () {
+                                      _onImageButtonPressed(context: context);
+                                    },
+                                    child: Icon(Icons.photo_camera,
+                                        color: Theme.of(context).primaryColor),
+                                    color: Theme.of(context).accentColor,
+                                    shape: StadiumBorder(),
                                   ),
-                                );
-                              },
-                              child: Hero(
-                                tag: "viewPhotoTag",
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(100)),
-                                  child: CachedNetworkImage(
-                                    height: 70,
-                                    width: 70,
-                                    fit: BoxFit.cover,
-                                    imageUrl: currentUser.value.profilePicture,
-                                    placeholder: (context, url) => Container(
-                                      height: 70,
-                                      width: 70,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(100)),
-                                          gradient: LinearGradient(
-                                              begin: Alignment.bottomLeft,
-                                              end: Alignment.topRight,
-                                              colors: [
-                                                Theme.of(context)
-                                                    .focusColor
-                                                    .withOpacity(0.8),
-                                                Theme.of(context)
-                                                    .focusColor
-                                                    .withOpacity(0.2),
-                                              ])),
-                                      child: Icon(
-                                        Icons.person,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 30,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PhotoViewerWidget(
+                                          imageProvider:
+                                              CachedNetworkImageProvider(
+                                                  currentUser
+                                                      .value.profilePicture),
+                                        ),
                                       ),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                      height: 70,
-                                      width: 70,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(100)),
-                                          gradient: LinearGradient(
-                                              begin: Alignment.bottomLeft,
-                                              end: Alignment.topRight,
-                                              colors: [
-                                                Theme.of(context)
-                                                    .focusColor
-                                                    .withOpacity(0.8),
-                                                Theme.of(context)
-                                                    .focusColor
-                                                    .withOpacity(0.2),
-                                              ])),
-                                      child: Icon(
-                                        Icons.person,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 30,
+                                    );
+                                  },
+                                  child: Hero(
+                                    tag: "viewPhotoTag",
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      child: CachedNetworkImage(
+                                        height: 70,
+                                        width: 70,
+                                        fit: BoxFit.cover,
+                                        imageUrl:
+                                            currentUser.value.profilePicture,
+                                        placeholder: (context, url) =>
+                                            Container(
+                                          height: 70,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(100)),
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.bottomLeft,
+                                                  end: Alignment.topRight,
+                                                  colors: [
+                                                    Theme.of(context)
+                                                        .focusColor
+                                                        .withOpacity(0.8),
+                                                    Theme.of(context)
+                                                        .focusColor
+                                                        .withOpacity(0.2),
+                                                  ])),
+                                          child: Icon(
+                                            Icons.person,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            size: 30,
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                          height: 70,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(100)),
+                                              gradient: LinearGradient(
+                                                  begin: Alignment.bottomLeft,
+                                                  end: Alignment.topRight,
+                                                  colors: [
+                                                    Theme.of(context)
+                                                        .focusColor
+                                                        .withOpacity(0.8),
+                                                    Theme.of(context)
+                                                        .focusColor
+                                                        .withOpacity(0.2),
+                                                  ])),
+                                          child: Icon(
+                                            Icons.person,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            size: 30,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: ProfileSettingsDialog(
+                                    user: currentUser.value,
+                                    onChanged: () {
+                                      //setState(() {});
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: ProfileSettingsDialog(
-                                user: currentUser.value,
-                                onChanged: () {
-                                  //setState(() {});
-                                },
-                              ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      margin: EdgeInsets.only(
+                          left: 12, right: 12, top: 110, bottom: 20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(6),
+                        boxShadow: [
+                          BoxShadow(
+                              color:
+                                  Theme.of(context).hintColor.withOpacity(0.15),
+                              offset: Offset(0, 3),
+                              blurRadius: 10)
+                        ],
+                      ),
+                      child: ListView(
+                        shrinkWrap: true,
+                        primary: false,
+                        children: <Widget>[
+                          ListTile(
+                            onTap: () {},
+                            dense: true,
+                            title: Text(
+                              "Name",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
                             ),
-                          ],
-                        ),
+                            trailing: Text(
+                              currentUser.value.name,
+                              style: TextStyle(
+                                  color: Theme.of(context).focusColor),
+                            ),
+                          ),
+                          ListTile(
+                            onTap: () {},
+                            dense: true,
+                            title: Text(
+                              "Email",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
+                            ),
+                            trailing: Text(
+                              currentUser.value.email,
+                              style: TextStyle(
+                                  color: Theme.of(context).focusColor),
+                            ),
+                          ),
+                          ListTile(
+                            onTap: () {},
+                            dense: true,
+                            title: Text(
+                              "Phone",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
+                            ),
+                            trailing: Text(
+                              currentUser.value.phoneNumber,
+                              style: TextStyle(
+                                  color: Theme.of(context).focusColor),
+                            ),
+                          ),
+                          ListTile(
+                            onTap: () {},
+                            dense: true,
+                            title: Text(
+                              "Address",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
+                            ),
+                            trailing: Text(
+                              Helper.limitString(currentUser.value.address),
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                              style: TextStyle(
+                                  color: Theme.of(context).focusColor),
+                            ),
+                          ),
+                          ListTile(
+                            onTap: () {},
+                            dense: true,
+                            title: Text(
+                              "Status",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black),
+                            ),
+                            trailing: Text(
+                              Helper.limitString(
+                                  currentUser.value.profileStatus),
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                              style: TextStyle(
+                                  color: Theme.of(context).focusColor),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 110),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Theme.of(context).hintColor.withOpacity(0.15),
-                          offset: Offset(0, 3),
-                          blurRadius: 10)
-                    ],
-                  ),
-                  child: ListView(
-                    shrinkWrap: true,
-                    primary: false,
-                    children: <Widget>[
-                      ListTile(
-                        onTap: () {},
-                        dense: true,
-                        title: Text(
-                          "Name",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700, color: Colors.black),
-                        ),
-                        trailing: Text(
-                          currentUser.value.name,
-                          style: TextStyle(color: Theme.of(context).focusColor),
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        dense: true,
-                        title: Text(
-                          "Email",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700, color: Colors.black),
-                        ),
-                        trailing: Text(
-                          currentUser.value.email,
-                          style: TextStyle(color: Theme.of(context).focusColor),
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        dense: true,
-                        title: Text(
-                          "Phone",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700, color: Colors.black),
-                        ),
-                        trailing: Text(
-                          currentUser.value.phoneNumber,
-                          style: TextStyle(color: Theme.of(context).focusColor),
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        dense: true,
-                        title: Text(
-                          "Address",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700, color: Colors.black),
-                        ),
-                        trailing: Text(
-                          Helper.limitString(currentUser.value.address),
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                          style: TextStyle(color: Theme.of(context).focusColor),
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        dense: true,
-                        title: Text(
-                          "Status",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700, color: Colors.black),
-                        ),
-                        trailing: Text(
-                          Helper.limitString(currentUser.value.profileStatus),
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                          style: TextStyle(color: Theme.of(context).focusColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Container(
+              margin: EdgeInsets.only(
+                left: 12,
+                right: 12,
+                bottom: 20,
+              ),
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Theme.of(context).hintColor.withOpacity(0.15),
+                        offset: Offset(0, 3),
+                        blurRadius: 10)
+                  ],
+                ),
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: MenuTitleWidget(title: 'Settings'),
+                      leading: Icon(
+                        Icons.settings,
+                        size: 24,
+                        color: Colors.blueGrey[300],
+                      ),
+                      onTap: () {},
+                    ),
+                    ListTile(
+                      title: MenuTitleWidget(title: 'Log Out'),
+                      leading: Icon(
+                        Icons.power_settings_new,
+                        size: 24,
+                        color: Colors.blueGrey[300],
+                      ),
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
