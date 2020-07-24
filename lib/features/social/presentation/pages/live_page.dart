@@ -308,9 +308,9 @@ class LivePageState extends State<LivePage> {
       body: Stack(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(bottom: 20, top: 20, left: 20, right: 20),
+            margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
                 boxShadow: [
                   BoxShadow(
                       color: Theme.of(context).hintColor.withOpacity(0.15),
@@ -321,26 +321,36 @@ class LivePageState extends State<LivePage> {
                     begin: Alignment.bottomLeft,
                     end: Alignment.topRight,
                     colors: [
-                      Theme.of(context).highlightColor.withOpacity(0.8),
+                      Theme.of(context).hintColor.withOpacity(0.8),
                       Theme.of(context).highlightColor.withOpacity(0.2),
                     ])),
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: BorderRadius.all(Radius.circular(5)),
               child: Container(
-                color: Theme.of(context).dividerColor,
+                color: Colors.blueAccent,
                 constraints: BoxConstraints.expand(),
                 child: RTCVideoView(
                   widget._localRenderer,
                 ),
-                height: 10,
               ),
             ),
           ),
+          isStopped
+              ? Container(
+                  alignment: Alignment.center,
+                  child: Text("Press play button to broadcast your camera",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      )),
+                )
+              : Container(),
           Positioned(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                margin: EdgeInsets.all(20),
+                margin: EdgeInsets.all(10),
                 height: 100,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -381,8 +391,8 @@ class LivePageState extends State<LivePage> {
                 ),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
+                        bottomLeft: Radius.circular(5),
+                        bottomRight: Radius.circular(5)),
                     boxShadow: [
                       BoxShadow(
                           color: Theme.of(context).hintColor.withOpacity(0.15),

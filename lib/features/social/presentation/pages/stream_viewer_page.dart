@@ -140,6 +140,8 @@ class StreamViewerPageState extends State<StreamViewerPage> {
             remoteStream = stream;
             widget._remoteRenderer.srcObject = remoteStream;
             widget._remoteRenderer.mirror = true;
+            widget._remoteRenderer.objectFit =
+                RTCVideoViewObjectFit.RTCVideoViewObjectFitCover;
           });
         }));
   }
@@ -256,9 +258,9 @@ class StreamViewerPageState extends State<StreamViewerPage> {
       body: Stack(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(bottom: 20, top: 20, left: 20, right: 20),
+            margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
                 boxShadow: [
                   BoxShadow(
                       color: Theme.of(context).hintColor.withOpacity(0.15),
@@ -273,9 +275,9 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                       Theme.of(context).highlightColor.withOpacity(0.2),
                     ])),
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: BorderRadius.all(Radius.circular(5)),
               child: Container(
-                color: Theme.of(context).dividerColor,
+                color: Colors.blueAccent,
                 constraints: BoxConstraints.expand(),
                 child: RTCVideoView(
                   widget._remoteRenderer,
@@ -284,11 +286,22 @@ class StreamViewerPageState extends State<StreamViewerPage> {
               ),
             ),
           ),
+          isStopped
+              ? Container(
+            alignment: Alignment.center,
+            child: Text("Press play button to stream",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                )),
+          )
+              : Container(),
           Positioned(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                margin: EdgeInsets.all(20),
+                margin: EdgeInsets.all(10),
                 height: 100,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -296,7 +309,6 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                   children: <Widget>[
                     FloatingActionButton(
                       heroTag: Uuid(),
-                      mini: true,
                       backgroundColor: Colors.white10.withAlpha(70),
                       child: const Icon(Icons.stop),
                       onPressed: () {
@@ -321,8 +333,8 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                 ),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
+                        bottomLeft: Radius.circular(5),
+                        bottomRight: Radius.circular(5)),
                     boxShadow: [
                       BoxShadow(
                           color: Theme.of(context).hintColor.withOpacity(0.15),
