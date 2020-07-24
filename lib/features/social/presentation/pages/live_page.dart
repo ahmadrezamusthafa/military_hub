@@ -25,6 +25,7 @@ class LivePage extends StatefulWidget {
 }
 
 class LivePageState extends State<LivePage> {
+  final janusSecret = "adminpwd";
   JanusClient _j;
   JanusClient _jChecker;
   Plugin _pluginHandle;
@@ -32,6 +33,7 @@ class LivePageState extends State<LivePage> {
   MediaStream _myStream;
   Timer _timer;
   bool isStopped = true;
+  int idNumber;
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class LivePageState extends State<LivePage> {
     super.initState();
     initPermission();
     initRenderer();
+    idNumber = getIdNumber();
   }
 
   @override
@@ -58,13 +61,12 @@ class LivePageState extends State<LivePage> {
   }
 
   int getIdNumber() {
-    /*var ids = currentUser.value.userId.split("_");
+    var ids = currentUser.value.userId.split("_");
     if (ids.isNotEmpty && ids.length > 1) {
       var id = int.parse(ids[1]);
       return id;
     }
-    return 0;*/
-    return 1234;
+    return 0;
   }
 
   Future<void> initPlatformState() async {
@@ -81,10 +83,10 @@ class LivePageState extends State<LivePage> {
       }
       var register = {
         "request": "join",
-        "room": getIdNumber(),
+        "room": idNumber,
         "ptype": "publisher",
         "display": currentUser.value.name,
-        "id": getIdNumber()
+        "id": idNumber
       };
       if (!_j.isConnected || _pluginHandle == null) {
         _j.connect(onSuccess: () async {
@@ -111,18 +113,34 @@ class LivePageState extends State<LivePage> {
                   widget._localRenderer.objectFit =
                       RTCVideoViewObjectFit.RTCVideoViewObjectFitCover;
                 });
+
+                var create = {
+                  "request": "create",
+                  "room": idNumber,
+                  "permanent": false,
+                  "description": currentUser.value.name,
+                  "secret": janusSecret
+                };
                 plugin.send(
-                    message: register,
-                    onSuccess: () async {
-                      var publish = {
-                        "request": "configure",
-                        "audio": true,
-                        "video": true,
-                        "bitrate": 2000000
-                      };
-                      RTCSessionDescription offer = await plugin.createOffer();
+                    message: create,
+                    onSuccess: (data) async {
+                      print("room $idNumber success created");
                       plugin.send(
-                          message: publish, jsep: offer, onSuccess: () {});
+                          message: register,
+                          onSuccess: () async {
+                            var publish = {
+                              "request": "configure",
+                              "audio": true,
+                              "video": true,
+                              "bitrate": 2000000
+                            };
+                            RTCSessionDescription offer =
+                                await plugin.createOffer();
+                            plugin.send(
+                                message: publish,
+                                jsep: offer,
+                                onSuccess: () {});
+                          });
                     });
               }));
         }, onError: (e) {
@@ -160,7 +178,7 @@ class LivePageState extends State<LivePage> {
         'ws://kitaundang.com:8188'
       ], withCredentials: true, apiSecret: "SecureIt");
     }
-    var list = {"request": "listparticipants", "room": getIdNumber()};
+    var list = {"request": "listparticipants", "room": idNumber};
     if (!_jChecker.isConnected || _pluginChecker == null) {
       _jChecker.connect(onSuccess: () async {
         print("onSuccess connect");
@@ -201,7 +219,7 @@ class LivePageState extends State<LivePage> {
     for (var value in participant.participants) {
       i++;
       print("participant $i id:${value.id} display:${value.display}");
-      if (value.id == getIdNumber()) {
+      if (value.id == idNumber) {
         found = true;
         break;
       }
@@ -250,6 +268,19 @@ class LivePageState extends State<LivePage> {
     isStopped = true;
     stopTimer();
     if (_pluginHandle != null) {
+      //delete room
+      var delete = {
+        "request": "destroy",
+        "room": idNumber,
+        "permanent": false,
+        "secret": janusSecret
+      };
+      _pluginHandle.send(
+          message: delete,
+          onSuccess: () async {
+            print("room success deleted");
+          });
+
       _pluginHandle.hangup();
       _pluginHandle.detach();
     }
@@ -327,7 +358,7 @@ class LivePageState extends State<LivePage> {
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               child: Container(
-                color: Colors.blueAccent,
+                color: Theme.of(context).hintColor,
                 constraints: BoxConstraints.expand(),
                 child: RTCVideoView(
                   widget._localRenderer,

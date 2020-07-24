@@ -38,12 +38,14 @@ class StreamViewerPageState extends State<StreamViewerPage> {
   Plugin pluginHandle;
   MediaStream myStream;
   bool isStopped = true;
+  int idNumber;
 
   @override
   void initState() {
     print("viewer page initState");
     super.initState();
     initRenderer();
+    idNumber = getIdNumber();
   }
 
   @override
@@ -130,7 +132,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
             "room": widget.broadcaster.roomId,
             "ptype": "subscriber",
             "feed": feed,
-            "private_id": widget.broadcaster.userId,
+            //"private_id": widget.broadcaster.userId,
           };
           subscriberHandle.send(message: register, onSuccess: () async {});
         },
@@ -139,9 +141,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
           setState(() {
             remoteStream = stream;
             widget._remoteRenderer.srcObject = remoteStream;
-            widget._remoteRenderer.mirror = true;
-            widget._remoteRenderer.objectFit =
-                RTCVideoViewObjectFit.RTCVideoViewObjectFitCover;
+            widget._remoteRenderer.mirror = false;
           });
         }));
   }
@@ -199,7 +199,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
                 "room": widget.broadcaster.roomId,
                 "ptype": "publisher",
                 "display": currentUser.value.name,
-                "id": getIdNumber(),
+                "id": idNumber,
               };
               plugin.send(
                   message: register,
@@ -277,7 +277,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               child: Container(
-                color: Colors.blueAccent,
+                color: Theme.of(context).hintColor,
                 constraints: BoxConstraints.expand(),
                 child: RTCVideoView(
                   widget._remoteRenderer,
@@ -288,14 +288,14 @@ class StreamViewerPageState extends State<StreamViewerPage> {
           ),
           isStopped
               ? Container(
-            alignment: Alignment.center,
-            child: Text("Press play button to stream",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                )),
-          )
+                  alignment: Alignment.center,
+                  child: Text("Press play button to stream",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      )),
+                )
               : Container(),
           Positioned(
             child: Align(
