@@ -17,7 +17,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'model/location_result.dart';
-import 'utils/location_utils.dart';
 
 class MapPicker extends StatefulWidget {
   const MapPicker(

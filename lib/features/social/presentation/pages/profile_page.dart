@@ -66,7 +66,7 @@ class ProfilePageState extends State<ProfilePage> {
         context: context,
         builder: (context) {
           return Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: 220,
             color: Color(0xff737373),
             child: Container(
               decoration: BoxDecoration(
@@ -439,8 +439,7 @@ class ProfilePageState extends State<ProfilePage> {
                         onWillPop().then((value) {
                           if (value == true) {
                             Navigator.pop(context);
-                            Navigator.of(context)
-                                .pushNamed('/Login');
+                            Navigator.of(context).pushNamed('/Login');
                             sl<UserUseCase>().deleteUserDb();
                           }
                         });
