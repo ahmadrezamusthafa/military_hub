@@ -1,12 +1,14 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import 'enums/post_type.dart';
+part 'get_feeds_result_model.g.dart';
 
-class Post {
+@JsonSerializable()
+class GetFeedsResultModel {
   String postCode;
-  PostType type;
+  int type;
   String image;
-  LatLng location;
+  String latitude;
+  String longitude;
   String locationName;
   String description;
   String userId;
@@ -16,13 +18,13 @@ class Post {
   int commentCount;
   bool isLiked;
   String createdAt;
-  String readableCreatedAt;
 
-  Post({
+  GetFeedsResultModel({
     this.postCode,
     this.type,
     this.image,
-    this.location,
+    this.latitude,
+    this.longitude,
     this.locationName,
     this.description,
     this.userId,
@@ -32,6 +34,10 @@ class Post {
     this.commentCount,
     this.isLiked,
     this.createdAt,
-    this.readableCreatedAt,
   });
+
+  factory GetFeedsResultModel.fromJson(Map<String, dynamic> json) =>
+      _$GetFeedsResultModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GetFeedsResultModelToJson(this);
 }

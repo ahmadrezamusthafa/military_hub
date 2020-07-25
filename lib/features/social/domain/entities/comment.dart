@@ -1,18 +1,15 @@
-import 'like.dart';
-import 'user.dart';
-
-class Comment{
+class Comment {
+  String postCode;
+  String commentCode;
+  String userId;
   String comment;
-  User user;
-  DateTime commentedDate;
-  bool isLiked;
-  List<Like> likes;
+  String createdAt;
 
-  Comment(
+  Comment({
+    this.postCode,
+    this.commentCode,
+    this.userId,
     this.comment,
-    this.user,
-    this.commentedDate,
-    this.isLiked,
-    this.likes
-  );
+    this.createdAt,
+  });
 }
