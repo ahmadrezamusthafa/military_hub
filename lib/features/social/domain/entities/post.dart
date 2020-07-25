@@ -1,26 +1,31 @@
-import 'package:flutter/material.dart';
-import 'User.dart';
-import 'comment.dart';
-import 'like.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Post{
+import 'enums/post_type.dart';
+
+class Post {
+  String postCode;
+  PostType type;
+  String image;
+  LatLng location;
+  String locationName;
   String description;
-  Image image;
-  User user;
-  List<Like> likes;
-  List<Comment> comments;
-  DateTime created;
+  String userId;
+  int likeCount;
+  int commentCount;
   bool isLiked;
-  bool isSaved;
+  String createdAt;
 
-  Post(
-    this.description,
+  Post({
+    this.postCode,
+    this.type,
     this.image,
-    this.user,
-    this.likes,
-    this.comments,
-    this.created,
+    this.location,
+    this.locationName,
+    this.description,
+    this.userId,
+    this.likeCount,
+    this.commentCount,
     this.isLiked,
-    this.isSaved
-  );
+    this.createdAt,
+  });
 }
