@@ -29,7 +29,29 @@ class FeedsListWidget extends StatelessWidget {
           );
         } else if (state is ListLoaded) {
           try {
-            return ListView.separated(
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(0),
+                      itemCount: state.lists.length,
+                      itemBuilder: (context, index) {
+                        return FeedsListItemWidget(
+                          heroTag: 'feeds_list',
+                          post: state.lists.elementAt(index),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            );
+
+            /*return ListView.separated(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               primary: false,
@@ -44,7 +66,7 @@ class FeedsListWidget extends StatelessWidget {
                   post: state.lists.elementAt(index),
                 );
               },
-            );
+            );*/
           } catch (e) {
             print(e);
           }

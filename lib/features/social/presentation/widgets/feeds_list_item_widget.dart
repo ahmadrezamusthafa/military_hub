@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:military_hub/features/social/domain/entities/post.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class FeedsListItemWidget extends StatefulWidget {
   final String heroTag;
@@ -20,7 +21,7 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
   Widget build(BuildContext context) {
     Widget _getSeparator(double height) {
       return Container(
-        decoration: BoxDecoration(color: Theme.of(context).canvasColor),
+        decoration: BoxDecoration(color: Theme.of(context).dividerColor),
         constraints: BoxConstraints(maxHeight: height),
       );
     }
@@ -88,19 +89,45 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                   decoration: BoxDecoration(
                       color: Theme.of(context).canvasColor,
                       image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                              'https://rajaampatbiodiversity.com/wp-content/uploads/2019/06/visitar-raja-ampat.jpg'),
+                          image: CachedNetworkImageProvider(widget.post.image),
                           fit: BoxFit.fill)),
+                )
+              : Container(),
+          widget.post.description != ""
+              ? Container(
+                  margin: EdgeInsets.all(20),
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Wrap(
+                        children: <Widget>[
+                          Text(
+                            widget.post.description,
+                            textAlign: TextAlign.left,
+                            softWrap: true,
+                            style: Theme.of(context).textTheme.headline3,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 )
               : Container(),
           widget.post.locationName != ""
               ? Container(
-                  margin:
-                      EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                  margin: EdgeInsets.all(0),
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(0),
+                      gradient: LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.topRight,
+                          colors: [
+                            Theme.of(context).accentColor.withOpacity(0.9),
+                            Theme.of(context).accentColor.withOpacity(0.3),
+                          ]),
                       boxShadow: [
                         BoxShadow(
                           blurRadius: 2,
@@ -113,44 +140,22 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                     children: <Widget>[
                       Icon(
                         Icons.location_on,
-                        color: Theme.of(context).focusColor,
-                        size: 30,
+                        color: Theme.of(context).primaryColorLight,
+                        size: 16,
                       ),
                       Padding(
                         padding: EdgeInsets.all(10),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 40),
+                        margin: EdgeInsets.only(left: 25),
                         child: Text(
                           widget.post.locationName,
                           textAlign: TextAlign.left,
                           softWrap: true,
-                          style: Theme.of(context).textTheme.bodyText1.merge(
-                              TextStyle(color: Theme.of(context).focusColor)),
+                          style: Theme.of(context).textTheme.caption.merge(
+                              TextStyle(
+                                  color: Theme.of(context).primaryColorLight)),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(),
-          widget.post.description != ""
-              ? Container(
-                  margin:
-                      EdgeInsets.only(left: 30, right: 20, top: 20, bottom: 20),
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Wrap(
-                        children: <Widget>[
-                          Text(
-                            widget.post.description,
-                            textAlign: TextAlign.left,
-                            softWrap: true,
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -224,79 +229,56 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
     }
 
     Widget postOptions() {
-      return Container(
-        child: Row(
-          children: <Widget>[
-            Expanded(
-                child: FlatButton.icon(
-                    icon: Icon(
-                      Icons.thumb_up,
-                      size: 16,
-                    ),
-                    label: Text('Like', style: TextStyle(fontSize: 12)),
-                    textColor:
-                        widget.post.isLiked == true ? Colors.blue : Colors.grey,
-                    onPressed: reactToPost),
-                flex: 1),
-            Expanded(
-                child: FlatButton.icon(
-                    icon: Icon(
-                      Icons.comment,
-                      size: 16,
-                    ),
-                    label: Text('Comment', style: TextStyle(fontSize: 12)),
-                    textColor: Colors.grey,
-                    onPressed: () {}),
-                flex: 1),
-            Expanded(
-                child: FlatButton.icon(
-                    icon: Icon(
-                      Icons.share,
-                      size: 16,
-                    ),
-                    label: Text('Share', style: TextStyle(fontSize: 12)),
-                    textColor: Colors.grey,
-                    onPressed: () {}),
-                flex: 1),
-          ],
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        padding: EdgeInsets.all(0),
+      return Row(
+        children: <Widget>[
+          Expanded(
+              child: FlatButton.icon(
+                  icon: Icon(
+                    Icons.thumb_up,
+                    size: 16,
+                  ),
+                  label: Text('Like', style: TextStyle(fontSize: 12)),
+                  textColor:
+                      widget.post.isLiked == true ? Colors.blue : Colors.grey,
+                  onPressed: reactToPost),
+              flex: 1),
+          Expanded(
+              child: FlatButton.icon(
+                  icon: Icon(
+                    Icons.comment,
+                    size: 16,
+                  ),
+                  label: Text('Comment', style: TextStyle(fontSize: 12)),
+                  textColor: Colors.grey,
+                  onPressed: () {}),
+              flex: 1),
+          Expanded(
+              child: FlatButton.icon(
+                  icon: Icon(
+                    Icons.share,
+                    size: 16,
+                  ),
+                  label: Text('Share', style: TextStyle(fontSize: 12)),
+                  textColor: Colors.grey,
+                  onPressed: () {}),
+              flex: 1),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
       );
     }
 
-    return InkWell(
-      splashColor: Theme.of(context).accentColor,
-      focusColor: Theme.of(context).accentColor,
-      highlightColor: Theme.of(context).primaryColor,
-      onTap: () {},
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(0.9),
-          boxShadow: [
-            BoxShadow(
-                color: Theme.of(context).focusColor.withOpacity(0.1),
-                blurRadius: 5,
-                offset: Offset(0, 2)),
-          ],
-        ),
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              _getSeparator(10),
-              _postHeader(),
-              _postBody(),
-              postLikesAndComments(),
-              Divider(height: 1),
-              postOptions()
-            ],
-          ),
-          decoration: BoxDecoration(color: Colors.white),
-        ),
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _getSeparator(10),
+          _postHeader(),
+          _postBody(),
+          //postLikesAndComments(),
+          Divider(height: 1),
+          postOptions()
+        ],
       ),
+      decoration: BoxDecoration(color: Colors.white),
     );
   }
 }
