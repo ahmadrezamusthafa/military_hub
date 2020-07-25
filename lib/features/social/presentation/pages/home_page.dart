@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,7 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:military_hub/features/social/presentation/bloc/fetch/feeds/bloc.dart';
+import 'package:military_hub/features/social/presentation/widgets/feeds_list_widget.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
+import 'package:military_hub/injection_container.dart';
 import 'package:military_hub/main.dart';
 
 class HomePage extends StatefulWidget {
@@ -51,7 +55,18 @@ class _HomePageState extends State<HomePage> {
         preferredSize: Size.fromHeight(0),
         child: AppBar(backgroundColor: Colors.white, elevation: 0),
       ),
-      body: EasyRefresh.custom(
+      body: buildBody(context),
+    );
+  }
+
+  MultiBlocProvider buildBody(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<GetFeedsBloc>(
+          create: (_) => sl<GetFeedsBloc>(),
+        ),
+      ],
+      child: EasyRefresh.custom(
         enableControlFinishRefresh: false,
         enableControlFinishLoad: true,
         controller: _refreshController,
@@ -114,7 +129,8 @@ class _HomePageState extends State<HomePage> {
             _getSeparator(5),
             _addPost(),
             _getSeparator(10),
-            Column(children: _getPosts())
+            /*Column(children: _getPosts())*/
+            Column(children: <Widget>[FeedsListWidget()]),
           ])),
         ],
       ),

@@ -27,13 +27,13 @@ class Helper {
     double longitude = 0;
     try {
       latitude = double.parse(lat);
-    } on FormatException {
-      print('double.parse $lat format error');
+    } catch (e) {
+      print('double.parse $lat format error: ${e.toString()}');
     }
     try {
       longitude = double.parse(lon);
-    } on FormatException {
-      print('double.parse $lon format error');
+    } catch (e) {
+      print('double.parse $lon format error: ${e.toString()}');
     }
     return LatLng(latitude, longitude);
   }

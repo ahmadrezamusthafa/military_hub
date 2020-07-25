@@ -19,13 +19,13 @@ class GetFeedsBloc extends Bloc<FeedsEvent, FetchState> {
   Stream<FetchState> mapEventToState(FeedsEvent event) async* {
     if (event is GetFeedsEvent) {
       yield Loading();
-      final users = await feedsUseCase.getFeeds(
+      final feeds = await feedsUseCase.getFeeds(
           event.email, event.password, event.page, event.limit,
           errorCallBack: event.errorCallBack);
-      if (users.isEmpty) {
+      if (feeds.isEmpty) {
         yield Empty();
       } else {
-        yield ListLoaded(lists: users);
+        yield ListLoaded(lists: feeds);
       }
     }
   }
