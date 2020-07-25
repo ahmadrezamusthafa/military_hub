@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:military_hub/config/api_config.dart';
+import 'package:military_hub/features/social/domain/entities/menu_item.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:military_hub/features/social/presentation/bloc/fetch/feeds/bloc.dart';
+import 'package:military_hub/features/social/presentation/pages/profile_page.dart';
 import 'package:military_hub/features/social/presentation/widgets/feeds_list_widget.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
 import 'package:military_hub/injection_container.dart';
@@ -29,6 +32,8 @@ class _HomePageState extends State<HomePage> {
   LocationResult _pickedLocation;
   EasyRefreshController _refreshController;
   int _itemCount = 20;
+  final ImagePicker _picker = ImagePicker();
+  String imagePath;
 
   void initState() {
     super.initState();
@@ -46,6 +51,125 @@ class _HomePageState extends State<HomePage> {
       }
     });
     print("Liked Post ? : $isLiked");
+  }
+
+  void _onImageButtonPressed({BuildContext context}) async {
+    _showModal(context, (double maxWidth, double maxHeight, int quality,
+        ImageSource source) async {
+      try {
+        final pickedFile = await _picker.getImage(
+          source: source,
+          maxWidth: maxWidth,
+          maxHeight: maxHeight,
+          imageQuality: quality,
+        );
+        setState(() {
+          imagePath = pickedFile.path;
+          print(imagePath);
+        });
+      } catch (e) {
+        print("$e");
+      }
+    });
+  }
+
+  void _showModal(BuildContext context, OnPickImageCallback onPick) {
+    final double maxWidth = 1000;
+    final double maxHeight = 1000;
+    final int maxQuality = 80;
+
+    List<MenuItem> menuItems = [
+      MenuItem(
+        text: "Camera",
+        icons: Icons.camera_alt,
+        color: Colors.amber,
+      ),
+      MenuItem(
+        text: "Gallery",
+        icons: Icons.album,
+        color: Colors.blue,
+      )
+    ];
+
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 220,
+            color: Color(0xff737373),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black12
+                    : Colors.white,
+                border: Border.all(
+                  color: Colors.transparent,
+                ),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(0), topLeft: Radius.circular(0)),
+              ),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 4,
+                      width: 50,
+                      color: Colors.grey.shade200,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ListView.builder(
+                    itemCount: menuItems.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return new Material(
+                        color: Colors.transparent,
+                        child: new InkWell(
+                          onTap: () {
+                            if (menuItems[index].text == "Camera") {
+                              onPick(maxWidth, maxHeight, maxQuality,
+                                  ImageSource.camera);
+                            } else {
+                              onPick(maxWidth, maxHeight, maxQuality,
+                                  ImageSource.gallery);
+                            }
+                            Navigator.of(context).pop();
+                            print("tapped ${menuItems[index].text}");
+                          },
+                          child: Container(
+                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            child: ListTile(
+                              leading: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: menuItems[index].color.shade50,
+                                ),
+                                height: 50,
+                                width: 50,
+                                child: Icon(
+                                  menuItems[index].icons,
+                                  size: 20,
+                                  color: menuItems[index].color.shade400,
+                                ),
+                              ),
+                              title: Text(menuItems[index].text),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -255,7 +379,9 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(Icons.photo, color: Colors.green),
                   label: Text('Photo'),
                   textColor: Colors.grey,
-                  onPressed: () {}),
+                  onPressed: () {
+                    _onImageButtonPressed(context: context);
+                  }),
               flex: 1),
           Expanded(
             child: FlatButton.icon(
