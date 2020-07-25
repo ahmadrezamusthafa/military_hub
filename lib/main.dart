@@ -2,8 +2,6 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_google_maps/flutter_google_maps.dart';
-import 'package:military_hub/config/api_config.dart';
 import 'package:military_hub/features/social/presentation/pages/home_tabpage.dart';
 import 'package:military_hub/route_generator.dart';
 import 'config/app_config.dart' as config;
@@ -14,7 +12,6 @@ import 'injection_container.dart' as di;
 //    $ flutter pub run build_runner build --delete-conflicting-outputs
 
 void main() async {
-  GoogleMap.init(API.GoogleAPIKey);
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
   initDummyData();

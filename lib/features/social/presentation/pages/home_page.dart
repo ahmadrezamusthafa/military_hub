@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Column(
                 children: <Widget>[
-                  Text('Ahmad Reza Musthafa',
+                  Text(currentUser.value.name,
                       style: TextStyle(
                           fontWeight: FontWeight.w700, color: Colors.black)),
                   Row(
