@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:core';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:military_hub/config/api_config.dart';
@@ -54,5 +56,11 @@ class Helper {
       var formatter = new DateFormat('MM/dd');
       return formatter.format(createdAt);
     }
+  }
+
+  static FileImage loadImageFromFile(String path) {
+    File file = new File(path);
+    FileImage img = FileImage(file);
+    return img;
   }
 }

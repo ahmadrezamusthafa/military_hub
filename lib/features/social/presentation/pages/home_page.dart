@@ -66,6 +66,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           imagePath = pickedFile.path;
           print(imagePath);
+          Navigator.of(context).pushNamed('/Post', arguments: imagePath);
         });
       } catch (e) {
         print("$e");
@@ -300,63 +301,68 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _addPostHeader() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(100)),
-                child: CachedNetworkImage(
-                  height: 50,
-                  width: 50,
-                  fit: BoxFit.cover,
-                  imageUrl: currentUser.value.profilePicture,
-                  placeholder: (context, url) => Container(
+    return InkWell(
+      child: Container(
+        child: Row(
+          children: <Widget>[
+            Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  child: CachedNetworkImage(
                     height: 50,
                     width: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
-                            colors: [
-                              Theme.of(context).focusColor.withOpacity(0.8),
-                              Theme.of(context).focusColor.withOpacity(0.2),
-                            ])),
-                    child: Icon(
-                      Icons.person,
-                      color: Theme.of(context).primaryColor,
-                      size: 30,
+                    fit: BoxFit.cover,
+                    imageUrl: currentUser.value.profilePicture,
+                    placeholder: (context, url) => Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight,
+                              colors: [
+                                Theme.of(context).focusColor.withOpacity(0.8),
+                                Theme.of(context).focusColor.withOpacity(0.2),
+                              ])),
+                      child: Icon(
+                        Icons.person,
+                        color: Theme.of(context).primaryColor,
+                        size: 30,
+                      ),
                     ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
-                            colors: [
-                              Theme.of(context).focusColor.withOpacity(0.8),
-                              Theme.of(context).focusColor.withOpacity(0.2),
-                            ])),
-                    child: Icon(
-                      Icons.person,
-                      color: Theme.of(context).primaryColor,
-                      size: 30,
+                    errorWidget: (context, url, error) => Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight,
+                              colors: [
+                                Theme.of(context).focusColor.withOpacity(0.8),
+                                Theme.of(context).focusColor.withOpacity(0.2),
+                              ])),
+                      child: Icon(
+                        Icons.person,
+                        color: Theme.of(context).primaryColor,
+                        size: 30,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              padding: EdgeInsets.only(right: 10)),
-          Text(
-            "What's on your Mind ?",
-            style: TextStyle(color: Colors.black87),
-          )
-        ],
+                padding: EdgeInsets.only(right: 10)),
+            Text(
+              "What's on your Mind ?",
+              style: TextStyle(color: Colors.black87),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
       ),
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+      onTap: () {
+        Navigator.of(context).pushNamed('/Post');
+      },
     );
   }
 

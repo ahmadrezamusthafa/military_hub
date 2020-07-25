@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:military_hub/features/social/presentation/pages/home_tabpage.dart';
 import 'package:military_hub/features/social/presentation/pages/login_page.dart';
 import 'package:military_hub/features/social/presentation/pages/map_viewer_page.dart';
+import 'package:military_hub/features/social/presentation/pages/post_page.dart';
 import 'package:military_hub/features/social/presentation/pages/splash_page.dart';
 import 'package:military_hub/features/social/presentation/pages/stream_viewer_page.dart';
 import 'package:military_hub/main.dart';
@@ -19,6 +20,11 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => HomeTabPage(
                   key: MyApp.homeTabPageKey,
+                ));
+      case '/Post':
+        return MaterialPageRoute(
+            builder: (_) => PostPage(
+                  imagePath: args,
                 ));
       case '/StreamView':
         return MaterialPageRoute(
