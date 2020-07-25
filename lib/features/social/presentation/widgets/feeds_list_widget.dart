@@ -33,6 +33,7 @@ class FeedsListWidget extends StatelessWidget {
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               primary: false,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: state.lists.length,
               separatorBuilder: (context, index) {
                 return SizedBox(height: 5);

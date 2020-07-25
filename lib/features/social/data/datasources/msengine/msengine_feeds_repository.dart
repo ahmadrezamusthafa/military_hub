@@ -10,12 +10,12 @@ class MSEngineFeedsRepository {
       {OnError errorCallBack}) async {
     List<GetFeedsResultModel> feedsList = new List<GetFeedsResultModel>();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 15; i++) {
       feedsList.add(GetFeedsResultModel(
         postCode: Uuid().toString(),
         type: 0,
         description:
-            "Hello, ada kemacetan jalan yang disebabkan oleh kerumunan masa yang sedang demo",
+            "Hello, ada kemacetan jalan yang disebabkan oleh kerumunan masa yang sedang demo ada kemacetan. Hello, ada kemacetan jalan yang disebabkan oleh kerumunan masa yang sedang demo",
         userId: "ACM_1",
         name: "Yovi Arsyad",
         likeCount: 12,
@@ -54,6 +54,17 @@ class MSEngineFeedsRepository {
         longitude: "112.46844716370106",
         locationName: "Jalan Arjuna 78",
         description: "Lapor, jalan arjuna clear",
+        userId: "ACM_2",
+        name: "Budi Waseso",
+        createdAt: DateTime.now().toString(),
+      ));
+
+      feedsList.add(GetFeedsResultModel(
+        postCode: Uuid().toString(),
+        type: 3,
+        latitude: "-7.545449647437256",
+        longitude: "112.46844716370106",
+        locationName: "Jalan Malioboro 718 Surabaya",
         userId: "ACM_2",
         name: "Budi Waseso",
         createdAt: DateTime.now().toString(),

@@ -80,14 +80,83 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
     }
 
     Widget _postBody() {
-      return Container(
-        constraints: BoxConstraints(maxHeight: 350),
-        decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
-            image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                    'https://rajaampatbiodiversity.com/wp-content/uploads/2019/06/visitar-raja-ampat.jpg'),
-                fit: BoxFit.fill)),
+      return Column(
+        children: <Widget>[
+          widget.post.image != ""
+              ? Container(
+                  constraints: BoxConstraints(maxHeight: 350),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                      image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                              'https://rajaampatbiodiversity.com/wp-content/uploads/2019/06/visitar-raja-ampat.jpg'),
+                          fit: BoxFit.fill)),
+                )
+              : Container(),
+          widget.post.locationName != ""
+              ? Container(
+                  margin:
+                      EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(7),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 2,
+                          color: Theme.of(context).hintColor.withOpacity(0.1),
+                        )
+                      ]),
+                  alignment: Alignment.centerLeft,
+                  child: Stack(
+                    alignment: Alignment.centerLeft,
+                    children: <Widget>[
+                      Icon(
+                        Icons.location_on,
+                        color: Theme.of(context).focusColor,
+                        size: 30,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 40),
+                        child: Text(
+                          widget.post.locationName,
+                          textAlign: TextAlign.left,
+                          softWrap: true,
+                          style: Theme.of(context).textTheme.bodyText1.merge(
+                              TextStyle(color: Theme.of(context).focusColor)),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
+          widget.post.description != ""
+              ? Container(
+                  margin:
+                      EdgeInsets.only(left: 30, right: 20, top: 20, bottom: 20),
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Wrap(
+                        children: <Widget>[
+                          Text(
+                            widget.post.description,
+                            textAlign: TextAlign.left,
+                            softWrap: true,
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
+        ],
       );
     }
 
@@ -95,51 +164,57 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
       return Container(
         child: Row(
           children: <Widget>[
-            Container(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      child: RawMaterialButton(
-                        child: Icon(
-                          Icons.thumb_up,
-                          color: Colors.white,
-                          size: 14,
+            widget.post.likeCount > 0
+                ? Container(
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          child: RawMaterialButton(
+                            child: Icon(
+                              Icons.thumb_up,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                            shape: new CircleBorder(
+                                side: BorderSide(
+                                    color: Colors.white,
+                                    style: BorderStyle.solid)),
+                            fillColor: Colors.blue,
+                            onPressed: () {},
+                            highlightElevation: 0,
+                          ),
+                          width: 30,
+                          decoration: BoxDecoration(color: Colors.white),
                         ),
-                        shape: new CircleBorder(
-                            side: BorderSide(
-                                color: Colors.white, style: BorderStyle.solid)),
-                        fillColor: Colors.blue,
-                        onPressed: () {},
-                        highlightElevation: 0,
-                      ),
-                      width: 30,
-                      decoration: BoxDecoration(color: Colors.white),
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Text(widget.post.likeCount.toString(),
+                            style: TextStyle(color: Colors.grey))
+                      ],
                     ),
-                    SizedBox(
-                      width: 7,
+                    height: 30,
+                    decoration: BoxDecoration(color: Colors.white))
+                : Container(),
+            widget.post.commentCount > 0
+                ? Container(
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          widget.post.commentCount.toString(),
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Text(
+                          'Comments',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
                     ),
-                    Text(widget.post.likeCount.toString(),
-                        style: TextStyle(color: Colors.grey))
-                  ],
-                ),
-                height: 30,
-                decoration: BoxDecoration(color: Colors.white)),
-            Container(
-                child: Row(
-              children: <Widget>[
-                Text(
-                  '13',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                SizedBox(
-                  width: 3,
-                ),
-                Text(
-                  'Comments',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
-            ))
+                  )
+                : Container(),
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         ),
