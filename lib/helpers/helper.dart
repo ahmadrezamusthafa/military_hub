@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'dart:core';
-
+import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:military_hub/config/api_config.dart';
 
@@ -36,5 +36,23 @@ class Helper {
       print('double.parse $lon format error: ${e.toString()}');
     }
     return LatLng(latitude, longitude);
+  }
+
+  static String getReadableCreatedAt(String dateAt) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    DateTime createdAt = DateTime.parse(dateAt);
+    DateTime createdDate =
+        DateTime(createdAt.year, createdAt.month, createdAt.day);
+    if (createdDate.compareTo(today) == 0) {
+      var formatter = new DateFormat('kk:mm');
+      return formatter.format(createdAt);
+    } else if (createdDate.compareTo(yesterday) == 0) {
+      return "Yesterday";
+    } else {
+      var formatter = new DateFormat('MM/dd');
+      return formatter.format(createdAt);
+    }
   }
 }

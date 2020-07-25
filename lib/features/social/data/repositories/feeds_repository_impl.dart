@@ -37,13 +37,17 @@ class FeedsRepositoryImpl implements FeedsRepository {
           locationName: resp.locationName ?? "",
           description: resp.description ?? "",
           userId: resp.userId ?? "",
+          name: resp.name ?? "",
+          profilePicture: resp.profilePicture ?? "",
           likeCount: resp.likeCount ?? 0,
           commentCount: resp.commentCount ?? 0,
           isLiked: resp.isLiked ?? false,
           createdAt: resp.createdAt,
+          readableCreatedAt: Helper.getReadableCreatedAt(resp.createdAt),
         ));
       }
     }
+    feedsList.sort((a, b) => Comparable.compare(b.createdAt, a.createdAt));
     return feedsList;
   }
 }

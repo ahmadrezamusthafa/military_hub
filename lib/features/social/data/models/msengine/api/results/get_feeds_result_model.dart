@@ -13,6 +13,7 @@ class GetFeedsResultModel {
   String description;
   String userId;
   String name;
+  String profilePicture;
   int likeCount;
   int commentCount;
   bool isLiked;
@@ -28,6 +29,7 @@ class GetFeedsResultModel {
     this.description,
     this.userId,
     this.name,
+    this.profilePicture,
     this.likeCount,
     this.commentCount,
     this.isLiked,

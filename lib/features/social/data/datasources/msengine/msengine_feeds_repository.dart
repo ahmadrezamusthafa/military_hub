@@ -1,6 +1,7 @@
 import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/get_feeds_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/get_feeds_result_model.dart';
+import 'package:military_hub/helpers/helper.dart';
 import 'package:uuid/uuid.dart';
 
 class MSEngineFeedsRepository {
@@ -18,6 +19,7 @@ class MSEngineFeedsRepository {
             "Hello, ada kemacetan jalan yang disebabkan oleh kerumunan masa yang sedang demo ada kemacetan. Hello, ada kemacetan jalan yang disebabkan oleh kerumunan masa yang sedang demo",
         userId: "ACM_1",
         name: "Yovi Arsyad",
+        profilePicture: Helper.getImageUrlByIdNumber(1),
         likeCount: 12,
         commentCount: 1,
         isLiked: false,
@@ -32,10 +34,13 @@ class MSEngineFeedsRepository {
         description: "Raja ampat bagus sekali ya..",
         userId: "ACM_1",
         name: "Yovi Arsyad",
+        profilePicture: Helper.getImageUrlByIdNumber(1),
         likeCount: 2,
         commentCount: 0,
         isLiked: false,
-        createdAt: DateTime.now().toString(),
+        createdAt: DateTime(DateTime.now().year, DateTime.now().month,
+                DateTime.now().day - 1)
+            .toString(),
       ));
 
       feedsList.add(GetFeedsResultModel(
@@ -44,6 +49,7 @@ class MSEngineFeedsRepository {
         description: "Lapor, jalan arjuna clear",
         userId: "ACM_2",
         name: "Budi Waseso",
+        profilePicture: Helper.getImageUrlByIdNumber(2),
         createdAt: DateTime.now().toString(),
       ));
 
@@ -56,6 +62,7 @@ class MSEngineFeedsRepository {
         description: "Lapor, jalan arjuna clear",
         userId: "ACM_2",
         name: "Budi Waseso",
+        profilePicture: Helper.getImageUrlByIdNumber(2),
         createdAt: DateTime.now().toString(),
       ));
 
@@ -67,7 +74,8 @@ class MSEngineFeedsRepository {
         locationName: "Jalan Malioboro 718 Surabaya",
         userId: "ACM_2",
         name: "Budi Waseso",
-        createdAt: DateTime.now().toString(),
+        profilePicture: Helper.getImageUrlByIdNumber(2),
+        createdAt: "2020-01-01 12:00:22",
       ));
     }
     return feedsList;

@@ -10,10 +10,13 @@ class Post {
   String locationName;
   String description;
   String userId;
+  String name;
+  String profilePicture;
   int likeCount;
   int commentCount;
   bool isLiked;
   String createdAt;
+  String readableCreatedAt;
 
   Post({
     this.postCode,
@@ -23,9 +26,12 @@ class Post {
     this.locationName,
     this.description,
     this.userId,
+    this.name,
+    this.profilePicture,
     this.likeCount,
     this.commentCount,
     this.isLiked,
     this.createdAt,
+    this.readableCreatedAt,
   });
 }

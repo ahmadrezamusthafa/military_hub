@@ -46,20 +46,68 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
             Row(
               children: <Widget>[
                 Container(
-                  child: UserAvatarWidget(),
+                  child: Container(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        child: CachedNetworkImage(
+                          height: 70,
+                          width: 70,
+                          fit: BoxFit.cover,
+                          imageUrl: widget.post.profilePicture,
+                          placeholder: (context, url) => Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(100)),
+                                gradient: LinearGradient(
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.topRight,
+                                    colors: [
+                                      Theme.of(context).focusColor.withOpacity(0.8),
+                                      Theme.of(context).focusColor.withOpacity(0.2),
+                                    ])),
+                            child: Icon(
+                              Icons.person,
+                              color: Theme.of(context).primaryColor,
+                              size: 30,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(100)),
+                                gradient: LinearGradient(
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.topRight,
+                                    colors: [
+                                      Theme.of(context).focusColor.withOpacity(0.8),
+                                      Theme.of(context).focusColor.withOpacity(0.2),
+                                    ])),
+                            child: Icon(
+                              Icons.person,
+                              color: Theme.of(context).primaryColor,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                      ),
+                      width: 40,
+                      height: 40),
                   padding: EdgeInsets.only(right: 10),
                 ),
                 Column(
                   children: <Widget>[
-                    Text(currentUser.value.name,
+                    Text(widget.post.name,
                         style: TextStyle(
                             fontWeight: FontWeight.w700, color: Colors.black)),
                     Row(
                       children: <Widget>[
                         Text(
-                          '15 mins ',
+                          widget.post.readableCreatedAt,
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
+                        Padding(padding: EdgeInsets.only(right: 4),),
                         Icon(Icons.language, size: 15, color: Colors.grey)
                       ],
                     )
