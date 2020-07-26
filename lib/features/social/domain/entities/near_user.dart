@@ -6,6 +6,7 @@ class NearUser {
   String profilePicture;
   String latitude;
   String longitude;
+  bool isPublisher;
 
   NearUser({
     this.userId,
@@ -15,5 +16,6 @@ class NearUser {
     this.profilePicture,
     this.latitude,
     this.longitude,
+    this.isPublisher,
   });
 }

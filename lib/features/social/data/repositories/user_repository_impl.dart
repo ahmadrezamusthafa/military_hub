@@ -317,6 +317,7 @@ class UserRepositoryImpl implements UserRepository {
           address: resp.address ?? "",
           latitude: resp.latitude ?? "",
           longitude: resp.longitude ?? "",
+          isPublisher: resp.isPublisher ?? false,
         ));
       }
     }

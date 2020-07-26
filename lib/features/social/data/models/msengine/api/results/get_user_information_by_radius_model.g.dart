@@ -16,6 +16,7 @@ GetUserRangeInformationByRadiusModel
     profilePicture: json['profilePicture'] as String,
     latitude: json['latitude'] as String,
     longitude: json['longitude'] as String,
+    isPublisher: json['isPublisher'] as bool,
   );
 }
 
@@ -29,4 +30,5 @@ Map<String, dynamic> _$GetUserRangeInformationByRadiusModelToJson(
       'profilePicture': instance.profilePicture,
       'latitude': instance.latitude,
       'longitude': instance.longitude,
+      'isPublisher': instance.isPublisher,
     };

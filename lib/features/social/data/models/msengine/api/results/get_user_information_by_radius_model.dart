@@ -11,6 +11,7 @@ class GetUserRangeInformationByRadiusModel {
   String profilePicture;
   String latitude;
   String longitude;
+  bool isPublisher;
 
   GetUserRangeInformationByRadiusModel({
     this.userId,
@@ -20,10 +21,13 @@ class GetUserRangeInformationByRadiusModel {
     this.profilePicture,
     this.latitude,
     this.longitude,
+    this.isPublisher,
   });
 
-  factory GetUserRangeInformationByRadiusModel.fromJson(Map<String, dynamic> json) =>
+  factory GetUserRangeInformationByRadiusModel.fromJson(
+          Map<String, dynamic> json) =>
       _$GetUserRangeInformationByRadiusModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$GetUserRangeInformationByRadiusModelToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$GetUserRangeInformationByRadiusModelToJson(this);
 }

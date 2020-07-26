@@ -70,10 +70,11 @@ class MapViewerPageState extends State<MapViewerPage> {
                 markerId: MarkerId("marker_${user.userId}"),
                 position:
                     Helper.getLatLngFromString(user.latitude, user.longitude),
-                icon: _normalMarkerIcon,
+                icon:
+                    user.isPublisher ? _broadcastMarkerIcon : _normalMarkerIcon,
                 onTap: () {
-                  _showModal(
-                      context, user, (LiveBroadcaster broadcaster, bool isView) {});
+                  _showModal(context, user,
+                      (LiveBroadcaster broadcaster, bool isView) {});
                 },
               ),
             );
@@ -139,30 +140,27 @@ class MapViewerPageState extends State<MapViewerPage> {
   }
 
   Future<void> _createMarkerImageFromAsset(BuildContext context) async {
+    final ImageConfiguration imageConfiguration =
+        createLocalImageConfiguration(context);
     if (_normalMarkerIcon == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context);
       var bitmap = await BitmapDescriptor.fromAssetImage(
           imageConfiguration, 'assets/img/marker_b.png');
       _normalMarkerIcon = bitmap;
     }
     if (_broadcastMarkerIcon == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context);
       var bitmap = await BitmapDescriptor.fromAssetImage(
           imageConfiguration, 'assets/img/marker_o.png');
       _broadcastMarkerIcon = bitmap;
     }
     if (_streamMarkerIcon == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context);
       var bitmap = await BitmapDescriptor.fromAssetImage(
           imageConfiguration, 'assets/img/marker_g.png');
       _streamMarkerIcon = bitmap;
     }
   }
 
-  void _showModal(BuildContext context, NearUser user, OnActionCallback onAction) {
+  void _showModal(
+      BuildContext context, NearUser user, OnActionCallback onAction) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -267,23 +265,26 @@ class MapViewerPageState extends State<MapViewerPage> {
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
                             )),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              FlatButton.icon(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(3.0)),
-                                  icon: Icon(Icons.play_circle_outline,
-                                      size: 34, color: Colors.green),
-                                  label: Text('Play',
-                                      style: TextStyle(fontSize: 12)),
-                                  textColor: Colors.grey,
-                                  onPressed: () {}),
-                            ],
-                          ),
-                        )
+                        user.isPublisher
+                            ? Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    FlatButton.icon(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(3.0)),
+                                        icon: Icon(Icons.play_circle_outline,
+                                            size: 34, color: Colors.green),
+                                        label: Text('Play',
+                                            style: TextStyle(fontSize: 12)),
+                                        textColor: Colors.grey,
+                                        onPressed: () {}),
+                                  ],
+                                ),
+                              )
+                            : Container(),
                       ],
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
@@ -298,8 +299,7 @@ class MapViewerPageState extends State<MapViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    _createMarkerImageFromAsset(context);
-    _getNearUser();
+    _createMarkerImageFromAsset(context).whenComplete(() => _getNearUser());
     return Scaffold(
         appBar: AppBar(
           iconTheme: Theme.of(context).iconTheme,

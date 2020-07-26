@@ -197,12 +197,22 @@ class MSEngineUserRepository {
     ));
 
     userList.add(GetUserRangeInformationByRadiusModel(
-      userId: "ACM_3",
+      userId: "ACM_34",
       name: "Andi Waseso",
-      profilePicture: Helper.getImageUrlByIdNumber(3),
+      profilePicture: Helper.getImageUrlByIdNumber(34),
       email: "andi@yahoo.com",
       latitude: "-7.545449647437256",
       longitude: "112.45844716370106",
+    ));
+
+    userList.add(GetUserRangeInformationByRadiusModel(
+      userId: "ACM_3",
+      name: "Ahmad Reza Musthafa",
+      profilePicture: Helper.getImageUrlByIdNumber(3),
+      email: "andi@yahoo.com",
+      latitude: "-7.345449647437256",
+      longitude: "112.4744716370106",
+      isPublisher: true,
     ));
 
     return userList;
