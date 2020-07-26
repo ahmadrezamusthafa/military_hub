@@ -6,10 +6,12 @@ import 'package:military_hub/features/social/data/models/msengine/api/params/upd
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_pin_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_profile_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/api_result_model.dart';
+import 'package:military_hub/features/social/data/models/msengine/api/results/get_user_information_by_radius_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/get_user_information_full_by_phone_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/get_user_information_full_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/get_userid_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/status_result_model.dart';
+import 'package:military_hub/helpers/helper.dart';
 
 class MSEngineUserRepository {
   MSEngineUserRepository();
@@ -168,5 +170,41 @@ class MSEngineUserRepository {
       print("Got error: ${e.toString()}");
     }
     return result;
+  }
+
+  Future<List<GetUserRangeInformationByRadiusModel>> getNearUserList(
+      String email, String password, double latitude, double longitude,
+      {int radius, OnError errorCallBack}) async {
+    List<GetUserRangeInformationByRadiusModel> userList =
+        new List<GetUserRangeInformationByRadiusModel>();
+
+    userList.add(GetUserRangeInformationByRadiusModel(
+      userId: "ACM_1",
+      name: "Yovi Arsyad",
+      profilePicture: Helper.getImageUrlByIdNumber(1),
+      email: "altraz@yahoo.com",
+      latitude: "-7.545449647437256",
+      longitude: "112.46844716370106",
+    ));
+
+    userList.add(GetUserRangeInformationByRadiusModel(
+      userId: "ACM_2",
+      name: "Budi Waseso",
+      profilePicture: Helper.getImageUrlByIdNumber(2),
+      email: "budi@yahoo.com",
+      latitude: "-7.512449647437256",
+      longitude: "112.45544716370106",
+    ));
+
+    userList.add(GetUserRangeInformationByRadiusModel(
+      userId: "ACM_3",
+      name: "Andi Waseso",
+      profilePicture: Helper.getImageUrlByIdNumber(3),
+      email: "andi@yahoo.com",
+      latitude: "-7.545449647437256",
+      longitude: "112.45844716370106",
+    ));
+
+    return userList;
   }
 }

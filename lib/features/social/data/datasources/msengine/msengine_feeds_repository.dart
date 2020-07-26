@@ -1,5 +1,4 @@
 import 'package:military_hub/core/http/http_request.dart';
-import 'package:military_hub/features/social/data/models/msengine/api/params/get_feeds_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/get_feeds_result_model.dart';
 import 'package:military_hub/helpers/helper.dart';
 import 'package:uuid/uuid.dart';
@@ -7,10 +6,15 @@ import 'package:uuid/uuid.dart';
 class MSEngineFeedsRepository {
   MSEngineFeedsRepository();
 
-  Future<List<GetFeedsResultModel>> getFeeds(GetFeedsModel param,
+  Future<List<GetFeedsResultModel>> getFeeds(
+      String email, String password, int page, int limit,
       {OnError errorCallBack}) async {
     List<GetFeedsResultModel> feedsList = new List<GetFeedsResultModel>();
-
+    var params = Map<String, dynamic>();
+    params['Email'] = email;
+    params['Password'] = password;
+    params['Page'] = page;
+    params['Limit'] = limit;
     for (int i = 0; i < 15; i++) {
       feedsList.add(GetFeedsResultModel(
         postCode: Uuid().toString(),

@@ -33,3 +33,23 @@ class GetUserListByEmailsEvent extends UserEvent {
   @override
   List<Object> get props => [emailList];
 }
+
+class GetNearUserListEvent extends UserEvent {
+  final String email;
+  final String password;
+  final double latitude;
+  final double longitude;
+  final int radius;
+  final OnError errorCallBack;
+
+  GetNearUserListEvent(
+      {this.email,
+      this.password,
+      this.latitude,
+      this.longitude,
+      this.radius,
+      this.errorCallBack});
+
+  @override
+  List<Object> get props => [email];
+}

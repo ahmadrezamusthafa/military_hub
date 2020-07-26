@@ -1,5 +1,6 @@
 import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/domain/entities/action_result.dart';
+import 'package:military_hub/features/social/domain/entities/near_user.dart';
 import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 
@@ -84,5 +85,12 @@ class UserUseCase {
 
   setCurrentUser(User user) {
     return repository.setCurrentUser(user);
+  }
+
+  Future<List<NearUser>> getNearUserList(
+      String email, String password, double latitude, double longitude,
+      {int radius, OnError errorCallBack}) async {
+    return repository.getNearUserList(email, password, latitude, longitude,
+        radius: radius, errorCallBack: errorCallBack);
   }
 }

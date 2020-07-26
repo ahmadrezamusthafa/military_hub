@@ -9,6 +9,7 @@ import 'package:military_hub/features/social/data/models/msengine/api/params/upd
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_pin_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_profile_model.dart';
 import 'package:military_hub/features/social/domain/entities/action_result.dart';
+import 'package:military_hub/features/social/domain/entities/near_user.dart';
 import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 
@@ -296,5 +297,29 @@ class UserRepositoryImpl implements UserRepository {
     currentUser.value.address = user.address ?? "";
     currentUser.value.apiToken = user.apiToken ?? "";
     currentUser.value.birthDate = user.birthDate ?? "";
+  }
+
+  @override
+  Future<List<NearUser>> getNearUserList(
+      String email, String password, double latitude, double longitude,
+      {int radius, OnError errorCallBack}) async {
+    List<NearUser> userList = List<NearUser>();
+    var responses = await msEngineUserRepository.getNearUserList(
+        email, password, latitude, longitude,
+        radius: radius, errorCallBack: errorCallBack);
+    if (responses != null && responses.isNotEmpty) {
+      for (var resp in responses) {
+        userList.add(NearUser(
+          userId: resp.userId ?? "",
+          email: resp.email ?? "",
+          name: resp.name ?? "",
+          profilePicture: resp.profilePicture ?? "",
+          address: resp.address ?? "",
+          latitude: resp.latitude ?? "",
+          longitude: resp.longitude ?? "",
+        ));
+      }
+    }
+    return userList;
   }
 }

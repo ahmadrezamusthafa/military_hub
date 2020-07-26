@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/domain/entities/action_result.dart';
+import 'package:military_hub/features/social/domain/entities/near_user.dart';
 import 'package:military_hub/features/social/domain/entities/user.dart';
 
 ValueNotifier<User> currentUser = new ValueNotifier(User());
@@ -36,4 +37,8 @@ abstract class UserRepository {
   Future<User> getUserLocalDb();
 
   setCurrentUser(User user);
+
+  Future<List<NearUser>> getNearUserList(
+      String email, String password, double latitude, double longitude,
+      {int radius, OnError errorCallBack});
 }

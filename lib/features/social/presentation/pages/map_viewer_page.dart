@@ -1,8 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:military_hub/features/social/domain/entities/live_broadcaster.dart';
+import 'package:military_hub/features/social/domain/entities/near_user.dart';
+import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
+import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
+import 'package:military_hub/features/social/presentation/bloc/fetch/user/bloc.dart';
 import 'package:military_hub/helpers/helper.dart';
+import 'package:military_hub/injection_container.dart';
 
 class MapViewerPage extends StatefulWidget {
   const MapViewerPage();
@@ -38,6 +44,7 @@ class MapViewerPageState extends State<MapViewerPage> {
   BitmapDescriptor _normalMarkerIcon;
   BitmapDescriptor _broadcastMarkerIcon;
   BitmapDescriptor _streamMarkerIcon;
+  Set<Marker> _markers = new Set<Marker>();
 
   @override
   void initState() {
@@ -47,6 +54,35 @@ class MapViewerPageState extends State<MapViewerPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _getNearUser() async {
+    var nearUsers = await sl<UserUseCase>().getNearUserList(
+        currentUser.value.email, currentUser.value.password, 0, 0,
+        radius: 10);
+    if (nearUsers != null && nearUsers.isNotEmpty) {
+      for (var user in nearUsers) {
+        setState(() {
+          if (!_markers.any((element) =>
+              element.markerId == MarkerId("marker_${user.userId}"))) {
+            _markers.add(
+              Marker(
+                markerId: MarkerId("marker_${user.userId}"),
+                position:
+                    Helper.getLatLngFromString(user.latitude, user.longitude),
+                icon: _normalMarkerIcon,
+                onTap: () {
+                  _showModal(
+                      context, user, (LiveBroadcaster broadcaster, bool isView) {});
+                },
+              ),
+            );
+          } else {
+            //update posisition and status
+          }
+        });
+      }
+    }
   }
 
   Widget buildMap() {
@@ -74,35 +110,7 @@ class MapViewerPageState extends State<MapViewerPage> {
                   myLocationButtonEnabled: _myLocationButtonEnabled,
                   trafficEnabled: _myTrafficEnabled,
                   onCameraMove: _updateCameraPosition,
-                  markers: <Marker>[
-                    Marker(
-                      markerId: MarkerId("marker_1"),
-                      position: LatLng(-7.545449647437256, 112.46844716370106),
-                      icon: _normalMarkerIcon,
-                      onTap: () {
-                        _showModal(context,
-                            (LiveBroadcaster broadcaster, bool isView) {});
-                      },
-                    ),
-                    Marker(
-                      markerId: MarkerId("marker_2"),
-                      position: LatLng(-7.512449647437256, 112.45544716370106),
-                      icon: _broadcastMarkerIcon,
-                      onTap: () {
-                        _showModal(context,
-                            (LiveBroadcaster broadcaster, bool isView) {});
-                      },
-                    ),
-                    Marker(
-                      markerId: MarkerId("marker_3"),
-                      position: LatLng(-7.545449647437256, 112.45844716370106),
-                      icon: _streamMarkerIcon,
-                      onTap: () {
-                        _showModal(context,
-                            (LiveBroadcaster broadcaster, bool isView) {});
-                      },
-                    ),
-                  ].toSet(),
+                  markers: _markers,
                 ),
               ],
             ),
@@ -154,7 +162,7 @@ class MapViewerPageState extends State<MapViewerPage> {
     }
   }
 
-  void _showModal(BuildContext context, OnActionCallback onAction) {
+  void _showModal(BuildContext context, NearUser user, OnActionCallback onAction) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -199,7 +207,7 @@ class MapViewerPageState extends State<MapViewerPage> {
                                   height: 70,
                                   width: 70,
                                   fit: BoxFit.cover,
-                                  imageUrl: Helper.getImageUrlByIdNumber(3),
+                                  imageUrl: user.profilePicture,
                                   placeholder: (context, url) => Container(
                                     height: 70,
                                     width: 70,
@@ -253,7 +261,7 @@ class MapViewerPageState extends State<MapViewerPage> {
                               height: 40),
                           padding: EdgeInsets.only(right: 10),
                         ),
-                        Text("Ahmad Reza Musthafa",
+                        Text(user.name,
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
@@ -291,6 +299,7 @@ class MapViewerPageState extends State<MapViewerPage> {
   @override
   Widget build(BuildContext context) {
     _createMarkerImageFromAsset(context);
+    _getNearUser();
     return Scaffold(
         appBar: AppBar(
           iconTheme: Theme.of(context).iconTheme,
