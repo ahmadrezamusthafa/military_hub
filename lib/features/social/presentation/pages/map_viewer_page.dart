@@ -79,7 +79,21 @@ class MapViewerPageState extends State<MapViewerPage> {
               ),
             );
           } else {
-            //update posisition and status
+            _markers.removeWhere((element) =>
+                element.markerId == MarkerId("marker_${user.userId}"));
+            _markers.add(
+              Marker(
+                markerId: MarkerId("marker_${user.userId}"),
+                position:
+                    Helper.getLatLngFromString(user.latitude, user.longitude),
+                icon:
+                    user.isPublisher ? _broadcastMarkerIcon : _normalMarkerIcon,
+                onTap: () {
+                  _showModal(context, user,
+                      (LiveBroadcaster broadcaster, bool isView) {});
+                },
+              ),
+            );
           }
         });
       }
@@ -127,7 +141,9 @@ class MapViewerPageState extends State<MapViewerPage> {
         child: IconButton(
           icon: Icon(Icons.refresh),
           color: Theme.of(context).accentColor,
-          onPressed: () {},
+          onPressed: () async {
+            _getNearUser();
+          },
         ),
         decoration: BoxDecoration(
             color: Colors.transparent,
