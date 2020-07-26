@@ -159,6 +159,15 @@ class MapViewerPageState extends State<MapViewerPage> {
     }
   }
 
+  int getIdNumber(String userId) {
+    var ids = userId.split("_");
+    if (ids.isNotEmpty && ids.length > 1) {
+      var id = int.parse(ids[1]);
+      return id;
+    }
+    return 0;
+  }
+
   void _showModal(
       BuildContext context, NearUser user, OnActionCallback onAction) {
     showModalBottomSheet(
@@ -280,7 +289,18 @@ class MapViewerPageState extends State<MapViewerPage> {
                                         label: Text('Play',
                                             style: TextStyle(fontSize: 12)),
                                         textColor: Colors.grey,
-                                        onPressed: () {}),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          LiveBroadcaster broadcaster =
+                                              LiveBroadcaster(
+                                            roomId: getIdNumber(user.userId),
+                                            userId: getIdNumber(user.userId),
+                                            name: user.name,
+                                          );
+                                          Navigator.of(context).pushNamed(
+                                              '/StreamView',
+                                              arguments: broadcaster);
+                                        }),
                                   ],
                                 ),
                               )

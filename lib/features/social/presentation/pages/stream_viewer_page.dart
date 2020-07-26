@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:flutter_webrtc/enums.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_webrtc/media_stream.dart';
 import 'package:flutter_webrtc/rtc_session_description.dart';
 import 'package:flutter_webrtc/rtc_video_view.dart';
@@ -15,9 +13,8 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:military_hub/features/social/domain/entities/live_broadcaster.dart';
-import 'package:military_hub/features/social/domain/entities/room_participant.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:military_hub/helpers/helper.dart';
 import 'package:uuid/uuid.dart';
 
 class StreamViewerPage extends StatefulWidget {
@@ -233,25 +230,63 @@ class StreamViewerPageState extends State<StreamViewerPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Container(
-              height: 20,
-              margin: EdgeInsets.all(0),
-              child: Image(
-                image: AssetImage('assets/img/logo_military_hub_s.png'),
-              ),
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-            ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  child: CachedNetworkImage(
+                    height: 40,
+                    width: 40,
+                    fit: BoxFit.cover,
+                    imageUrl:
+                        Helper.getImageUrlByIdNumber(widget.broadcaster.roomId),
+                    placeholder: (context, url) => Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight,
+                              colors: [
+                                Theme.of(context).focusColor.withOpacity(0.8),
+                                Theme.of(context).focusColor.withOpacity(0.2),
+                              ])),
+                      child: Icon(
+                        Icons.person,
+                        color: Theme.of(context).primaryColor,
+                        size: 20,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight,
+                              colors: [
+                                Theme.of(context).focusColor.withOpacity(0.8),
+                                Theme.of(context).focusColor.withOpacity(0.2),
+                              ])),
+                      child: Icon(
+                        Icons.person,
+                        color: Theme.of(context).primaryColor,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                width: 35,
+                height: 35),
             Padding(
-              padding: EdgeInsets.all(3),
+              padding: EdgeInsets.all(7),
             ),
-            Text("STREAM VIEW",
+            Text(widget.broadcaster.name,
                 style: Theme.of(context)
                     .textTheme
                     .headline2
-                    .merge(TextStyle(fontFamily: "Staatliches"))
                     .merge(TextStyle(letterSpacing: 1.3))
-                    .merge(TextStyle(fontSize: 16))),
+                    .merge(TextStyle(fontSize: 13))),
           ],
         ),
         backgroundColor: Colors.white,
