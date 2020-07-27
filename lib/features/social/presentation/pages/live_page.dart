@@ -17,6 +17,7 @@ import 'package:flutter/widgets.dart';
 import 'package:military_hub/features/social/domain/entities/room_participant.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:screen/screen.dart';
 
 class LivePage extends StatefulWidget {
   final _localRenderer = new RTCVideoRenderer();
@@ -257,6 +258,7 @@ class LivePageState extends State<LivePage> {
 
   startLive() async {
     if (isStopped) {
+      Screen.keepOn(true);
       isStopped = false;
       await this.initRenderer();
       await this.initPlatformState();
@@ -265,6 +267,7 @@ class LivePageState extends State<LivePage> {
   }
 
   stopLive() {
+    Screen.keepOn(false);
     isStopped = true;
     stopTimer();
     if (_pluginHandle != null) {

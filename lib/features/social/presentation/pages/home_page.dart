@@ -353,7 +353,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 padding: EdgeInsets.only(right: 10)),
             Text(
-              "What's on your Mind ?",
+              "What's going on arround you?",
               style: TextStyle(color: Colors.black87),
             ),
           ],
