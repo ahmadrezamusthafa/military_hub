@@ -71,6 +71,16 @@ class UserUseCase {
     );
   }
 
+  Future<ActionResult> updateUserLocation(
+      String email, String password, double latitude, double longitude) async {
+    return await repository.updateUserLocation(
+      email,
+      password,
+      latitude,
+      longitude,
+    );
+  }
+
   Future<bool> checkUserLocalDbExists() async {
     return repository.checkUserLocalDbExists();
   }

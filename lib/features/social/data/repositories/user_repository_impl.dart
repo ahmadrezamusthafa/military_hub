@@ -5,6 +5,7 @@ import 'package:military_hub/features/social/data/datasources/msengine/msengine_
 import 'package:military_hub/features/social/data/models/database/user_db_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/create_account_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/get_userid_by_email_model.dart';
+import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_location_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_phone_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_pin_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_profile_model.dart';
@@ -226,6 +227,31 @@ class UserRepositoryImpl implements UserRepository {
       profileStatus: profileStatus,
     );
     var response = await msEngineUserRepository.updateUserProfile(param);
+    if (response != null) {
+      result = ActionResult(
+        isSuccess: response.isSuccess,
+        message: response.message,
+      );
+    } else {
+      result = ActionResult(
+        isSuccess: false,
+        message: "Invalid response",
+      );
+    }
+    return result;
+  }
+
+  @override
+  Future<ActionResult> updateUserLocation(
+      String email, String password, double latitude, double longitude) async{
+    ActionResult result;
+    UpdateUserLocationModel param = new UpdateUserLocationModel(
+      email: email,
+      password: password,
+      latitude: latitude,
+      longitude: longitude,
+    );
+    var response = await msEngineUserRepository.updateUserLocation(param);
     if (response != null) {
       result = ActionResult(
         isSuccess: response.isSuccess,

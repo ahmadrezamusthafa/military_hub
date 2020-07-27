@@ -30,6 +30,9 @@ abstract class UserRepository {
   Future<ActionResult> updateUserPhone(
       String email, String phone, String verificationCode);
 
+  Future<ActionResult> updateUserLocation(
+      String email, String password, double latitude, double longitude);
+
   Future<bool> checkUserLocalDbExists();
 
   Future<bool> deleteUserDb();

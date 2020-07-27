@@ -2,6 +2,7 @@ import 'package:military_hub/config/api_config.dart';
 import 'package:military_hub/core/http/http_request.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/create_account_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/get_userid_by_email_model.dart';
+import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_location_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_phone_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_pin_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_profile_model.dart';
@@ -158,6 +159,26 @@ class MSEngineUserRepository {
       var params = param.toJson();
       var response = await HttpRequest.getInstance().postWithoutCallBack(
           API.MSEngineAPIUrl + "/api/Account/UpdateUserPhone",
+          params: params);
+      var apiResult = APIResultModel.fromJson(response);
+      if (apiResult.result != null && apiResult.result.length > 0) {
+        for (var item in apiResult.result) {
+          result = StatusResultModel.fromJson(item);
+          break;
+        }
+      }
+    } catch (e) {
+      print("Got error: ${e.toString()}");
+    }
+    return result;
+  }
+
+  Future<StatusResultModel> updateUserLocation(UpdateUserLocationModel param) async {
+    StatusResultModel result;
+    try {
+      var params = param.toJson();
+      var response = await HttpRequest.getInstance().putWithoutCallBack(
+          API.MSEngineAPIUrl + "/api/Account/UpdateUserLocation",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
       if (apiResult.result != null && apiResult.result.length > 0) {
