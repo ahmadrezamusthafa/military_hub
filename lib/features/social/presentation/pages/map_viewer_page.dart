@@ -34,7 +34,7 @@ class MapViewerPageState extends State<MapViewerPage> {
   bool _rotateGesturesEnabled = true;
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
-  bool _zoomControlsEnabled = false;
+  bool _zoomControlsEnabled = true;
   bool _zoomGesturesEnabled = true;
   bool _indoorViewEnabled = true;
   bool _myLocationEnabled = true;
@@ -58,8 +58,11 @@ class MapViewerPageState extends State<MapViewerPage> {
 
   void _getNearUser() async {
     var nearUsers = await sl<UserUseCase>().getNearUserList(
-        currentUser.value.email, currentUser.value.password, 0, 0,
-        radius: 10);
+        currentUser.value.email,
+        currentUser.value.password,
+        currentUser.value.latitude,
+        currentUser.value.longitude,
+        radius: 1000000);
     if (nearUsers != null && nearUsers.isNotEmpty) {
       for (var user in nearUsers) {
         setState(() {

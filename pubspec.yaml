@@ -27,6 +27,8 @@ dependencies:
   uuid: ^2.1.0
   google_map_location_picker:
     path: ./plugins/google_map_location_picker
+  background_location:
+    path: ./plugins/background_location
   janus_client: ^0.0.1
   flutter_webrtc: ^0.2.8
   permission_handler: ^5.0.1

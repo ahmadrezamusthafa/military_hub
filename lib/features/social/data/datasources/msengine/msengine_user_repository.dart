@@ -178,7 +178,7 @@ class MSEngineUserRepository {
     List<GetUserRangeInformationByRadiusModel> userList =
         new List<GetUserRangeInformationByRadiusModel>();
 
-    userList.add(GetUserRangeInformationByRadiusModel(
+    /*userList.add(GetUserRangeInformationByRadiusModel(
       userId: "ACM_1",
       name: "Yovi Arsyad",
       profilePicture: Helper.getImageUrlByIdNumber(1),
@@ -213,8 +213,38 @@ class MSEngineUserRepository {
       latitude: "-7.345449647437256",
       longitude: "112.4744716370106",
       isPublisher: true,
-    ));
+    ));*/
 
+    try {
+      var params = Map<String, dynamic>();
+      params['Email'] = email;
+      params['Password'] = password;
+      params['Latitude'] = latitude;
+      params['Longitude'] = longitude;
+      params['Radius'] = radius;
+      params['Apps'] = API.AppsInitial;
+      var response = await HttpRequest.getInstance().getWithoutCallBack(
+          API.MSEngineAPIUrl + "/api/Account/GetNearUserByRadius",
+          params: params);
+      var apiResult = APIResultModel.fromJson(response);
+      if (apiResult.result != null && apiResult.result.length > 0) {
+        for (var item in apiResult.result) {
+          var value = GetUserRangeInformationByRadiusModel.fromJson(item);
+          userList.add(new GetUserRangeInformationByRadiusModel(
+            userId: value.userId,
+            name: value.name,
+            latitude: value.latitude,
+            longitude: value.longitude,
+            profilePicture: value.profilePicture,
+            email: value.email,
+            address: value.address,
+            isPublisher: false,
+          ));
+        }
+      }
+    } catch (e) {
+      print("Got error: ${e.toString()}");
+    }
     return userList;
   }
 }

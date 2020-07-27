@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _itemCount += 10;
             });
-            _refreshController.finishLoad(noMore: _itemCount >= 40);
+            _refreshController.finishLoad(noMore: _itemCount >= 20);
           });
         },
         slivers: <Widget>[
