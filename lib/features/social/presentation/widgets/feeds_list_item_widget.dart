@@ -138,7 +138,7 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                       color: Theme.of(context).canvasColor,
                       image: DecorationImage(
                           image: CachedNetworkImageProvider(widget.post.image),
-                          fit: BoxFit.fill)),
+                          fit: BoxFit.cover)),
                 )
               : Container(),
           widget.post.description != ""
