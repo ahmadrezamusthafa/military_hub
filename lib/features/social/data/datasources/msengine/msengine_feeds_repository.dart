@@ -85,7 +85,7 @@ class MSEngineFeedsRepository {
       params['Page'] = page;
       params['Limit'] = limit;
       var response = await HttpRequest.getInstance().getWithoutCallBack(
-          API.MSEngineAPIUrl + "/api/Channel/GetFeeds",
+          API.MSEngineAPIUrl + "/api/Feeds/GetFeeds",
           params: params);
       var apiResult = APIResultModel.fromJson(response);
       if (apiResult.result != null && apiResult.result.length > 0) {

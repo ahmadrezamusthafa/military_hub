@@ -6,6 +6,7 @@ import 'package:military_hub/features/social/domain/entities/live_broadcaster.da
 import 'package:military_hub/features/social/domain/entities/near_user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
+import 'package:military_hub/features/social/domain/usecase/webrtc_usecase.dart';
 import 'package:military_hub/features/social/presentation/bloc/fetch/user/bloc.dart';
 import 'package:military_hub/helpers/helper.dart';
 import 'package:military_hub/injection_container.dart';
@@ -56,7 +57,17 @@ class MapViewerPageState extends State<MapViewerPage> {
     super.dispose();
   }
 
+  int getIdNumber(String userId) {
+    var ids = userId.split("_");
+    if (ids.isNotEmpty && ids.length > 1) {
+      var id = int.parse(ids[1]);
+      return id;
+    }
+    return 0;
+  }
+
   void _getNearUser() async {
+    var broadcasterList = await sl<WebRTCUseCase>().getLiveBroadcasterList();
     var nearUsers = await sl<UserUseCase>().getNearUserList(
         currentUser.value.email,
         currentUser.value.password,
@@ -65,6 +76,11 @@ class MapViewerPageState extends State<MapViewerPage> {
         radius: 1000000);
     if (nearUsers != null && nearUsers.isNotEmpty) {
       for (var user in nearUsers) {
+        if (broadcasterList != null && broadcasterList.isNotEmpty) {
+          user.isPublisher = broadcasterList
+              .any((element) => element.roomId == getIdNumber(user.userId));
+        }
+
         setState(() {
           if (!_markers.any((element) =>
               element.markerId == MarkerId("marker_${user.userId}"))) {
@@ -176,15 +192,6 @@ class MapViewerPageState extends State<MapViewerPage> {
           imageConfiguration, 'assets/img/marker_g.png');
       _streamMarkerIcon = bitmap;
     }
-  }
-
-  int getIdNumber(String userId) {
-    var ids = userId.split("_");
-    if (ids.isNotEmpty && ids.length > 1) {
-      var id = int.parse(ids[1]);
-      return id;
-    }
-    return 0;
   }
 
   void _showModal(
