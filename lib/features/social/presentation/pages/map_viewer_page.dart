@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,12 +23,10 @@ class MapViewerPage extends StatefulWidget {
 class MapViewerPageState extends State<MapViewerPage> {
   MapViewerPageState();
 
-  static final CameraPosition _kInitialPosition = const CameraPosition(
-    target: LatLng(-7.545449647437256, 112.46844716370106),
-    zoom: 11.0,
+  CameraPosition _position = CameraPosition(
+    target: LatLng(currentUser.value.latitude, currentUser.value.longitude),
+    zoom: 8.0,
   );
-
-  CameraPosition _position = _kInitialPosition;
   bool _compassEnabled = true;
   bool _mapToolbarEnabled = true;
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
@@ -50,11 +50,28 @@ class MapViewerPageState extends State<MapViewerPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _createMarkerImageFromAsset(context).whenComplete(() => _getNearUser());
+      startTimer();
+    });
   }
 
   @override
   void dispose() {
+    _timer.cancel();
     super.dispose();
+  }
+
+  Timer _timer;
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 10);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) async {
+        _getNearUser();
+      },
+    );
   }
 
   int getIdNumber(String userId) {
@@ -128,7 +145,7 @@ class MapViewerPageState extends State<MapViewerPage> {
               children: <Widget>[
                 GoogleMap(
                   onMapCreated: onMapCreated,
-                  initialCameraPosition: _kInitialPosition,
+                  initialCameraPosition: _position,
                   compassEnabled: _compassEnabled,
                   mapToolbarEnabled: _mapToolbarEnabled,
                   cameraTargetBounds: _cameraTargetBounds,
@@ -345,7 +362,7 @@ class MapViewerPageState extends State<MapViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    _createMarkerImageFromAsset(context).whenComplete(() => _getNearUser());
+//    _createMarkerImageFromAsset(context).whenComplete(() => _getNearUser());
     return Scaffold(
         appBar: AppBar(
           iconTheme: Theme.of(context).iconTheme,
