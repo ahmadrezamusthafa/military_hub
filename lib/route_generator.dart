@@ -32,7 +32,10 @@ class RouteGenerator {
                   broadcaster: args,
                 ));
       case '/MapView':
-        return MaterialPageRoute(builder: (_) => MapViewerPage());
+        return MaterialPageRoute(
+            builder: (_) => MapViewerPage(
+                  location: args,
+                ));
     }
   }
 }

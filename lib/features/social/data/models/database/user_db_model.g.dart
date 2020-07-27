@@ -26,13 +26,17 @@ UserDbModel _$UserDbModelFromJson(Map<String, dynamic> json) {
     syncedAt: json['syncedAt'] as String,
   )
     ..nickName = json['nickName'] as String
-    ..country = json['country'] as String;
+    ..country = json['country'] as String
+    ..latitude = (json['latitude'] as num)?.toDouble()
+    ..longitude = (json['longitude'] as num)?.toDouble();
 }
 
 Map<String, dynamic> _$UserDbModelToJson(UserDbModel instance) =>
     <String, dynamic>{
       'nickName': instance.nickName,
       'country': instance.country,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
       'userId': instance.userId,
       'email': instance.email,
       'password': instance.password,

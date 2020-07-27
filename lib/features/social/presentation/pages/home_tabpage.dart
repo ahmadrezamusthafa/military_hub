@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:military_hub/features/social/domain/entities/user.dart';
+import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
+import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
 import 'package:military_hub/features/social/presentation/pages/home_page.dart';
 import 'package:military_hub/features/social/presentation/pages/live_page.dart';
 import 'package:military_hub/features/social/presentation/pages/profile_page.dart';
 import 'package:military_hub/features/social/presentation/pages/stream_page.dart';
+import 'package:background_location/background_location.dart';
+import 'package:military_hub/injection_container.dart';
 
 class HomeTabPage extends StatefulWidget {
   HomeTabPage({Key key}) : super(key: key);
@@ -19,14 +24,39 @@ class HomeTabPageState extends State<HomeTabPage>
 
   @override
   void initState() {
+    print("HomeTabPage initState");
     super.initState();
     tabController = new TabController(vsync: this, length: 4);
+    BackgroundLocation.startLocationService();
+    BackgroundLocation.getLocationUpdates((location) async {
+      if (currentUser.value.latitude != location.latitude ||
+          currentUser.value.longitude != location.longitude) {
+        currentUser.value.latitude = location.latitude;
+        currentUser.value.longitude = location.longitude;
+
+        await sl<UserUseCase>()
+            .updateUserLocationLocalDb(location.latitude, location.longitude);
+
+        var status = await sl<UserUseCase>().updateUserLocation(
+            currentUser.value.email,
+            currentUser.value.password,
+            currentUser.value.latitude,
+            currentUser.value.longitude);
+        if (status != null) {
+          print("update location status issuccess=${status.isSuccess}");
+        }
+        print(
+            "receive location lat:${location.latitude} lon:${location.longitude}");
+      }
+    });
   }
 
   @override
   void dispose() {
+    print("HomeTabPage dispose");
     tabController.dispose();
     super.dispose();
+    BackgroundLocation.stopLocationService();
   }
 
   @override

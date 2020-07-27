@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:military_hub/features/social/presentation/pages/home_tabpage.dart';
 import 'package:military_hub/route_generator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'config/app_config.dart' as config;
 import 'features/social/domain/repositories/user_repository.dart';
 import 'injection_container.dart' as di;
@@ -14,6 +15,7 @@ import 'injection_container.dart' as di;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  await initPermission();
   initDummyData();
   runApp(MyApp());
 }
@@ -28,6 +30,10 @@ void initDummyData() {
   currentUser.value.profilePicture =
       "http://idekuliner.com/images/profpic/ACM_3.jpg";
   currentUser.value.address = "Mojokerto";
+}
+
+Future<void> initPermission() async {
+  await Permission.locationAlways.request();
 }
 
 class MyApp extends StatelessWidget {

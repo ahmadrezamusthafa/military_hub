@@ -14,6 +14,8 @@ class User {
   String profileStatus;
   String profilePicture;
   String apiToken;
+  double latitude;
+  double longitude;
   String createdAt;
   String updatedAt;
   String syncedAt;
@@ -32,6 +34,8 @@ class User {
     this.profileStatus,
     this.profilePicture,
     this.apiToken,
+    this.latitude,
+    this.longitude,
     this.createdAt,
     this.updatedAt,
     this.syncedAt,

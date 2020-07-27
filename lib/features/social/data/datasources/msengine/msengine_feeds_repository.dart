@@ -1,17 +1,17 @@
+import 'package:military_hub/config/api_config.dart';
 import 'package:military_hub/core/http/http_request.dart';
-import 'package:military_hub/features/social/data/models/msengine/api/params/get_feeds_model.dart';
+import 'package:military_hub/features/social/data/models/msengine/api/results/api_result_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/results/get_feeds_result_model.dart';
-import 'package:military_hub/helpers/helper.dart';
-import 'package:uuid/uuid.dart';
 
 class MSEngineFeedsRepository {
   MSEngineFeedsRepository();
 
-  Future<List<GetFeedsResultModel>> getFeeds(GetFeedsModel param,
+  Future<List<GetFeedsResultModel>> getFeeds(
+      String email, String password, int page, int limit,
       {OnError errorCallBack}) async {
     List<GetFeedsResultModel> feedsList = new List<GetFeedsResultModel>();
 
-    for (int i = 0; i < 15; i++) {
+    /*for (int i = 0; i < 15; i++) {
       feedsList.add(GetFeedsResultModel(
         postCode: Uuid().toString(),
         type: 0,
@@ -77,6 +77,42 @@ class MSEngineFeedsRepository {
         profilePicture: Helper.getImageUrlByIdNumber(2),
         createdAt: "2020-01-01 12:00:22",
       ));
+    }*/
+    try {
+      var params = Map<String, dynamic>();
+      params['Email'] = email;
+      params['Password'] = password;
+      params['Page'] = page;
+      params['Limit'] = limit;
+      var response = await HttpRequest.getInstance().getWithoutCallBack(
+          API.MSEngineAPIUrl + "/api/Feeds/GetFeeds",
+          params: params);
+      var apiResult = APIResultModel.fromJson(response);
+      if (apiResult.result != null && apiResult.result.length > 0) {
+        for (var item in apiResult.result) {
+          var value = GetFeedsResultModel.fromJson(item);
+          feedsList.add(new GetFeedsResultModel(
+            userId: value.userId,
+            name: value.name,
+            latitude: value.latitude,
+            longitude: value.longitude,
+            image: value.image,
+            locationName: value.locationName,
+            profilePicture: value.profilePicture,
+            isLiked: value.isLiked,
+            commentCount: value.commentCount,
+            likeCount: value.likeCount,
+            description: value.description,
+            postCode: value.postCode,
+            type: value.type,
+            userLatitude: value.userLatitude,
+            userLongitude: value.userLongitude,
+            createdAt: value.createdAt,
+          ));
+        }
+      }
+    } catch (e) {
+      print("Got error: ${e.toString()}");
     }
     return feedsList;
   }

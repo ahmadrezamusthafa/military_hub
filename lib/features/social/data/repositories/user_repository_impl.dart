@@ -5,10 +5,12 @@ import 'package:military_hub/features/social/data/datasources/msengine/msengine_
 import 'package:military_hub/features/social/data/models/database/user_db_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/create_account_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/get_userid_by_email_model.dart';
+import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_location_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_phone_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_pin_model.dart';
 import 'package:military_hub/features/social/data/models/msengine/api/params/update_user_profile_model.dart';
 import 'package:military_hub/features/social/domain/entities/action_result.dart';
+import 'package:military_hub/features/social/domain/entities/near_user.dart';
 import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 
@@ -240,6 +242,31 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<ActionResult> updateUserLocation(
+      String email, String password, double latitude, double longitude) async {
+    ActionResult result;
+    UpdateUserLocationModel param = new UpdateUserLocationModel(
+      email: email,
+      password: password,
+      latitude: latitude,
+      longitude: longitude,
+    );
+    var response = await msEngineUserRepository.updateUserLocation(param);
+    if (response != null) {
+      result = ActionResult(
+        isSuccess: response.isSuccess,
+        message: response.message,
+      );
+    } else {
+      result = ActionResult(
+        isSuccess: false,
+        message: "Invalid response",
+      );
+    }
+    return result;
+  }
+
+  @override
   Future<bool> checkUserLocalDbExists() async {
     var dbUser = await userDbRepository.getUser();
     if (dbUser != null) {
@@ -278,6 +305,8 @@ class UserRepositoryImpl implements UserRepository {
         phoneNumber: dbUser.phoneNumber,
         birthDate: dbUser.birthDate,
         apiToken: dbUser.apiToken,
+        latitude: dbUser.latitude,
+        longitude: dbUser.longitude,
         createdAt: dbUser.createdAt,
       );
     }
@@ -296,5 +325,43 @@ class UserRepositoryImpl implements UserRepository {
     currentUser.value.address = user.address ?? "";
     currentUser.value.apiToken = user.apiToken ?? "";
     currentUser.value.birthDate = user.birthDate ?? "";
+    currentUser.value.latitude = user.latitude ?? 0;
+    currentUser.value.longitude = user.longitude ?? 0;
+  }
+
+  @override
+  Future<List<NearUser>> getNearUserList(
+      String email, String password, double latitude, double longitude,
+      {int radius, OnError errorCallBack}) async {
+    List<NearUser> userList = List<NearUser>();
+    var responses = await msEngineUserRepository.getNearUserList(
+        email, password, latitude, longitude,
+        radius: radius, errorCallBack: errorCallBack);
+    if (responses != null && responses.isNotEmpty) {
+      for (var resp in responses) {
+        userList.add(NearUser(
+          userId: resp.userId ?? "",
+          email: resp.email ?? "",
+          name: resp.name ?? "",
+          profilePicture: resp.profilePicture ?? "",
+          address: resp.address ?? "",
+          latitude: resp.latitude ?? "",
+          longitude: resp.longitude ?? "",
+          isPublisher: resp.isPublisher ?? false,
+        ));
+      }
+    }
+    return userList;
+  }
+
+  @override
+  Future updateUserLocationLocalDb(double latitude, double longitude) async {
+    var dbUser = await userDbRepository.getUser();
+    if (dbUser != null) {
+      dbUser.latitude = latitude;
+      dbUser.longitude = longitude;
+
+      userDbRepository.update(dbUser);
+    }
   }
 }

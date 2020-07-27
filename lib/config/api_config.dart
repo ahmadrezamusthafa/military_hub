@@ -5,4 +5,5 @@ class API {
   static const MSEngineWebRTCUrl = 'http://kitaundang.com:8088/janus';
   static const ImageUrl = 'http://idekuliner.com/images/profpic';
   static const GoogleAPIKey = 'AIzaSyA45S8Vcq7_RzUQoMvKfHTv1nfBhy2BHdA';
+  static const AppsInitial = "MH";
 }

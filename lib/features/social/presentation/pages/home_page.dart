@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _itemCount += 10;
             });
-            _refreshController.finishLoad(noMore: _itemCount >= 40);
+            _refreshController.finishLoad(noMore: _itemCount >= 20);
           });
         },
         slivers: <Widget>[
@@ -353,7 +353,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 padding: EdgeInsets.only(right: 10)),
             Text(
-              "What's on your Mind ?",
+              "What's going on arround you?",
               style: TextStyle(color: Colors.black87),
             ),
           ],

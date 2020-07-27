@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:military_hub/features/social/domain/entities/post.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
+import 'package:popup_menu/popup_menu.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class FeedsListItemWidget extends StatefulWidget {
@@ -17,8 +19,11 @@ class FeedsListItemWidget extends StatefulWidget {
 }
 
 class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
+  GlobalKey btnKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
+    PopupMenu.context = context;
     Widget _getSeparator(double height) {
       return Container(
         decoration: BoxDecoration(color: Theme.of(context).dividerColor),
@@ -58,13 +63,18 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(100)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100)),
                                 gradient: LinearGradient(
                                     begin: Alignment.bottomLeft,
                                     end: Alignment.topRight,
                                     colors: [
-                                      Theme.of(context).focusColor.withOpacity(0.8),
-                                      Theme.of(context).focusColor.withOpacity(0.2),
+                                      Theme.of(context)
+                                          .focusColor
+                                          .withOpacity(0.8),
+                                      Theme.of(context)
+                                          .focusColor
+                                          .withOpacity(0.2),
                                     ])),
                             child: Icon(
                               Icons.person,
@@ -76,13 +86,18 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                             height: 70,
                             width: 70,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(100)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100)),
                                 gradient: LinearGradient(
                                     begin: Alignment.bottomLeft,
                                     end: Alignment.topRight,
                                     colors: [
-                                      Theme.of(context).focusColor.withOpacity(0.8),
-                                      Theme.of(context).focusColor.withOpacity(0.2),
+                                      Theme.of(context)
+                                          .focusColor
+                                          .withOpacity(0.8),
+                                      Theme.of(context)
+                                          .focusColor
+                                          .withOpacity(0.2),
                                     ])),
                             child: Icon(
                               Icons.person,
@@ -107,7 +122,9 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                           widget.post.readableCreatedAt,
                           style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
-                        Padding(padding: EdgeInsets.only(right: 4),),
+                        Padding(
+                          padding: EdgeInsets.only(right: 4),
+                        ),
                         Icon(Icons.language, size: 15, color: Colors.grey)
                       ],
                     )
@@ -118,7 +135,38 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
               ],
             ),
             Row(
-              children: <Widget>[Icon(Icons.more_horiz, color: Colors.grey)],
+              children: <Widget>[
+                IconButton(
+                  key: btnKey,
+                  icon: Icon(Icons.more_horiz, color: Colors.grey),
+                  onPressed: () {
+                    PopupMenu menu = PopupMenu(
+                      maxColumn: 2,
+                      items: [
+                        MenuItem(
+                            title: 'Copy',
+                            image: Icon(
+                              Icons.content_copy,
+                              color: Colors.white,
+                            )),
+                        MenuItem(
+                            title: 'Show on map',
+                            image: Icon(
+                              Icons.map,
+                              color: Colors.white,
+                            ))
+                      ],
+                      onClickMenu: (value) {
+                        if (value.menuTitle == 'Show on map') {
+                          Navigator.of(context).pushNamed('/MapView',
+                              arguments: widget.post.userLocation);
+                        }
+                      },
+                    );
+                    menu.show(widgetKey: btnKey);
+                  },
+                ),
+              ],
               mainAxisAlignment: MainAxisAlignment.start,
             ),
           ],
@@ -138,7 +186,7 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                       color: Theme.of(context).canvasColor,
                       image: DecorationImage(
                           image: CachedNetworkImageProvider(widget.post.image),
-                          fit: BoxFit.fill)),
+                          fit: BoxFit.cover)),
                 )
               : Container(),
           widget.post.description != ""
