@@ -35,6 +35,7 @@ class FeedsRepositoryImpl implements FeedsRepository {
           commentCount: resp.commentCount ?? 0,
           isLiked: resp.isLiked ?? false,
           createdAt: resp.createdAt,
+          userLocation: Helper.getLatLngFromString(resp.userLatitude, resp.userLongitude),
           readableCreatedAt: Helper.getReadableCreatedAt(resp.createdAt),
         ));
       }

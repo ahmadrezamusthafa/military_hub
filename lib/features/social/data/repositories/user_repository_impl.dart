@@ -243,7 +243,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<ActionResult> updateUserLocation(
-      String email, String password, double latitude, double longitude) async{
+      String email, String password, double latitude, double longitude) async {
     ActionResult result;
     UpdateUserLocationModel param = new UpdateUserLocationModel(
       email: email,
@@ -323,6 +323,8 @@ class UserRepositoryImpl implements UserRepository {
     currentUser.value.address = user.address ?? "";
     currentUser.value.apiToken = user.apiToken ?? "";
     currentUser.value.birthDate = user.birthDate ?? "";
+    currentUser.value.latitude = user.latitude ?? 0;
+    currentUser.value.longitude = user.longitude ?? 0;
   }
 
   @override

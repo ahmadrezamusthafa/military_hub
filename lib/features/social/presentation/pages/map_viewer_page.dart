@@ -14,7 +14,9 @@ import 'package:military_hub/helpers/helper.dart';
 import 'package:military_hub/injection_container.dart';
 
 class MapViewerPage extends StatefulWidget {
-  const MapViewerPage();
+  final LatLng location;
+
+  const MapViewerPage({this.location});
 
   @override
   State<StatefulWidget> createState() => MapViewerPageState();
@@ -23,10 +25,7 @@ class MapViewerPage extends StatefulWidget {
 class MapViewerPageState extends State<MapViewerPage> {
   MapViewerPageState();
 
-  CameraPosition _position = CameraPosition(
-    target: LatLng(currentUser.value.latitude, currentUser.value.longitude),
-    zoom: 8.0,
-  );
+  CameraPosition _position;
   bool _compassEnabled = true;
   bool _mapToolbarEnabled = true;
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
@@ -46,12 +45,20 @@ class MapViewerPageState extends State<MapViewerPage> {
   BitmapDescriptor _broadcastMarkerIcon;
   BitmapDescriptor _streamMarkerIcon;
   Set<Marker> _markers = new Set<Marker>();
+  List<NearUser> _nearUsers = List<NearUser>();
 
   @override
   void initState() {
     super.initState();
+    _position = CameraPosition(
+      target: LatLng(widget.location.latitude, widget.location.longitude),
+      zoom: 12.0,
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _createMarkerImageFromAsset(context).whenComplete(() => _getNearUser());
+      _createMarkerImageFromAsset(context).whenComplete(() => () {
+            _getNearUser();
+          });
       startTimer();
     });
   }
@@ -85,14 +92,14 @@ class MapViewerPageState extends State<MapViewerPage> {
 
   void _getNearUser() async {
     var broadcasterList = await sl<WebRTCUseCase>().getLiveBroadcasterList();
-    var nearUsers = await sl<UserUseCase>().getNearUserList(
+    _nearUsers = await sl<UserUseCase>().getNearUserList(
         currentUser.value.email,
         currentUser.value.password,
         currentUser.value.latitude,
         currentUser.value.longitude,
         radius: 1000000);
-    if (nearUsers != null && nearUsers.isNotEmpty) {
-      for (var user in nearUsers) {
+    if (_nearUsers != null && _nearUsers.isNotEmpty) {
+      for (var user in _nearUsers) {
         if (broadcasterList != null && broadcasterList.isNotEmpty) {
           user.isPublisher = broadcasterList
               .any((element) => element.roomId == getIdNumber(user.userId));

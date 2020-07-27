@@ -105,6 +105,8 @@ class MSEngineFeedsRepository {
             description: value.description,
             postCode: value.postCode,
             type: value.type,
+            userLatitude: value.userLatitude,
+            userLongitude: value.userLongitude,
             createdAt: value.createdAt,
           ));
         }

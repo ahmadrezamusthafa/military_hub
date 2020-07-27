@@ -16,6 +16,7 @@ class Post {
   int commentCount;
   bool isLiked;
   String createdAt;
+  LatLng userLocation;
   String readableCreatedAt;
 
   Post({
@@ -32,6 +33,7 @@ class Post {
     this.commentCount,
     this.isLiked,
     this.createdAt,
+    this.userLocation,
     this.readableCreatedAt,
   });
 }
