@@ -39,6 +39,8 @@ abstract class UserRepository {
 
   Future<User> getUserLocalDb();
 
+  Future updateUserLocationLocalDb(double latitude, double longitude);
+
   setCurrentUser(User user);
 
   Future<List<NearUser>> getNearUserList(

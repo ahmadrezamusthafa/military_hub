@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
 import 'package:military_hub/features/social/presentation/pages/home_page.dart';
@@ -32,6 +33,9 @@ class HomeTabPageState extends State<HomeTabPage>
           currentUser.value.longitude != location.longitude) {
         currentUser.value.latitude = location.latitude;
         currentUser.value.longitude = location.longitude;
+
+        await sl<UserUseCase>()
+            .updateUserLocationLocalDb(location.latitude, location.longitude);
 
         var status = await sl<UserUseCase>().updateUserLocation(
             currentUser.value.email,

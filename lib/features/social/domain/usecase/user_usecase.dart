@@ -97,6 +97,10 @@ class UserUseCase {
     return repository.setCurrentUser(user);
   }
 
+  Future updateUserLocationLocalDb(double latitude, double longitude) async {
+    return repository.updateUserLocationLocalDb(latitude, longitude);
+  }
+
   Future<List<NearUser>> getNearUserList(
       String email, String password, double latitude, double longitude,
       {int radius, OnError errorCallBack}) async {

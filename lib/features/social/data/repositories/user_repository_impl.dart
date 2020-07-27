@@ -305,6 +305,8 @@ class UserRepositoryImpl implements UserRepository {
         phoneNumber: dbUser.phoneNumber,
         birthDate: dbUser.birthDate,
         apiToken: dbUser.apiToken,
+        latitude: dbUser.latitude,
+        longitude: dbUser.longitude,
         createdAt: dbUser.createdAt,
       );
     }
@@ -350,5 +352,16 @@ class UserRepositoryImpl implements UserRepository {
       }
     }
     return userList;
+  }
+
+  @override
+  Future updateUserLocationLocalDb(double latitude, double longitude) async {
+    var dbUser = await userDbRepository.getUser();
+    if (dbUser != null) {
+      dbUser.latitude = latitude;
+      dbUser.longitude = longitude;
+
+      userDbRepository.update(dbUser);
+    }
   }
 }

@@ -16,7 +16,7 @@ import 'package:military_hub/injection_container.dart';
 class MapViewerPage extends StatefulWidget {
   final LatLng location;
 
-  const MapViewerPage({this.location});
+  const MapViewerPage({Key key, this.location}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MapViewerPageState();
@@ -25,7 +25,10 @@ class MapViewerPage extends StatefulWidget {
 class MapViewerPageState extends State<MapViewerPage> {
   MapViewerPageState();
 
-  CameraPosition _position;
+  CameraPosition _position = CameraPosition(
+    target: LatLng(currentUser.value.latitude, currentUser.value.longitude),
+    zoom: 12.0,
+  );
   bool _compassEnabled = true;
   bool _mapToolbarEnabled = true;
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
@@ -45,7 +48,6 @@ class MapViewerPageState extends State<MapViewerPage> {
   BitmapDescriptor _broadcastMarkerIcon;
   BitmapDescriptor _streamMarkerIcon;
   Set<Marker> _markers = new Set<Marker>();
-  List<NearUser> _nearUsers = List<NearUser>();
 
   @override
   void initState() {
@@ -72,7 +74,7 @@ class MapViewerPageState extends State<MapViewerPage> {
   Timer _timer;
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 10);
+    const oneSec = const Duration(seconds: 5);
     _timer = new Timer.periodic(
       oneSec,
       (Timer timer) async {
@@ -92,14 +94,14 @@ class MapViewerPageState extends State<MapViewerPage> {
 
   void _getNearUser() async {
     var broadcasterList = await sl<WebRTCUseCase>().getLiveBroadcasterList();
-    _nearUsers = await sl<UserUseCase>().getNearUserList(
+    var nearUsers = await sl<UserUseCase>().getNearUserList(
         currentUser.value.email,
         currentUser.value.password,
         currentUser.value.latitude,
         currentUser.value.longitude,
         radius: 1000000);
-    if (_nearUsers != null && _nearUsers.isNotEmpty) {
-      for (var user in _nearUsers) {
+    if (nearUsers != null && nearUsers.isNotEmpty) {
+      for (var user in nearUsers) {
         if (broadcasterList != null && broadcasterList.isNotEmpty) {
           user.isPublisher = broadcasterList
               .any((element) => element.roomId == getIdNumber(user.userId));
