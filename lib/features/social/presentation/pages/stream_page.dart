@@ -27,7 +27,6 @@ class _StreamPageState extends State<StreamPage> {
   void initState() {
     super.initState();
     _controller = EasyRefreshController();
-    _testWebApi();
   }
 
   @override
@@ -137,7 +136,9 @@ class _StreamPageState extends State<StreamPage> {
           icon: Icon(Icons.map),
           color: Theme.of(context).accentColor,
           onPressed: () {
-            Navigator.of(context).pushNamed('/MapView');
+            Navigator.of(context).pushNamed('/MapView',
+                arguments: LatLng(
+                    currentUser.value.latitude, currentUser.value.longitude));
           },
         ),
         decoration: BoxDecoration(

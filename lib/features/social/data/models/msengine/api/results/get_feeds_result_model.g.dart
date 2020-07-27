@@ -21,6 +21,8 @@ GetFeedsResultModel _$GetFeedsResultModelFromJson(Map<String, dynamic> json) {
     likeCount: json['likeCount'] as int,
     commentCount: json['commentCount'] as int,
     isLiked: json['isLiked'] as bool,
+    userLatitude: json['userLatitude'] as String,
+    userLongitude: json['userLongitude'] as String,
     createdAt: json['createdAt'] as String,
   );
 }
@@ -41,5 +43,7 @@ Map<String, dynamic> _$GetFeedsResultModelToJson(
       'likeCount': instance.likeCount,
       'commentCount': instance.commentCount,
       'isLiked': instance.isLiked,
+      'userLatitude': instance.userLatitude,
+      'userLongitude': instance.userLongitude,
       'createdAt': instance.createdAt,
     };

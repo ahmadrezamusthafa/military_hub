@@ -54,3 +54,29 @@ class GetUserInfoBloc extends Bloc<UserEvent, FetchState> {
     }
   }
 }
+
+class GetNearUserListBloc extends Bloc<UserEvent, FetchState> {
+  final UserUseCase userUseCase;
+
+  GetNearUserListBloc({
+    @required this.userUseCase,
+  }) : assert(userUseCase != null);
+
+  @override
+  FetchState get initialState => Loading();
+
+  @override
+  Stream<FetchState> mapEventToState(UserEvent event) async* {
+    if (event is GetNearUserListEvent) {
+      yield Loading();
+      final users = await userUseCase.getNearUserList(
+          event.email, event.password, event.latitude, event.longitude,
+          radius: event.radius, errorCallBack: event.errorCallBack);
+      if (users.isEmpty) {
+        yield Empty();
+      } else {
+        yield ListLoaded(lists: users);
+      }
+    }
+  }
+}

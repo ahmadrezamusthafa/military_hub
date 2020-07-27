@@ -1,11 +1,22 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:military_hub/features/social/domain/entities/live_broadcaster.dart';
+import 'package:military_hub/features/social/domain/entities/near_user.dart';
+import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
+import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
+import 'package:military_hub/features/social/domain/usecase/webrtc_usecase.dart';
+import 'package:military_hub/features/social/presentation/bloc/fetch/user/bloc.dart';
 import 'package:military_hub/helpers/helper.dart';
+import 'package:military_hub/injection_container.dart';
 
 class MapViewerPage extends StatefulWidget {
-  const MapViewerPage();
+  final LatLng location;
+
+  const MapViewerPage({Key key, this.location}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MapViewerPageState();
@@ -14,12 +25,10 @@ class MapViewerPage extends StatefulWidget {
 class MapViewerPageState extends State<MapViewerPage> {
   MapViewerPageState();
 
-  static final CameraPosition _kInitialPosition = const CameraPosition(
-    target: LatLng(-7.545449647437256, 112.46844716370106),
-    zoom: 11.0,
+  CameraPosition _position = CameraPosition(
+    target: LatLng(currentUser.value.latitude, currentUser.value.longitude),
+    zoom: 12.0,
   );
-
-  CameraPosition _position = _kInitialPosition;
   bool _compassEnabled = true;
   bool _mapToolbarEnabled = true;
   CameraTargetBounds _cameraTargetBounds = CameraTargetBounds.unbounded;
@@ -28,7 +37,7 @@ class MapViewerPageState extends State<MapViewerPage> {
   bool _rotateGesturesEnabled = true;
   bool _scrollGesturesEnabled = true;
   bool _tiltGesturesEnabled = true;
-  bool _zoomControlsEnabled = false;
+  bool _zoomControlsEnabled = true;
   bool _zoomGesturesEnabled = true;
   bool _indoorViewEnabled = true;
   bool _myLocationEnabled = true;
@@ -38,15 +47,102 @@ class MapViewerPageState extends State<MapViewerPage> {
   BitmapDescriptor _normalMarkerIcon;
   BitmapDescriptor _broadcastMarkerIcon;
   BitmapDescriptor _streamMarkerIcon;
+  Set<Marker> _markers = new Set<Marker>();
 
   @override
   void initState() {
     super.initState();
+    _position = CameraPosition(
+      target: LatLng(widget.location.latitude, widget.location.longitude),
+      zoom: 12.0,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _createMarkerImageFromAsset(context).whenComplete(() => () {
+            _getNearUser();
+          });
+      startTimer();
+    });
   }
 
   @override
   void dispose() {
+    _timer.cancel();
     super.dispose();
+  }
+
+  Timer _timer;
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 5);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) async {
+        _getNearUser();
+      },
+    );
+  }
+
+  int getIdNumber(String userId) {
+    var ids = userId.split("_");
+    if (ids.isNotEmpty && ids.length > 1) {
+      var id = int.parse(ids[1]);
+      return id;
+    }
+    return 0;
+  }
+
+  void _getNearUser() async {
+    var broadcasterList = await sl<WebRTCUseCase>().getLiveBroadcasterList();
+    var nearUsers = await sl<UserUseCase>().getNearUserList(
+        currentUser.value.email,
+        currentUser.value.password,
+        currentUser.value.latitude,
+        currentUser.value.longitude,
+        radius: 1000000);
+    if (nearUsers != null && nearUsers.isNotEmpty) {
+      for (var user in nearUsers) {
+        if (broadcasterList != null && broadcasterList.isNotEmpty) {
+          user.isPublisher = broadcasterList
+              .any((element) => element.roomId == getIdNumber(user.userId));
+        }
+
+        setState(() {
+          if (!_markers.any((element) =>
+              element.markerId == MarkerId("marker_${user.userId}"))) {
+            _markers.add(
+              Marker(
+                markerId: MarkerId("marker_${user.userId}"),
+                position:
+                    Helper.getLatLngFromString(user.latitude, user.longitude),
+                icon:
+                    user.isPublisher ? _broadcastMarkerIcon : _normalMarkerIcon,
+                onTap: () {
+                  _showModal(context, user,
+                      (LiveBroadcaster broadcaster, bool isView) {});
+                },
+              ),
+            );
+          } else {
+            _markers.removeWhere((element) =>
+                element.markerId == MarkerId("marker_${user.userId}"));
+            _markers.add(
+              Marker(
+                markerId: MarkerId("marker_${user.userId}"),
+                position:
+                    Helper.getLatLngFromString(user.latitude, user.longitude),
+                icon:
+                    user.isPublisher ? _broadcastMarkerIcon : _normalMarkerIcon,
+                onTap: () {
+                  _showModal(context, user,
+                      (LiveBroadcaster broadcaster, bool isView) {});
+                },
+              ),
+            );
+          }
+        });
+      }
+    }
   }
 
   Widget buildMap() {
@@ -58,7 +154,7 @@ class MapViewerPageState extends State<MapViewerPage> {
               children: <Widget>[
                 GoogleMap(
                   onMapCreated: onMapCreated,
-                  initialCameraPosition: _kInitialPosition,
+                  initialCameraPosition: _position,
                   compassEnabled: _compassEnabled,
                   mapToolbarEnabled: _mapToolbarEnabled,
                   cameraTargetBounds: _cameraTargetBounds,
@@ -74,35 +170,7 @@ class MapViewerPageState extends State<MapViewerPage> {
                   myLocationButtonEnabled: _myLocationButtonEnabled,
                   trafficEnabled: _myTrafficEnabled,
                   onCameraMove: _updateCameraPosition,
-                  markers: <Marker>[
-                    Marker(
-                      markerId: MarkerId("marker_1"),
-                      position: LatLng(-7.545449647437256, 112.46844716370106),
-                      icon: _normalMarkerIcon,
-                      onTap: () {
-                        _showModal(context,
-                            (LiveBroadcaster broadcaster, bool isView) {});
-                      },
-                    ),
-                    Marker(
-                      markerId: MarkerId("marker_2"),
-                      position: LatLng(-7.512449647437256, 112.45544716370106),
-                      icon: _broadcastMarkerIcon,
-                      onTap: () {
-                        _showModal(context,
-                            (LiveBroadcaster broadcaster, bool isView) {});
-                      },
-                    ),
-                    Marker(
-                      markerId: MarkerId("marker_3"),
-                      position: LatLng(-7.545449647437256, 112.45844716370106),
-                      icon: _streamMarkerIcon,
-                      onTap: () {
-                        _showModal(context,
-                            (LiveBroadcaster broadcaster, bool isView) {});
-                      },
-                    ),
-                  ].toSet(),
+                  markers: _markers,
                 ),
               ],
             ),
@@ -118,7 +186,9 @@ class MapViewerPageState extends State<MapViewerPage> {
         child: IconButton(
           icon: Icon(Icons.refresh),
           color: Theme.of(context).accentColor,
-          onPressed: () {},
+          onPressed: () async {
+            _getNearUser();
+          },
         ),
         decoration: BoxDecoration(
             color: Colors.transparent,
@@ -131,30 +201,27 @@ class MapViewerPageState extends State<MapViewerPage> {
   }
 
   Future<void> _createMarkerImageFromAsset(BuildContext context) async {
+    final ImageConfiguration imageConfiguration =
+        createLocalImageConfiguration(context);
     if (_normalMarkerIcon == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context);
       var bitmap = await BitmapDescriptor.fromAssetImage(
           imageConfiguration, 'assets/img/marker_b.png');
       _normalMarkerIcon = bitmap;
     }
     if (_broadcastMarkerIcon == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context);
       var bitmap = await BitmapDescriptor.fromAssetImage(
           imageConfiguration, 'assets/img/marker_o.png');
       _broadcastMarkerIcon = bitmap;
     }
     if (_streamMarkerIcon == null) {
-      final ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context);
       var bitmap = await BitmapDescriptor.fromAssetImage(
           imageConfiguration, 'assets/img/marker_g.png');
       _streamMarkerIcon = bitmap;
     }
   }
 
-  void _showModal(BuildContext context, OnActionCallback onAction) {
+  void _showModal(
+      BuildContext context, NearUser user, OnActionCallback onAction) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -199,7 +266,7 @@ class MapViewerPageState extends State<MapViewerPage> {
                                   height: 70,
                                   width: 70,
                                   fit: BoxFit.cover,
-                                  imageUrl: Helper.getImageUrlByIdNumber(3),
+                                  imageUrl: user.profilePicture,
                                   placeholder: (context, url) => Container(
                                     height: 70,
                                     width: 70,
@@ -253,29 +320,43 @@ class MapViewerPageState extends State<MapViewerPage> {
                               height: 40),
                           padding: EdgeInsets.only(right: 10),
                         ),
-                        Text("Ahmad Reza Musthafa",
+                        Text(user.name,
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
                             )),
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              FlatButton.icon(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(3.0)),
-                                  icon: Icon(Icons.play_circle_outline,
-                                      size: 34, color: Colors.green),
-                                  label: Text('Play',
-                                      style: TextStyle(fontSize: 12)),
-                                  textColor: Colors.grey,
-                                  onPressed: () {}),
-                            ],
-                          ),
-                        )
+                        user.isPublisher
+                            ? Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    FlatButton.icon(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(3.0)),
+                                        icon: Icon(Icons.play_circle_outline,
+                                            size: 34, color: Colors.green),
+                                        label: Text('Play',
+                                            style: TextStyle(fontSize: 12)),
+                                        textColor: Colors.grey,
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          LiveBroadcaster broadcaster =
+                                              LiveBroadcaster(
+                                            roomId: getIdNumber(user.userId),
+                                            userId: getIdNumber(user.userId),
+                                            name: user.name,
+                                          );
+                                          Navigator.of(context).pushNamed(
+                                              '/StreamView',
+                                              arguments: broadcaster);
+                                        }),
+                                  ],
+                                ),
+                              )
+                            : Container(),
                       ],
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
@@ -290,7 +371,7 @@ class MapViewerPageState extends State<MapViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    _createMarkerImageFromAsset(context);
+//    _createMarkerImageFromAsset(context).whenComplete(() => _getNearUser());
     return Scaffold(
         appBar: AppBar(
           iconTheme: Theme.of(context).iconTheme,

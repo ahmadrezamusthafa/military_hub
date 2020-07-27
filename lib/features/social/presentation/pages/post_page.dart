@@ -151,7 +151,7 @@ class _PostPageState extends State<PostPage> {
                                   maxLines: null,
                                   decoration: getInputDecoration(
                                     hintText: "Describe about the situations",
-                                    labelText: "What's on your Mind?",
+                                    labelText: "What's going on arround you?",
                                   ),
                                   initialValue: "",
                                   validator: (input) => input.trim().length < 3

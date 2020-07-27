@@ -17,6 +17,8 @@ class GetFeedsResultModel {
   int likeCount;
   int commentCount;
   bool isLiked;
+  String userLatitude;
+  String userLongitude;
   String createdAt;
 
   GetFeedsResultModel({
@@ -33,6 +35,8 @@ class GetFeedsResultModel {
     this.likeCount,
     this.commentCount,
     this.isLiked,
+    this.userLatitude,
+    this.userLongitude,
     this.createdAt,
   });
 

@@ -26,6 +26,7 @@ final sl = GetIt.instance;
 Future<void> init() async {
   //Bloc
   sl.registerFactory(() => GetUserInfoBloc(userUseCase: sl()));
+  sl.registerFactory(() => GetNearUserListBloc(userUseCase: sl()));
   sl.registerFactory(() => GetUserListByEmailsBloc(userUseCase: sl()));
   sl.registerFactory(() => GetFeedsBloc(feedsUseCase: sl()));
   sl.registerFactory(() => CreateWebRTCTransactionBloc(webRTCUseCase: sl()));
