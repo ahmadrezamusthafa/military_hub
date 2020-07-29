@@ -43,6 +43,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
     super.initState();
     initRenderer();
     idNumber = getIdNumber();
+    startLive();
   }
 
   @override

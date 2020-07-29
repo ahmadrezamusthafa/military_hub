@@ -74,7 +74,7 @@ class MapViewerPageState extends State<MapViewerPage> {
   Timer _timer;
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 5);
+    const oneSec = const Duration(seconds: 4);
     _timer = new Timer.periodic(
       oneSec,
       (Timer timer) async {
