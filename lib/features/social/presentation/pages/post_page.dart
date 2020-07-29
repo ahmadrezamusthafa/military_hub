@@ -11,6 +11,7 @@ import 'package:military_hub/features/social/domain/usecase/feeds_usecase.dart';
 import 'package:military_hub/helpers/helper.dart';
 import 'package:military_hub/injection_container.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:path/path.dart' as Path;
 
 class PostPage extends StatefulWidget {
   final String imagePath;
@@ -50,8 +51,9 @@ class _PostPageState extends State<PostPage> {
   Future post() async {
     await pr.show();
     if (widget.imagePath != null && widget.imagePath != "") {
-      StorageReference storageReference =
-          FirebaseStorage.instance.ref().child(API.FeedsDirectoryUrl);
+      StorageReference storageReference = FirebaseStorage.instance
+          .ref()
+          .child(API.FeedsDirectoryUrl + "/${Path.basename(widget.imagePath)}");
       StorageUploadTask uploadTask =
           storageReference.putFile(File(widget.imagePath));
       await uploadTask.onComplete;
@@ -200,7 +202,8 @@ class _PostPageState extends State<PostPage> {
                                   style: TextStyle(
                                       color: Theme.of(context).hintColor),
                                   keyboardType: TextInputType.multiline,
-                                  textCapitalization: TextCapitalization.sentences,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
                                   maxLines: null,
                                   onSaved: (input) =>
                                       _description = input.trim(),
