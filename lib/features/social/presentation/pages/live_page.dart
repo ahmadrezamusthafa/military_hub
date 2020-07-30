@@ -29,6 +29,8 @@ class LivePageState extends State<LivePage> {
   final janusSecret = "adminpwd";
   JanusClient _j;
   JanusClient _jChecker;
+  Plugin subscriberHandle;
+  MediaStream remoteStream;
   Plugin _pluginHandle;
   Plugin _pluginChecker;
   MediaStream _myStream;
@@ -70,6 +72,37 @@ class LivePageState extends State<LivePage> {
     return 0;
   }
 
+  _newRemoteFeed(JanusClient j, feed) async {
+    print('remote plugin attached');
+    j.attach(Plugin(
+        plugin: 'janus.plugin.videoroom',
+        onMessage: (msg, jsep) async {
+          if (jsep != null) {
+            await subscriberHandle.handleRemoteJsep(jsep);
+            var body = {"request": "start", "room": idNumber};
+
+            await subscriberHandle.send(
+                message: body,
+                jsep: await subscriberHandle.createAnswer(),
+                onSuccess: () {});
+          }
+        },
+        onSuccess: (plugin) {
+          setState(() {
+            subscriberHandle = plugin;
+          });
+          var register = {
+            "request": "join",
+            "room": idNumber,
+            "ptype": "subscriber",
+            "feed": feed,
+            //"private_id": widget.broadcaster.userId,
+          };
+          subscriberHandle.send(message: register, onSuccess: () async {});
+        },
+        onRemoteStream: (stream) {}));
+  }
+
   Future<void> initPlatformState() async {
     setState(() {
       if (_j == null) {
@@ -96,6 +129,13 @@ class LivePageState extends State<LivePage> {
               plugin: 'janus.plugin.videoroom',
               onMessage: (msg, jsep) async {
                 print('publisheronmsg');
+                if (msg["publishers"] != null) {
+                  var list = msg["publishers"];
+                  print('got publihers');
+                  print(list);
+                  _newRemoteFeed(_j, list[0]["id"]);
+                }
+
                 if (jsep != null) {
                   _pluginHandle.handleRemoteJsep(jsep);
                 }
@@ -120,7 +160,10 @@ class LivePageState extends State<LivePage> {
                   "room": idNumber,
                   "permanent": false,
                   "description": currentUser.value.name,
-                  "secret": janusSecret
+                  "secret": janusSecret,
+                  "bitrate": 128000,
+                  "fir_freq": 6,
+                  "publishers": 6
                 };
                 plugin.send(
                     message: create,
@@ -287,6 +330,10 @@ class LivePageState extends State<LivePage> {
       _pluginHandle.hangup();
       _pluginHandle.detach();
     }
+    if (subscriberHandle != null) {
+      subscriberHandle.hangup();
+      subscriberHandle.detach();
+    }
     if (_pluginChecker != null) {
       _pluginChecker.hangup();
       _pluginChecker.detach();
@@ -302,6 +349,7 @@ class LivePageState extends State<LivePage> {
     setState(() {
       _pluginHandle = null;
       _pluginChecker = null;
+      subscriberHandle = null;
     });
   }
 
