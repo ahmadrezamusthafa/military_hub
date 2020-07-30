@@ -1,11 +1,21 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:military_hub/config/api_config.dart';
+import 'package:military_hub/features/social/domain/entities/enums/post_type.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
+import 'package:military_hub/features/social/domain/usecase/feeds_usecase.dart';
 import 'package:military_hub/helpers/helper.dart';
+import 'package:military_hub/injection_container.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:path/path.dart' as Path;
 
 class PostPage extends StatefulWidget {
   final String imagePath;
+  GlobalKey<FormState> formKey = new GlobalKey<FormState>();
 
   PostPage({Key key, this.imagePath}) : super(key: key);
 
@@ -14,6 +24,10 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  String _uploadedFileURL;
+  String _description;
+  ProgressDialog pr;
+
   InputDecoration getInputDecoration({String hintText, String labelText}) {
     return new InputDecoration(
       hintText: hintText,
@@ -34,8 +48,48 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
+  Future post() async {
+    await pr.show();
+    if (widget.imagePath != null && widget.imagePath != "") {
+      StorageReference storageReference = FirebaseStorage.instance
+          .ref()
+          .child(API.FeedsDirectoryUrl + "/${Path.basename(widget.imagePath)}");
+      StorageUploadTask uploadTask =
+          storageReference.putFile(File(widget.imagePath));
+      await uploadTask.onComplete;
+      print('File Uploaded');
+      storageReference.getDownloadURL().then((fileURL) {
+        setState(() {
+          _uploadedFileURL = fileURL;
+        });
+        sl<FeedsUseCase>().createPost(
+            currentUser.value.userId,
+            _description,
+            _uploadedFileURL,
+            currentUser.value.latitude,
+            currentUser.value.longitude,
+            "",
+            PostType.textWithImage);
+      });
+    } else {
+      sl<FeedsUseCase>().createPost(
+          currentUser.value.userId,
+          _description,
+          "",
+          currentUser.value.latitude,
+          currentUser.value.longitude,
+          "",
+          PostType.text);
+    }
+    await pr.hide();
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, showLogs: true);
+    pr.style(message: 'Please wait...');
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: Theme.of(context).iconTheme,
@@ -50,7 +104,6 @@ class _PostPageState extends State<PostPage> {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Align(
-
             alignment: Alignment.topCenter,
             child: Container(
               margin: EdgeInsets.only(bottom: 30),
@@ -142,22 +195,26 @@ class _PostPageState extends State<PostPage> {
                         Container(
                           margin: EdgeInsets.only(left: 70),
                           child: Form(
+                            key: widget.formKey,
                             child: Column(
                               children: <Widget>[
                                 new TextFormField(
                                   style: TextStyle(
                                       color: Theme.of(context).hintColor),
                                   keyboardType: TextInputType.multiline,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
                                   maxLines: null,
+                                  onSaved: (input) =>
+                                      _description = input.trim(),
                                   decoration: getInputDecoration(
                                     hintText: "Describe about the situations",
-                                    labelText: "What's going on arround you?",
+                                    labelText: "What's going on around you?",
                                   ),
                                   initialValue: "",
                                   validator: (input) => input.trim().length < 3
-                                      ? "Invalid full name"
+                                      ? "Invalid description"
                                       : null,
-                                  onSaved: (input) => {},
                                 ),
                               ],
                             ),
@@ -182,7 +239,14 @@ class _PostPageState extends State<PostPage> {
                           label: Text('Post',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.white)),
-                          onPressed: () {},
+                          onPressed: () {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            if (widget.formKey.currentState.validate()) {
+                              widget.formKey.currentState.save();
+                              post();
+                            }
+                          },
                         ),
                       ],
                     ),

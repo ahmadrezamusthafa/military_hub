@@ -331,6 +331,7 @@ class MapPickerState extends State<MapPicker> {
                                   style: TextStyle(
                                       color: Theme.of(context).hintColor),
                                   keyboardType: TextInputType.multiline,
+                                  textCapitalization: TextCapitalization.sentences,
                                   maxLines: null,
                                   decoration: getInputDecoration(
                                     hintText: "Describe about the situations",
@@ -338,7 +339,7 @@ class MapPickerState extends State<MapPicker> {
                                   ),
                                   initialValue: "",
                                   validator: (input) => input.trim().length < 3
-                                      ? "Invalid full name"
+                                      ? "Invalid description"
                                       : null,
                                   onSaved: (input) => {},
                                 ),

@@ -16,3 +16,17 @@ PostType postTypeFromInt(int type) {
   }
   return PostType.unknown;
 }
+
+int postTypeToInt(PostType type) {
+  switch (type) {
+    case PostType.text:
+      return 1;
+    case PostType.textWithImage:
+      return 2;
+    case PostType.textWithLocation:
+      return 3;
+    case PostType.unknown:
+      return 0;
+  }
+  return 0;
+}
