@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(3),
                 ),
-                Text("Hub",
+                Text("HASS-IT",
                     style: Theme.of(context)
                         .textTheme
                         .headline2
@@ -353,7 +353,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 padding: EdgeInsets.only(right: 10)),
             Text(
-              "What's going on arround you?",
+              "What's going on around you?",
               style: TextStyle(color: Colors.black87),
             ),
           ],

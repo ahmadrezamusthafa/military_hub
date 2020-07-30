@@ -6,4 +6,5 @@ class API {
   static const ImageUrl = 'http://idekuliner.com/images/profpic';
   static const GoogleAPIKey = 'AIzaSyA45S8Vcq7_RzUQoMvKfHTv1nfBhy2BHdA';
   static const AppsInitial = "MH";
+  static const FeedsDirectoryUrl = "/military_hub/feeds";
 }
