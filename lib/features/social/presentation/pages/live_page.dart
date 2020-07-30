@@ -37,6 +37,7 @@ class LivePageState extends State<LivePage> {
   Timer _timer;
   bool isStopped = true;
   int idNumber;
+  int _participantCount = 0;
 
   @override
   void initState() {
@@ -265,6 +266,9 @@ class LivePageState extends State<LivePage> {
       print("participant $i id:${value.id} display:${value.display}");
       if (value.id == idNumber) {
         found = true;
+        setState(() {
+          _participantCount = participant.participants.length - 1;
+        });
         break;
       }
     }
@@ -417,6 +421,59 @@ class LivePageState extends State<LivePage> {
               ),
             ),
           ),
+          _participantCount > 0
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.end,
+                      alignment: WrapAlignment.end,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.15),
+                                    offset: Offset(0, 3),
+                                    blurRadius: 10)
+                              ],
+                              gradient: LinearGradient(
+                                  begin: Alignment.bottomLeft,
+                                  end: Alignment.topRight,
+                                  colors: [
+                                    Colors.green.withOpacity(0.8),
+                                    Colors.green.withOpacity(1),
+                                  ])),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.phone_iphone,
+                                color: Theme.of(context).primaryColor,
+                                size: 20,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                              ),
+                              Text("$_participantCount participant",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : Container(),
           isStopped
               ? Container(
                   alignment: Alignment.center,
