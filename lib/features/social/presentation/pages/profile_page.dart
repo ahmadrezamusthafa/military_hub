@@ -479,3 +479,6 @@ class ProfilePageState extends State<ProfilePage> {
 
 typedef void OnPickImageCallback(
     double maxWidth, double maxHeight, int quality, ImageSource source);
+
+typedef void OnPickVideoCallback(ImageSource source,
+    CameraDevice preferredCameraDevice, Duration maxDuration);

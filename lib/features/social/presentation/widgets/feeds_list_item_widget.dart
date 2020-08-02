@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:military_hub/features/social/domain/entities/post.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:military_hub/features/social/presentation/widgets/user_avatar_widget.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:video_player/video_player.dart';
 
 class FeedsListItemWidget extends StatefulWidget {
   final String heroTag;
@@ -20,6 +24,25 @@ class FeedsListItemWidget extends StatefulWidget {
 
 class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
   GlobalKey btnKey = GlobalKey();
+  FlickManager flickManager;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.post.image.contains(".mp4")) {
+      flickManager = FlickManager(
+        videoPlayerController: VideoPlayerController.network(widget.post.image),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    if (flickManager != null) {
+      flickManager.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,14 +203,29 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
       return Column(
         children: <Widget>[
           widget.post.image != ""
-              ? Container(
-                  constraints: BoxConstraints(maxHeight: 350),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).canvasColor,
-                      image: DecorationImage(
-                          image: CachedNetworkImageProvider(widget.post.image),
-                          fit: BoxFit.cover)),
-                )
+              ? widget.post.image.contains(".mp4")
+                  ? Container(
+                      constraints: BoxConstraints(maxHeight: 350),
+                      child: FlickVideoPlayer(
+                        flickManager: flickManager,
+                        flickVideoWithControls: FlickVideoWithControls(
+                          controls: FlickPortraitControls(),
+                        ),
+                        flickVideoWithControlsFullscreen:
+                            FlickVideoWithControls(
+                          controls: FlickLandscapeControls(),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      constraints: BoxConstraints(maxHeight: 350),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).canvasColor,
+                          image: DecorationImage(
+                              image:
+                                  CachedNetworkImageProvider(widget.post.image),
+                              fit: BoxFit.cover)),
+                    )
               : Container(),
           widget.post.description != ""
               ? Container(
@@ -197,15 +235,27 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Wrap(
-                        children: <Widget>[
-                          Text(
-                            widget.post.description,
-                            textAlign: TextAlign.left,
-                            softWrap: true,
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                        ],
+                      SafeArea(
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          return MarkdownBody(
+                            data: widget.post.description,
+                            selectable: true,
+                            styleSheet:
+                                MarkdownStyleSheet.fromTheme(Theme.of(context))
+                                    .copyWith(
+                              textAlign: WrapAlignment.start,
+                              h1: Theme.of(context).textTheme.headline1,
+                              h2: Theme.of(context).textTheme.headline2,
+                              h6: Theme.of(context).textTheme.headline6,
+                              p: Theme.of(context).textTheme.bodyText2,
+                              unorderedListAlign: WrapAlignment.center,
+                              orderedListAlign: WrapAlignment.center,
+                              h1Align: WrapAlignment.center,
+                              h2Align: WrapAlignment.center,
+                              h6Align: WrapAlignment.center,
+                            ),
+                          );
+                        }),
                       ),
                     ],
                   ),
@@ -363,7 +413,30 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
       );
     }
 
-    return Container(
+    return VisibilityDetector(
+      key: ObjectKey(flickManager),
+      onVisibilityChanged: (visibility) {
+        if (visibility.visibleFraction == 0 && this.mounted) {
+          flickManager.flickControlManager.autoPause();
+        } else if (visibility.visibleFraction == 1) {
+          flickManager.flickControlManager.autoResume();
+        }
+      },
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            _getSeparator(10),
+            _postHeader(),
+            _postBody(),
+            //postLikesAndComments(),
+            Divider(height: 1),
+            postOptions()
+          ],
+        ),
+        decoration: BoxDecoration(color: Colors.white),
+      ),
+    );
+    /*return Container(
       child: Column(
         children: <Widget>[
           _getSeparator(10),
@@ -375,6 +448,6 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
         ],
       ),
       decoration: BoxDecoration(color: Colors.white),
-    );
+    );*/
   }
 }

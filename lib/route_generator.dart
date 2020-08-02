@@ -24,7 +24,7 @@ class RouteGenerator {
       case '/Post':
         return MaterialPageRoute(
             builder: (_) => PostPage(
-                  imagePath: args,
+                  filePath: args,
                 ));
       case '/StreamView':
         return MaterialPageRoute(

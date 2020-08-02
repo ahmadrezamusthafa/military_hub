@@ -43,6 +43,10 @@ dependencies:
   popup_menu: ^1.0.5
   firebase_storage: ^3.0.3
   progress_dialog: ^1.2.4
+  flutter_markdown: ^0.4.2
+  flutter_widgets: ^0.1.12
+  video_player: ^0.10.11+2
+  flick_video_player: ^0.1.1
 
 dev_dependencies:
   flutter_test:
