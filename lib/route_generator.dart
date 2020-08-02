@@ -5,6 +5,7 @@ import 'package:military_hub/features/social/presentation/pages/map_viewer_page.
 import 'package:military_hub/features/social/presentation/pages/post_page.dart';
 import 'package:military_hub/features/social/presentation/pages/splash_page.dart';
 import 'package:military_hub/features/social/presentation/pages/stream_viewer_page.dart';
+import 'package:military_hub/features/social/presentation/pages/video_player_page.dart';
 import 'package:military_hub/main.dart';
 
 class RouteGenerator {
@@ -30,6 +31,11 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => StreamViewerPage(
                   broadcaster: args,
+                ));
+      case '/VideoView':
+        return MaterialPageRoute(
+            builder: (_) => VideoPlayerPage(
+                  videoUrl: args,
                 ));
       case '/MapView':
         return MaterialPageRoute(
