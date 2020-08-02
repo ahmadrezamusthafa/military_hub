@@ -54,6 +54,7 @@ class StreamViewerPageState extends State<StreamViewerPage> {
   }
 
   initRenderer() async {
+    await widget._localRenderer.initialize();
     await widget._remoteRenderer.initialize();
   }
 

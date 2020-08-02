@@ -29,12 +29,15 @@ class LivePageState extends State<LivePage> {
   final janusSecret = "adminpwd";
   JanusClient _j;
   JanusClient _jChecker;
+  Plugin subscriberHandle;
+  MediaStream remoteStream;
   Plugin _pluginHandle;
   Plugin _pluginChecker;
   MediaStream _myStream;
   Timer _timer;
   bool isStopped = true;
   int idNumber;
+  int _participantCount = 0;
 
   @override
   void initState() {
@@ -70,6 +73,37 @@ class LivePageState extends State<LivePage> {
     return 0;
   }
 
+  _newRemoteFeed(JanusClient j, feed) async {
+    print('remote plugin attached');
+    j.attach(Plugin(
+        plugin: 'janus.plugin.videoroom',
+        onMessage: (msg, jsep) async {
+          if (jsep != null) {
+            await subscriberHandle.handleRemoteJsep(jsep);
+            var body = {"request": "start", "room": idNumber};
+
+            await subscriberHandle.send(
+                message: body,
+                jsep: await subscriberHandle.createAnswer(),
+                onSuccess: () {});
+          }
+        },
+        onSuccess: (plugin) {
+          setState(() {
+            subscriberHandle = plugin;
+          });
+          var register = {
+            "request": "join",
+            "room": idNumber,
+            "ptype": "subscriber",
+            "feed": feed,
+            //"private_id": widget.broadcaster.userId,
+          };
+          subscriberHandle.send(message: register, onSuccess: () async {});
+        },
+        onRemoteStream: (stream) {}));
+  }
+
   Future<void> initPlatformState() async {
     setState(() {
       if (_j == null) {
@@ -96,6 +130,13 @@ class LivePageState extends State<LivePage> {
               plugin: 'janus.plugin.videoroom',
               onMessage: (msg, jsep) async {
                 print('publisheronmsg');
+                if (msg["publishers"] != null) {
+                  var list = msg["publishers"];
+                  print('got publihers');
+                  print(list);
+                  _newRemoteFeed(_j, list[0]["id"]);
+                }
+
                 if (jsep != null) {
                   _pluginHandle.handleRemoteJsep(jsep);
                 }
@@ -120,7 +161,10 @@ class LivePageState extends State<LivePage> {
                   "room": idNumber,
                   "permanent": false,
                   "description": currentUser.value.name,
-                  "secret": janusSecret
+                  "secret": janusSecret,
+                  "bitrate": 128000,
+                  "fir_freq": 6,
+                  "publishers": 6
                 };
                 plugin.send(
                     message: create,
@@ -222,6 +266,9 @@ class LivePageState extends State<LivePage> {
       print("participant $i id:${value.id} display:${value.display}");
       if (value.id == idNumber) {
         found = true;
+        setState(() {
+          _participantCount = participant.participants.length - 1;
+        });
         break;
       }
     }
@@ -287,6 +334,10 @@ class LivePageState extends State<LivePage> {
       _pluginHandle.hangup();
       _pluginHandle.detach();
     }
+    if (subscriberHandle != null) {
+      subscriberHandle.hangup();
+      subscriberHandle.detach();
+    }
     if (_pluginChecker != null) {
       _pluginChecker.hangup();
       _pluginChecker.detach();
@@ -302,6 +353,7 @@ class LivePageState extends State<LivePage> {
     setState(() {
       _pluginHandle = null;
       _pluginChecker = null;
+      subscriberHandle = null;
     });
   }
 
@@ -369,6 +421,59 @@ class LivePageState extends State<LivePage> {
               ),
             ),
           ),
+          _participantCount > 0
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.end,
+                      alignment: WrapAlignment.end,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.15),
+                                    offset: Offset(0, 3),
+                                    blurRadius: 10)
+                              ],
+                              gradient: LinearGradient(
+                                  begin: Alignment.bottomLeft,
+                                  end: Alignment.topRight,
+                                  colors: [
+                                    Colors.green.withOpacity(0.8),
+                                    Colors.green.withOpacity(1),
+                                  ])),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.phone_iphone,
+                                color: Theme.of(context).primaryColor,
+                                size: 20,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                              ),
+                              Text("$_participantCount participant",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : Container(),
           isStopped
               ? Container(
                   alignment: Alignment.center,
