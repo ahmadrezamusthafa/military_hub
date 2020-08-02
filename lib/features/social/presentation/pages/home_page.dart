@@ -2,9 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:military_hub/config/api_config.dart';
 import 'package:military_hub/features/social/domain/entities/menu_item.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   EasyRefreshController _refreshController;
   int _itemCount = 20;
   final ImagePicker _picker = ImagePicker();
-  String imagePath;
+  String filePath;
 
   void initState() {
     super.initState();
@@ -64,9 +62,29 @@ class _HomePageState extends State<HomePage> {
           imageQuality: quality,
         );
         setState(() {
-          imagePath = pickedFile.path;
-          print(imagePath);
-          Navigator.of(context).pushNamed('/Post', arguments: imagePath);
+          filePath = pickedFile.path;
+          print(filePath);
+          Navigator.of(context).pushNamed('/Post', arguments: filePath);
+        });
+      } catch (e) {
+        print("$e");
+      }
+    });
+  }
+
+  void _onVideoButtonPressed({BuildContext context}) async {
+    _showVideoModal(context, (ImageSource source,
+        CameraDevice preferredCameraDevice, Duration maxDuration) async {
+      try {
+        final pickedFile = await _picker.getVideo(
+          source: source,
+          preferredCameraDevice: preferredCameraDevice,
+          maxDuration: maxDuration,
+        );
+        setState(() {
+          filePath = pickedFile.path;
+          print(filePath);
+          Navigator.of(context).pushNamed('/Post', arguments: filePath);
         });
       } catch (e) {
         print("$e");
@@ -139,6 +157,107 @@ class _HomePageState extends State<HomePage> {
                             } else {
                               onPick(maxWidth, maxHeight, maxQuality,
                                   ImageSource.gallery);
+                            }
+                            Navigator.of(context).pop();
+                            print("tapped ${menuItems[index].text}");
+                          },
+                          child: Container(
+                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            child: ListTile(
+                              leading: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: menuItems[index].color.shade50,
+                                ),
+                                height: 50,
+                                width: 50,
+                                child: Icon(
+                                  menuItems[index].icons,
+                                  size: 20,
+                                  color: menuItems[index].color.shade400,
+                                ),
+                              ),
+                              title: Text(menuItems[index].text),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void _showVideoModal(BuildContext context, OnPickVideoCallback onPick) {
+    List<MenuItem> menuItems = [
+      MenuItem(
+        text: "Camera",
+        icons: Icons.camera_alt,
+        color: Colors.amber,
+      ),
+      MenuItem(
+        text: "Gallery",
+        icons: Icons.album,
+        color: Colors.blue,
+      )
+    ];
+
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 220,
+            color: Color(0xff737373),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black12
+                    : Colors.white,
+                border: Border.all(
+                  color: Colors.transparent,
+                ),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(0), topLeft: Radius.circular(0)),
+              ),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 4,
+                      width: 50,
+                      color: Colors.grey.shade200,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ListView.builder(
+                    itemCount: menuItems.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return new Material(
+                        color: Colors.transparent,
+                        child: new InkWell(
+                          onTap: () {
+                            if (menuItems[index].text == "Camera") {
+                              onPick(
+                                ImageSource.camera,
+                                CameraDevice.rear,
+                                Duration(minutes: 1),
+                              );
+                            } else {
+                              onPick(
+                                ImageSource.gallery,
+                                CameraDevice.rear,
+                                Duration(minutes: 1),
+                              );
                             }
                             Navigator.of(context).pop();
                             print("tapped ${menuItems[index].text}");
@@ -391,20 +510,15 @@ class _HomePageState extends State<HomePage> {
               flex: 1),
           Expanded(
             child: FlatButton.icon(
-                icon: Icon(Icons.location_on, color: Colors.pink),
-                label: Text('Check In'),
+                icon: Icon(
+                  Icons.video_library,
+                  color: Colors.pink,
+                  size: 20,
+                ),
+                label: Text('Video'),
                 textColor: Colors.grey,
                 onPressed: () async {
-                  LocationResult result = await showLocationPicker(
-                    context,
-                    API.GoogleAPIKey,
-                    initialCenter:
-                        LatLng(-7.545449647437256, 112.46844716370106),
-                    myLocationButtonEnabled: true,
-                    layersButtonEnabled: true,
-                  );
-                  print("result = $result");
-                  setState(() => _pickedLocation = result);
+                  _onVideoButtonPressed(context: context);
                 }),
             flex: 1,
           ),
