@@ -14,10 +14,10 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:path/path.dart' as Path;
 
 class PostPage extends StatefulWidget {
-  final String imagePath;
+  final String filePath;
   GlobalKey<FormState> formKey = new GlobalKey<FormState>();
 
-  PostPage({Key key, this.imagePath}) : super(key: key);
+  PostPage({Key key, this.filePath}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PostPageState();
@@ -50,12 +50,12 @@ class _PostPageState extends State<PostPage> {
 
   Future post() async {
     await pr.show();
-    if (widget.imagePath != null && widget.imagePath != "") {
+    if (widget.filePath != null && widget.filePath != "") {
       StorageReference storageReference = FirebaseStorage.instance
           .ref()
-          .child(API.FeedsDirectoryUrl + "/${Path.basename(widget.imagePath)}");
+          .child(API.FeedsDirectoryUrl + "/${Path.basename(widget.filePath)}");
       StorageUploadTask uploadTask =
-          storageReference.putFile(File(widget.imagePath));
+          storageReference.putFile(File(widget.filePath));
       await uploadTask.onComplete;
       print('File Uploaded');
       storageReference.getDownloadURL().then((fileURL) {
@@ -119,14 +119,14 @@ class _PostPageState extends State<PostPage> {
               ),
               child: Column(
                 children: <Widget>[
-                  widget.imagePath != null && widget.imagePath != ""
+                  widget.filePath != null && widget.filePath != ""
                       ? Container(
                           constraints: BoxConstraints(maxHeight: 350),
                           decoration: BoxDecoration(
                               color: Theme.of(context).canvasColor,
                               image: DecorationImage(
                                   image: Helper.loadImageFromFile(
-                                      widget.imagePath),
+                                      widget.filePath),
                                   fit: BoxFit.fill)),
                         )
                       : Container(),
