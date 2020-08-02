@@ -20,16 +20,25 @@ class FeedsListItemWidget extends StatefulWidget {
 
 class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
   GlobalKey btnKey = GlobalKey();
+  FlickManager flickManager;
   bool _isVideo;
 
   @override
   void initState() {
     super.initState();
     _isVideo = widget.post.image.contains(".mp4");
+    if (_isVideo) {
+      flickManager = FlickManager(
+        videoPlayerController: VideoPlayerController.network(widget.post.image),
+      );
+    }
   }
 
   @override
   void dispose() {
+    if (flickManager != null) {
+      flickManager.dispose();
+    }
     super.dispose();
   }
 
@@ -192,29 +201,29 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
       return Column(
         children: <Widget>[
           widget.post.image != ""
-              ? Container(
-                  constraints: BoxConstraints(maxHeight: 350),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).hintColor,
-                      image: DecorationImage(
-                          image: CachedNetworkImageProvider(widget.post.image),
-                          fit: BoxFit.cover)),
-                  child: _isVideo
-                      ? Container(
-                          margin: EdgeInsets.all(30),
-                          alignment: Alignment.center,
-                          child: IconButton(
-                            alignment: Alignment.center,
-                            icon: Icon(Icons.play_circle_filled, size: 50),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              Navigator.of(context).pushNamed('/VideoView',
-                                  arguments: widget.post.image);
-                            },
-                          ),
-                        )
-                      : Container(),
-                )
+              ? _isVideo
+                  ? Container(
+                      constraints: BoxConstraints(maxHeight: 350),
+                      child: FlickVideoPlayer(
+                        flickManager: flickManager,
+                        flickVideoWithControls: FlickVideoWithControls(
+                          controls: FlickPortraitControls(),
+                        ),
+                        flickVideoWithControlsFullscreen:
+                            FlickVideoWithControls(
+                          controls: FlickLandscapeControls(),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      constraints: BoxConstraints(maxHeight: 350),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).hintColor,
+                          image: DecorationImage(
+                              image:
+                                  CachedNetworkImageProvider(widget.post.image),
+                              fit: BoxFit.cover)),
+                    )
               : Container(),
           widget.post.description != ""
               ? Container(
@@ -226,36 +235,16 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
                     children: <Widget>[
                       Wrap(
                         children: <Widget>[
-                          Text(
-                            widget.post.description,
-                            textAlign: TextAlign.left,
-                            softWrap: true,
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                        ],
-                      ),
-                      /*SafeArea(
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          return MarkdownBody(
+                          MarkdownBody(
                             data: widget.post.description,
-                            selectable: true,
                             styleSheet:
                                 MarkdownStyleSheet.fromTheme(Theme.of(context))
                                     .copyWith(
                               textAlign: WrapAlignment.start,
-                              h1: Theme.of(context).textTheme.headline1,
-                              h2: Theme.of(context).textTheme.headline2,
-                              h6: Theme.of(context).textTheme.headline6,
-                              p: Theme.of(context).textTheme.bodyText2,
-                              unorderedListAlign: WrapAlignment.center,
-                              orderedListAlign: WrapAlignment.center,
-                              h1Align: WrapAlignment.center,
-                              h2Align: WrapAlignment.center,
-                              h6Align: WrapAlignment.center,
                             ),
-                          );
-                        }),
-                      ),*/
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 )
@@ -412,18 +401,28 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
       );
     }
 
-    return Container(
-      child: Column(
-        children: <Widget>[
-          _getSeparator(10),
-          _postHeader(),
-          _postBody(),
-          //postLikesAndComments(),
-          Divider(height: 1),
-          postOptions()
-        ],
+    return VisibilityDetector(
+      key: ObjectKey(flickManager),
+      onVisibilityChanged: (visibility) {
+        if (visibility.visibleFraction == 0 && this.mounted) {
+          flickManager.flickControlManager.autoPause();
+        } else if (visibility.visibleFraction == 1) {
+          flickManager.flickControlManager.autoResume();
+        }
+      },
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            _getSeparator(10),
+            _postHeader(),
+            _postBody(),
+            //postLikesAndComments(),
+            Divider(height: 1),
+            postOptions()
+          ],
+        ),
+        decoration: BoxDecoration(color: Colors.white),
       ),
-      decoration: BoxDecoration(color: Colors.white),
     );
   }
 }
