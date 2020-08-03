@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:military_hub/config/api_config.dart';
@@ -12,6 +13,7 @@ import 'package:military_hub/helpers/helper.dart';
 import 'package:military_hub/injection_container.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:path/path.dart' as Path;
+import 'package:video_player/video_player.dart';
 
 class PostPage extends StatefulWidget {
   final String filePath;
@@ -27,6 +29,28 @@ class _PostPageState extends State<PostPage> {
   String _uploadedFileURL;
   String _description;
   ProgressDialog pr;
+  FlickManager flickManager;
+  bool _isVideo;
+
+  @override
+  void initState() {
+    super.initState();
+    _isVideo = widget.filePath.contains(".mp4");
+    if (_isVideo) {
+      flickManager = FlickManager(
+        videoPlayerController: VideoPlayerController.network(widget.filePath),
+        autoPlay: false,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    if (flickManager != null) {
+      flickManager.dispose();
+    }
+    super.dispose();
+  }
 
   InputDecoration getInputDecoration({String hintText, String labelText}) {
     return new InputDecoration(
@@ -87,7 +111,7 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    pr = new ProgressDialog(context, showLogs: true);
+    pr = new ProgressDialog(context, showLogs: true, isDismissible: false);
     pr.style(message: 'Please wait...');
 
     return Scaffold(
@@ -120,15 +144,29 @@ class _PostPageState extends State<PostPage> {
               child: Column(
                 children: <Widget>[
                   widget.filePath != null && widget.filePath != ""
-                      ? Container(
-                          constraints: BoxConstraints(maxHeight: 350),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).canvasColor,
-                              image: DecorationImage(
-                                  image: Helper.loadImageFromFile(
-                                      widget.filePath),
-                                  fit: BoxFit.fill)),
-                        )
+                      ? _isVideo
+                          ? Container(
+                              constraints: BoxConstraints(maxHeight: 350),
+                              child: FlickVideoPlayer(
+                                flickManager: flickManager,
+                                flickVideoWithControls: FlickVideoWithControls(
+                                  controls: FlickPortraitControls(),
+                                ),
+                                flickVideoWithControlsFullscreen:
+                                    FlickVideoWithControls(
+                                  controls: FlickLandscapeControls(),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              constraints: BoxConstraints(maxHeight: 350),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).canvasColor,
+                                  image: DecorationImage(
+                                      image: Helper.loadImageFromFile(
+                                          widget.filePath),
+                                      fit: BoxFit.cover)),
+                            )
                       : Container(),
                   Padding(
                     child: Stack(

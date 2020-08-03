@@ -30,6 +30,7 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
     if (_isVideo) {
       flickManager = FlickManager(
         videoPlayerController: VideoPlayerController.network(widget.post.image),
+        autoPlay: false,
       );
     }
   }
@@ -406,8 +407,6 @@ class _FeedsListItemWidgetState extends State<FeedsListItemWidget> {
       onVisibilityChanged: (visibility) {
         if (visibility.visibleFraction == 0 && this.mounted) {
           flickManager.flickControlManager.autoPause();
-        } else if (visibility.visibleFraction == 1) {
-          flickManager.flickControlManager.autoResume();
         }
       },
       child: Container(
