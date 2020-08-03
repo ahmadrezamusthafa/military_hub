@@ -50,23 +50,6 @@ class FeedsListWidget extends StatelessWidget {
                 ],
               ),
             );
-
-            /*return ListView.separated(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              primary: false,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: state.lists.length,
-              separatorBuilder: (context, index) {
-                return SizedBox(height: 5);
-              },
-              itemBuilder: (context, index) {
-                return FeedsListItemWidget(
-                  heroTag: 'feeds_list',
-                  post: state.lists.elementAt(index),
-                );
-              },
-            );*/
           } catch (e) {
             print(e);
           }
@@ -107,6 +90,13 @@ class FeedsListWidget extends StatelessWidget {
                       margin: EdgeInsets.only(left: 60, top: 35, bottom: 15),
                       width: 300,
                       height: 10,
+                    ),
+                    FLSkeleton(
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(2),
+                      margin: EdgeInsets.only(
+                          left: 0, top: 60, right: 0, bottom: 15),
+                      height: 350,
                     ),
                   ],
                 ),
