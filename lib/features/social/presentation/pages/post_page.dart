@@ -35,7 +35,8 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    _isVideo = widget.filePath.contains(".mp4");
+    _isVideo =
+        widget.filePath != null ? widget.filePath.contains(".mp4") : false;
     if (_isVideo) {
       flickManager = FlickManager(
         videoPlayerController: VideoPlayerController.network(widget.filePath),
