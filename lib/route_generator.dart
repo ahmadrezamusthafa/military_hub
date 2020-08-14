@@ -8,6 +8,8 @@ import 'package:military_hub/features/social/presentation/pages/stream_viewer_pa
 import 'package:military_hub/features/social/presentation/pages/video_player_page.dart';
 import 'package:military_hub/main.dart';
 
+import 'features/social/presentation/pages/live_page.dart';
+
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     // Getting arguments passed in while calling Navigator.pushNamed
@@ -32,6 +34,8 @@ class RouteGenerator {
             builder: (_) => StreamViewerPage(
                   broadcaster: args,
                 ));
+      case '/LiveView':
+        return MaterialPageRoute(builder: (_) => LivePage());
       case '/VideoView':
         return MaterialPageRoute(
             builder: (_) => VideoPlayerPage(

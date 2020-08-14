@@ -1,14 +1,12 @@
+import 'package:background_location/background_location.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:military_hub/features/social/domain/entities/user.dart';
 import 'package:military_hub/features/social/domain/repositories/user_repository.dart';
 import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
 import 'package:military_hub/features/social/presentation/pages/home_page.dart';
 import 'package:military_hub/features/social/presentation/pages/live_page.dart';
 import 'package:military_hub/features/social/presentation/pages/profile_page.dart';
-import 'package:military_hub/features/social/presentation/pages/stream_page.dart';
-import 'package:background_location/background_location.dart';
 import 'package:military_hub/injection_container.dart';
 
 class HomeTabPage extends StatefulWidget {
@@ -26,7 +24,7 @@ class HomeTabPageState extends State<HomeTabPage>
   void initState() {
     print("HomeTabPage initState");
     super.initState();
-    tabController = new TabController(vsync: this, length: 4);
+    tabController = new TabController(vsync: this, length: 2);
     BackgroundLocation.startLocationService();
     BackgroundLocation.getLocationUpdates((location) async {
       if (currentUser.value.latitude != location.latitude ||
@@ -62,17 +60,24 @@ class HomeTabPageState extends State<HomeTabPage>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 2,
       initialIndex: 0,
       child: Scaffold(
         body: TabBarView(
           controller: tabController,
           children: [
             HomePage(),
-            StreamPage(),
-            LivePage(),
+//            StreamPage(),
+//            LivePage(),
             ProfilePage(),
           ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+          child: Icon(FontAwesomeIcons.video, size: 16),
+          onPressed: () {
+            _liveStream(context);
+          },
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
@@ -95,8 +100,8 @@ class HomeTabPageState extends State<HomeTabPage>
                 FontAwesomeIcons.home,
                 size: 16,
               )),
-              Tab(icon: Icon(FontAwesomeIcons.stream, size: 16)),
-              Tab(icon: Icon(FontAwesomeIcons.video, size: 16)),
+//              Tab(icon: Icon(FontAwesomeIcons.stream, size: 16)),
+//              Tab(icon: Icon(FontAwesomeIcons.video, size: 16)),
               Tab(icon: Icon(FontAwesomeIcons.user, size: 16)),
             ],
             unselectedLabelColor: Colors.grey,
@@ -114,5 +119,9 @@ class HomeTabPageState extends State<HomeTabPage>
         ),
       ),
     );
+  }
+
+  _liveStream(context) {
+    Navigator.of(context).pushNamed('/LiveView');
   }
 }

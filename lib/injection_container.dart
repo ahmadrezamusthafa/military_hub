@@ -14,12 +14,14 @@ import 'package:military_hub/features/social/domain/usecase/feeds_usecase.dart';
 import 'package:military_hub/features/social/domain/usecase/user_usecase.dart';
 import 'package:military_hub/features/social/domain/usecase/webrtc_usecase.dart';
 import 'package:military_hub/features/social/presentation/bloc/fetch/feeds/bloc.dart';
-import 'package:military_hub/features/social/presentation/bloc/fetch/user/user_block.dart';
+import 'package:military_hub/features/social/presentation/bloc/fetch/user/bloc.dart';
 import 'package:military_hub/features/social/presentation/bloc/fetch/webrtc/bloc.dart';
 import 'package:military_hub/features/social/presentation/bloc/transaction/webrtc/bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/http/http_request.dart';
 import 'core/network/network_info.dart';
+import 'features/social/data/datasources/api/api.source.dart';
 
 final sl = GetIt.instance;
 
@@ -57,6 +59,9 @@ Future<void> init() async {
     () => WebRTCRepositoryImpl(janusWebRTCRepository: sl()),
   );
 
+  final httpRequest = HttpRequest.getInstance();
+  sl.registerLazySingleton<HttpRequest>(() => httpRequest);
+  sl.registerLazySingleton<ApiSource>(() => ApiSourceImpl(sl()));
   //! Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
