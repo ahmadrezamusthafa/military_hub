@@ -19,9 +19,7 @@ import 'package:military_hub/features/social/presentation/bloc/fetch/webrtc/bloc
 import 'package:military_hub/features/social/presentation/bloc/transaction/webrtc/bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'core/http/http_request.dart';
 import 'core/network/network_info.dart';
-import 'features/social/data/datasources/api/api.source.dart';
 
 final sl = GetIt.instance;
 
@@ -59,9 +57,6 @@ Future<void> init() async {
     () => WebRTCRepositoryImpl(janusWebRTCRepository: sl()),
   );
 
-  final httpRequest = HttpRequest.getInstance();
-  sl.registerLazySingleton<HttpRequest>(() => httpRequest);
-  sl.registerLazySingleton<ApiSource>(() => ApiSourceImpl(sl()));
   //! Core
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
