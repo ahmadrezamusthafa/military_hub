@@ -163,8 +163,10 @@ class LivePageState extends State<LivePage> {
                   "description": currentUser.value.name,
                   "secret": janusSecret,
                   "bitrate": 128000,
-                  "fir_freq": 6,
-                  "publishers": 6
+                  "fir_freq": 0,
+                  "publishers": 6,
+                  "audiocodec": "opus",
+                  "videocodec": "vp8"
                 };
                 plugin.send(
                     message: create,
@@ -177,7 +179,7 @@ class LivePageState extends State<LivePage> {
                               "request": "configure",
                               "audio": true,
                               "video": true,
-                              "bitrate": 2000000
+                              "bitrate": 128000
                             };
                             RTCSessionDescription offer =
                                 await plugin.createOffer();
@@ -199,7 +201,7 @@ class LivePageState extends State<LivePage> {
                 "request": "configure",
                 "audio": true,
                 "video": true,
-                "bitrate": 2000000
+                "bitrate": 128000
               };
               RTCSessionDescription offer = await _pluginHandle.createOffer();
               _pluginHandle.send(
